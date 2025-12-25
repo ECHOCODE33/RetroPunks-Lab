@@ -24,7 +24,7 @@ contract Mint is Script {
 
     // ====================== CONFIGURATION ======================
 
-    address constant retroPunksAddress = 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0;
+    address constant retroPunksAddress = 0x9E545E3C0baAB3E08CdfD552C960A1050f373042;
 
     address constant recipient = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
 

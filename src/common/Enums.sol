@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-uint8 constant NUM_BACKGROUND = 6;
+uint8 constant NUM_BACKGROUND = 5;
 uint8 constant NUM_SPECIAL_1S = 16;
 uint8 constant NUM_TRAIT_GROUPS = 27;
 
