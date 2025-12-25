@@ -1,0 +1,13 @@
+# Foundry artifacts
+cache/
+out/
+broadcast/
+
+# Environment secrets
+.env
+.secret
+
+# Other common ignores
+*.log
+.DS_Store
+

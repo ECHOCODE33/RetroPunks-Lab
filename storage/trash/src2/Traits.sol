@@ -1,0 +1,372 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.30;
+
+import { IFemaleProbabilities } from './interfaces/IFemaleProbabilities.sol';
+import { IMaleProbabilities } from './interfaces/IMaleProbabilities.sol';
+import { Random, RandomCtx } from "./libraries/Random.sol";
+import { TraitsContext, TraitToRender, FillerTrait } from "./common/Structs.sol";
+import { NUM_SPECIAL_1S, E_Sex, E_Special_1s, E_Background, E_Male_Skin, E_Male_Eyes, E_Male_Face, E_Male_Chain, E_Male_Earring, E_Male_Scarf, E_Male_Facial_Hair, E_Male_Mask, E_Male_Hair, E_Male_Hat_Hair, E_Male_Headwear, E_Male_Eye_Wear, E_Female_Skin, E_Female_Eyes, E_Female_Face, E_Female_Chain, E_Female_Earring, E_Female_Scarf, E_Female_Mask, E_Female_Hair, E_Female_Hat_Hair, E_Female_Headwear, E_Female_Eye_Wear, E_Mouth, E_Filler_Traits, E_TraitsGroup } from "./common/Enums.sol";
+import { TraitsUtils } from "./libraries/TraitsUtils.sol";
+import { ITraits } from './interfaces/ITraits.sol';
+
+/**
+ * @title Traits
+ * @notice Generates all traits for a token based on deterministic randomness
+ * @dev Optimized for gas efficiency with unchecked arithmetic where safe
+ */
+contract Traits is ITraits {
+
+    IMaleProbabilities public immutable MALE_PROBS_CONTRACT;
+    IFemaleProbabilities public immutable FEMALE_PROBS_CONTRACT;
+
+    constructor(IMaleProbabilities _maleProbsContract, IFemaleProbabilities _femaleProbsContract) {
+        MALE_PROBS_CONTRACT = _maleProbsContract;
+        FEMALE_PROBS_CONTRACT = _femaleProbsContract;
+    }
+
+    /**
+     * @notice Generate all traits for a token
+     * @param _tokenIdSeed Deterministic seed for this token
+     * @param _backgroundIndex Selected background (0 to NUM_BACKGROUND-1)
+     * @param _globalSeed Global randomness seed
+     * @return Complete traits context with all selected traits
+     */
+    function generateAllTraits(
+        uint16 _tokenIdSeed,
+        uint16 _backgroundIndex,
+        uint256 _globalSeed
+    ) external view returns (TraitsContext memory) {
+        // Initialize random context
+        RandomCtx memory rndCtx = Random.initCtx(_tokenIdSeed, _globalSeed);
+
+        // Check if this is a special 1:1 character
+        uint16 specialId = 0;
+        if (_tokenIdSeed < NUM_SPECIAL_1S) {
+            specialId = _tokenIdSeed + 1;
+        }
+        
+        TraitsContext memory traits;
+        traits.traitsToRender = new TraitToRender[](15);
+        traits.tokenIdSeed = _tokenIdSeed;
+        traits.globalSeed = _globalSeed;
+        traits.specialId = specialId;
+
+        // Generate random birthday in year 2100
+        unchecked {
+            uint32 minDate = 4102444800; // Jan 1, 2100, 12:00 AM
+            uint32 maxDate = 4133941199; // December 31, 2100, 11:59 PM
+            traits.birthday = uint32(Random.randRange(rndCtx, minDate, maxDate));
+        }
+
+        // 66.6% chance Male, 33.3% chance Female
+        traits.sex = Random.randBool(rndCtx, 6600) ? E_Sex.Male : E_Sex.Female;
+
+        // === SPECIAL 1 of 1 CHARACTERS ===
+        if (traits.specialId > 0) {
+            uint specialIdx = traits.specialId - 1;
+            if (
+                specialIdx == uint(E_Special_1s.Pig) ||
+                specialIdx == uint(E_Special_1s.Slenderman) ||
+                specialIdx == uint(E_Special_1s.The_Witch) ||
+                specialIdx == uint(E_Special_1s.The_Wizard)
+            ) {
+                _addSpecial(traits, specialIdx);
+            }
+        }
+        
+        // === MALE TRAITS ===
+        else if (traits.sex == E_Sex.Male) {
+            // Select all traits
+            traits.maleSkinType = MALE_PROBS_CONTRACT.selectMaleSkinType(rndCtx);
+            traits.maleEyes = MALE_PROBS_CONTRACT.selectMaleEyes(traits, rndCtx);
+            traits.maleFace = MALE_PROBS_CONTRACT.selectMaleFace(traits, rndCtx);
+            traits.maleChain = MALE_PROBS_CONTRACT.selectMaleChain(rndCtx);
+            traits.maleEarring = MALE_PROBS_CONTRACT.selectMaleEarring(rndCtx);
+            traits.maleFacialHair = MALE_PROBS_CONTRACT.selectMaleFacialHair(traits, rndCtx);
+            traits.maleMask = MALE_PROBS_CONTRACT.selectMaleMask(rndCtx);
+            traits.maleScarf = MALE_PROBS_CONTRACT.selectMaleScarf(rndCtx);
+            traits.maleHair = MALE_PROBS_CONTRACT.selectMaleHair(traits, rndCtx);
+            traits.maleHatHair = MALE_PROBS_CONTRACT.selectMaleHatHair(traits, rndCtx);
+            traits.maleHeadwear = MALE_PROBS_CONTRACT.selectMaleHeadwear(rndCtx);
+            traits.maleEyeWear = MALE_PROBS_CONTRACT.selectMaleEyeWear(rndCtx);
+
+            // Add traits in rendering order (back to front)
+            _addMaleSkinType(traits);
+            _addMaleEyes(traits);
+            _addMaleFace(traits);
+            _addMaleChain(traits);
+            _addMaleEarring(traits);
+
+            // 80% Facial Hair, 10% Mask, 10% nothing
+            if (TraitsUtils.maleHasFacialHair(traits)) {
+                _addMaleFacialHair(traits);
+            } else {
+                _addMaleMask(traits); 
+            }
+
+            _addMaleScarf(traits);
+            
+            // 60% chance of headwear
+            if (TraitsUtils.maleHasHeadwear(traits)) {
+                // 0.6 x 0.5 = 30% chance of hat hair
+                _addMaleHatHair(traits);
+            } else {
+                // 0.4 x 0.9 = 36% chance of regular hair
+                // 0.4 x 0.1 = 4% chance of nothing (bald)
+                _addMaleHair(traits);
+            }
+
+            _addMaleHeadwear(traits);
+            _addMaleEyeWear(traits);
+        }
+
+        // === FEMALE TRAITS ===
+        else {
+            // Select all traits
+            traits.femaleSkinType = FEMALE_PROBS_CONTRACT.selectFemaleSkinType(rndCtx);
+            traits.femaleEyes = FEMALE_PROBS_CONTRACT.selectFemaleEyes(traits, rndCtx);
+            traits.femaleFace = FEMALE_PROBS_CONTRACT.selectFemaleFace(traits, rndCtx);
+            traits.femaleChain = FEMALE_PROBS_CONTRACT.selectFemaleChain(rndCtx);
+            traits.femaleEarring = FEMALE_PROBS_CONTRACT.selectFemaleEarring(rndCtx);
+            traits.femaleMask = FEMALE_PROBS_CONTRACT.selectFemaleMask(rndCtx);
+            traits.femaleScarf = FEMALE_PROBS_CONTRACT.selectFemaleScarf(rndCtx);
+            traits.femaleHair = FEMALE_PROBS_CONTRACT.selectFemaleHair(traits, rndCtx);
+            traits.femaleHatHair = FEMALE_PROBS_CONTRACT.selectFemaleHatHair(traits, rndCtx);
+            traits.femaleHeadwear = FEMALE_PROBS_CONTRACT.selectFemaleHeadwear(rndCtx);
+            traits.femaleEyeWear = FEMALE_PROBS_CONTRACT.selectFemaleEyeWear(rndCtx);
+
+            // Add traits in rendering order (back to front)
+            _addFemaleSkinType(traits);
+            _addFemaleEyes(traits);
+            _addFemaleFace(traits);
+            _addFemaleChain(traits);
+            _addFemaleEarring(traits);
+            _addFemaleMask(traits);
+            _addFemaleScarf(traits);
+
+            // Hat hair or regular hair
+            if (TraitsUtils.femaleHasHeadwear(traits)) {
+                _addFemaleHatHair(traits);
+            } else {
+                _addFemaleHair(traits);
+            }
+            
+            _addFemaleHeadwear(traits);
+            _addFemaleEyeWear(traits);
+        }
+
+        // === MOUTH (Shared) ===
+        traits.mouth = MALE_PROBS_CONTRACT.selectMouth(traits, rndCtx);
+        
+        // Only render mouth if not wearing a mask
+        if (!TraitsUtils.femaleHasMask(traits) && !TraitsUtils.maleHasMask(traits)) {
+            _addMouth(traits);
+        }
+
+        // === BACKGROUND ===
+        traits.background = E_Background(_backgroundIndex);
+        _addBackground(traits);
+
+        return traits;
+    }
+
+    // ========================================================================
+    // INTERNAL TRAIT ADDITION FUNCTIONS
+    // ========================================================================
+
+    function _addSpecial(TraitsContext memory traits, uint specialIdx) internal pure {
+        E_Special_1s special = E_Special_1s(specialIdx);
+        _addTraitToRender(traits, E_TraitsGroup.Special_1s_Group, uint8(special));
+    }
+
+    // === MALE TRAITS ===
+
+    function _addMaleSkinType(TraitsContext memory traits) internal pure {
+        _addTraitToRender(traits, E_TraitsGroup.Male_Skin_Group, uint8(traits.maleSkinType));
+    } 
+    
+    function _addMaleEyes(TraitsContext memory traits) internal pure {
+        if (traits.maleEyes == E_Male_Eyes.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Male_Eyes_Group, uint8(traits.maleEyes));
+    }
+
+    function _addMaleFace(TraitsContext memory traits) internal pure {
+        if (traits.maleFace == E_Male_Face.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Male_Face_Group, uint8(traits.maleFace));
+    }
+
+    function _addMaleChain(TraitsContext memory traits) internal pure {
+        if (traits.maleChain == E_Male_Chain.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Male_Chain_Group, uint8(traits.maleChain));
+    }
+
+    function _addMaleScarf(TraitsContext memory traits) internal pure {
+        if (traits.maleScarf == E_Male_Scarf.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Male_Scarf_Group, uint8(traits.maleScarf));
+    }
+
+    function _addMaleEarring(TraitsContext memory traits) internal pure {
+        if (traits.maleEarring == E_Male_Earring.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Male_Earring_Group, uint8(traits.maleEarring));
+    }
+
+    function _addMaleFacialHair(TraitsContext memory traits) internal pure {
+        if (traits.maleFacialHair == E_Male_Facial_Hair.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Male_Facial_Hair_Group, uint8(traits.maleFacialHair));
+    }
+
+    function _addMaleMask(TraitsContext memory traits) internal pure {
+        if (traits.maleMask == E_Male_Mask.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Male_Mask_Group, uint8(traits.maleMask));
+    }
+
+    function _addMaleHair(TraitsContext memory traits) internal pure {
+        if (traits.maleHair == E_Male_Hair.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Male_Hair_Group, uint8(traits.maleHair));
+    }
+
+    function _addMaleHatHair(TraitsContext memory traits) internal pure {
+        if (traits.maleHatHair == E_Male_Hat_Hair.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Male_Hat_Hair_Group, uint8(traits.maleHatHair));
+    }
+
+    function _addMaleHeadwear(TraitsContext memory traits) internal pure {
+        if (traits.maleHeadwear == E_Male_Headwear.None) return;
+
+        _addTraitToRender(traits, E_TraitsGroup.Male_Headwear_Group, uint8(traits.maleHeadwear));
+        
+        // Add filler traits for certain skin types to cover headwear properly
+        if (traits.maleSkinType == E_Male_Skin.Robot) {
+            _addFillerTrait(traits, E_TraitsGroup.Filler_Traits_Group, uint8(E_Filler_Traits.Male_Robot_Headwear_Cover));
+        }
+
+        if (traits.maleSkinType == E_Male_Skin.Pumpkin) {
+            _addFillerTrait(traits, E_TraitsGroup.Filler_Traits_Group, uint8(E_Filler_Traits.Male_Pumpkin_Headwear_Cover));
+        }
+    }
+
+    function _addMaleEyeWear(TraitsContext memory traits) internal pure {
+        if (traits.maleEyeWear == E_Male_Eye_Wear.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Male_Eye_Wear_Group, uint8(traits.maleEyeWear));
+    }
+
+    // === FEMALE TRAITS ===
+
+    function _addFemaleSkinType(TraitsContext memory traits) internal pure {
+        _addTraitToRender(traits, E_TraitsGroup.Female_Skin_Group, uint8(traits.femaleSkinType));
+    }
+
+    function _addFemaleEyes(TraitsContext memory traits) internal pure {
+        if (traits.femaleEyes == E_Female_Eyes.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Female_Eyes_Group, uint8(traits.femaleEyes));
+    }
+
+    function _addFemaleFace(TraitsContext memory traits) internal pure {
+        if (traits.femaleFace == E_Female_Face.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Female_Face_Group, uint8(traits.femaleFace));
+    }
+
+    function _addFemaleChain(TraitsContext memory traits) internal pure {
+        if (traits.femaleChain == E_Female_Chain.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Female_Chain_Group, uint8(traits.femaleChain));
+    }
+
+    function _addFemaleScarf(TraitsContext memory traits) internal pure {
+        if (traits.femaleScarf == E_Female_Scarf.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Female_Scarf_Group, uint8(traits.femaleScarf));
+    }
+
+    function _addFemaleEarring(TraitsContext memory traits) internal pure {
+        if (traits.femaleEarring == E_Female_Earring.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Female_Earring_Group, uint8(traits.femaleEarring));
+    }
+
+    function _addFemaleMask(TraitsContext memory traits) internal pure {
+        if (traits.femaleMask == E_Female_Mask.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Female_Mask_Group, uint8(traits.femaleMask));
+    }
+
+    function _addFemaleHair(TraitsContext memory traits) internal pure {
+        if (traits.femaleHair == E_Female_Hair.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Female_Hair_Group, uint8(traits.femaleHair));
+    }
+
+    function _addFemaleHatHair(TraitsContext memory traits) internal pure {
+        if (traits.femaleHatHair == E_Female_Hat_Hair.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Female_Hat_Hair_Group, uint8(traits.femaleHatHair));
+    }
+
+    function _addFemaleHeadwear(TraitsContext memory traits) internal pure {
+        if (traits.femaleHeadwear == E_Female_Headwear.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Female_Headwear_Group, uint8(traits.femaleHeadwear));
+
+        // Add filler trait for robot skin
+        if (traits.femaleSkinType == E_Female_Skin.Robot) {
+            _addFillerTrait(traits, E_TraitsGroup.Filler_Traits_Group, uint8(E_Filler_Traits.Female_Robot_Headwear_Cover));
+        }
+    }
+
+    function _addFemaleEyeWear(TraitsContext memory traits) internal pure {
+        if (traits.femaleEyeWear == E_Female_Eye_Wear.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Female_Eye_Wear_Group, uint8(traits.femaleEyeWear));
+    }
+
+    // === SHARED TRAITS ===
+
+    function _addMouth(TraitsContext memory traits) internal pure {
+        if (traits.mouth == E_Mouth.None) return;
+        _addTraitToRender(traits, E_TraitsGroup.Mouth_Group, uint8(traits.mouth));
+    }
+
+    function _addBackground(TraitsContext memory traits) internal pure {
+        _addTraitToRender(traits, E_TraitsGroup.Background_Group, uint8(traits.background));
+    }
+
+    // ========================================================================
+    // TRAIT RENDERING HELPERS
+    // ========================================================================
+
+    /**
+     * @dev Add a trait to the rendering queue
+     * @param _ctx Traits context
+     * @param _traitGroup Group this trait belongs to
+     * @param _traitIndex Index within the group
+     */
+    function _addTraitToRender(
+        TraitsContext memory _ctx,
+        E_TraitsGroup _traitGroup,
+        uint8 _traitIndex
+    ) internal pure {
+        TraitToRender memory traitToRender;
+        traitToRender.traitGroup = _traitGroup;
+        traitToRender.traitIndex = _traitIndex;
+        traitToRender.hasFiller = false;
+        
+        unchecked {
+            _ctx.traitsToRender[_ctx.traitsToRenderLength] = traitToRender;
+            _ctx.traitsToRenderLength++;
+        }
+    }
+
+    /**
+     * @dev Add a filler trait to the most recently added trait
+     * @param _traits Traits context
+     * @param _traitGroup Filler trait group
+     * @param _traitIndex Filler trait index
+     */
+    function _addFillerTrait(
+        TraitsContext memory _traits,
+        E_TraitsGroup _traitGroup,
+        uint8 _traitIndex
+    ) internal pure {
+        FillerTrait memory filler;
+        filler.traitGroup = _traitGroup;
+        filler.traitIndex = _traitIndex;
+        
+        unchecked {
+            uint idx = _traits.traitsToRenderLength - 1;
+            _traits.traitsToRender[idx].hasFiller = true;
+            _traits.traitsToRender[idx].filler = filler;
+        }
+    }
+}

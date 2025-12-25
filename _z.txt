@@ -1,0 +1,49 @@
+Anvil Address: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+
+forge test test/TraitsLoader.t.sol -vv
+
+
+
+
+forge script script/Deploy.s.sol \
+  --rpc-url $RPC_URL \
+  --private-key $PRIVATE_KEY \
+  --broadcast -v
+
+forge script script/AddAssetsBatch.s.sol:AddAssetsBatch \
+  --rpc-url $RPC_URL \
+  --private-key $PRIVATE_KEY \
+  --broadcast -v
+
+
+forge script script/VerifyAssets.s.sol:VerifyAssets \
+  --rpc-url $RPC_URL \
+  --private-key $PRIVATE_KEY \
+  --broadcast -v
+
+forge script script/RevealShufflerSeed.s.sol:RevealShufflerSeed \
+  --rpc-url $RPC_URL \
+  --private-key $PRIVATE_KEY \
+  --broadcast -v
+
+forge script script/Mint.s.sol:Mint \
+  --rpc-url $RPC_URL \
+  --private-key $PRIVATE_KEY \
+  --broadcast \
+  -v
+
+forge script script/ViewTokenURI.s.sol:ViewTokenURI \
+  --rpc-url $RPC_URL \
+  -v
+
+
+
+
+
+== Logs ==
+  Assets:: 0xa513E6E4b8f2a923D98304ec87F64353C4D5C853
+  FemaleProbs: 0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6
+  MaleProbs: 0x8A791620dd6260079BF849Dc5567aDC3F2FdC318
+  Traits: 0x610178dA211FEF7D417bC0e6FeD39F05609AD788
+  SVGRenderer: 0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e
+  RetroPunks: 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0

@@ -1,0 +1,17 @@
+@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
+ERC721A-Upgradeable/=lib/seadrop/lib/ERC721A-Upgradeable/contracts/
+ERC721A/=lib/ERC721A/contracts/
+create2-helpers/=lib/seadrop/lib/create2-helpers/
+create2-scripts/=lib/seadrop/lib/create2-helpers/script/
+ds-test/=lib/seadrop/lib/ds-test/src/
+erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/
+forge-std/=lib/forge-std/src/
+halmos-cheatcodes/=lib/openzeppelin-contracts/lib/halmos-cheatcodes/src/
+murky/=lib/seadrop/lib/murky/src/
+openzeppelin-contracts-upgradeable/=lib/seadrop/lib/openzeppelin-contracts-upgradeable/
+openzeppelin-contracts/=lib/openzeppelin-contracts/
+operator-filter-registry/=lib/seadrop/lib/operator-filter-registry/src/
+seadrop/=lib/seadrop/
+solady/=lib/solady/src/
+solmate/=lib/seadrop/lib/solmate/src/
+utility-contracts/=lib/seadrop/lib/utility-contracts/

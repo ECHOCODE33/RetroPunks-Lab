@@ -1,0 +1,38 @@
+[profile.default]
+solc_version = "0.8.30"
+src = "src"
+out = "out"
+libs = ["lib"]
+
+via_ir = true
+optimizer = true
+optimizer_runs = 200
+bytecode_hash = "none"
+remappings = [
+  '@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/',
+  '@solady/=lib/solady/src/',
+  '@prb/test/=lib/prb-test/src/',
+  '@prb/math/=lib/prb-math/',
+  '@chainlink/contracts/=lib/chainlink/contracts/src/v0.8/',
+  '@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/',
+  '@forge-console/=lib/forge-std/src/console.sol',
+  '@forge-std/=lib/forge-std/src/',
+  '@solmate/=lib/solmate/src/',
+  '@rari-capital/solmate/=lib/solmate/src/',
+]
+
+[lint]
+exclude_lints = [
+    "unsafe-typecast",
+    "mixed-case-function",
+    "mixed-case-variable",
+    "unwrapped-modifier-logic",
+    "unused-import",
+    "named-struct-fields",
+    "screaming-snake-case-const",
+    "unaliased-plain-import"
+]
+
+
+[rpc_endpoints]
+localhost = "http://localhost:8545"
