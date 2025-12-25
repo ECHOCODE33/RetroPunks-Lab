@@ -1,0 +1,72 @@
+{
+	"deploy": {
+		"VM:-": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"main:1": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"ropsten:3": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"rinkeby:4": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"kovan:42": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"goerli:5": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"Custom": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		}
+	},
+	"data": {
+		"bytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"linkReferences": {},
+			"object": "6080806040523460175760399081601c823930815050f35b5f80fdfe5f80fdfea26469706673582212205026a25f17ec699aa7acb600d127a16a9096f5afbf07f0f487a38a931f6ba08664736f6c634300081e0033",
+			"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x39 SWAP1 DUP2 PUSH1 0x1C DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 POP 0x26 LOG2 PUSH0 OR EOFCREATE 0x69 SWAP11 0xA7 0xAC 0xB6 STOP DATALOADN 0x27A1 PUSH11 0x9096F5AFBF07F0F487A38A SWAP4 0x1F PUSH12 0xA08664736F6C634300081E00 CALLER ",
+			"sourceMap": "569:12377:7:-:0;;;;;;;;;;;;;;;;;;;;;"
+		},
+		"deployedBytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"immutableReferences": {},
+			"linkReferences": {},
+			"object": "5f80fdfea26469706673582212205026a25f17ec699aa7acb600d127a16a9096f5afbf07f0f487a38a931f6ba08664736f6c634300081e0033",
+			"opcodes": "PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 POP 0x26 LOG2 PUSH0 OR EOFCREATE 0x69 SWAP11 0xA7 0xAC 0xB6 STOP DATALOADN 0x27A1 PUSH11 0x9096F5AFBF07F0F487A38A SWAP4 0x1F PUSH12 0xA08664736F6C634300081E00 CALLER ",
+			"sourceMap": "569:12377:7:-:0;;"
+		},
+		"gasEstimates": {
+			"creation": {
+				"codeDepositCost": "11400",
+				"executionCost": "infinite",
+				"totalCost": "infinite"
+			},
+			"internal": {
+				"_decodePaletteIndex(bytes memory,uint256,uint8)": "infinite",
+				"_drawRect(bytes memory,uint8,uint8,uint8,uint32)": "infinite",
+				"_paintTraitToGrid(uint32[48] memory[48] memory,struct TraitGroup memory,uint8)": "infinite",
+				"_renderBackground(contract IAssets,bytes memory,struct CachedTraitGroups memory,struct TraitsContext memory)": "infinite",
+				"_renderPixelGradientStops(bytes memory,struct CachedTraitGroups memory,uint256,struct TraitInfo memory)": "infinite",
+				"_renderSmoothGradientStops(bytes memory,struct CachedTraitGroups memory,uint256,struct TraitInfo memory)": "infinite",
+				"_writeColorStop(bytes memory,uint32)": "infinite",
+				"_writeHexColor(bytes memory,uint32)": "infinite",
+				"bitmapToSVG(uint32[48] memory[48] memory,bytes memory)": "infinite",
+				"renderGridToSvg(contract IAssets,bytes memory,struct CachedTraitGroups memory,struct TraitsContext memory)": "infinite"
+			}
+		},
+		"methodIdentifiers": {}
+	},
+	"abi": []
+}

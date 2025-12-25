@@ -1,0 +1,353 @@
+{
+	"compiler": {
+		"version": "0.8.33+commit.64118f21"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_traitGroupsLength",
+						"type": "uint256"
+					}
+				],
+				"name": "initCachedTraitGroups",
+				"outputs": [
+					{
+						"components": [
+							{
+								"components": [
+									{
+										"internalType": "uint256",
+										"name": "traitGroupIndex",
+										"type": "uint256"
+									},
+									{
+										"internalType": "bytes",
+										"name": "traitGroupName",
+										"type": "bytes"
+									},
+									{
+										"internalType": "uint32[]",
+										"name": "paletteRgba",
+										"type": "uint32[]"
+									},
+									{
+										"components": [
+											{
+												"internalType": "bytes",
+												"name": "traitName",
+												"type": "bytes"
+											},
+											{
+												"internalType": "uint8",
+												"name": "layerType",
+												"type": "uint8"
+											},
+											{
+												"internalType": "uint8",
+												"name": "x1",
+												"type": "uint8"
+											},
+											{
+												"internalType": "uint8",
+												"name": "y1",
+												"type": "uint8"
+											},
+											{
+												"internalType": "uint8",
+												"name": "x2",
+												"type": "uint8"
+											},
+											{
+												"internalType": "uint8",
+												"name": "y2",
+												"type": "uint8"
+											},
+											{
+												"internalType": "bytes",
+												"name": "traitData",
+												"type": "bytes"
+											}
+										],
+										"internalType": "struct TraitInfo[]",
+										"name": "traits",
+										"type": "tuple[]"
+									},
+									{
+										"internalType": "uint8",
+										"name": "paletteIndexByteSize",
+										"type": "uint8"
+									}
+								],
+								"internalType": "struct TraitGroup[]",
+								"name": "traitGroups",
+								"type": "tuple[]"
+							},
+							{
+								"internalType": "bool[]",
+								"name": "traitGroupsLoaded",
+								"type": "bool[]"
+							}
+						],
+						"internalType": "struct CachedTraitGroups",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "contract IAssets",
+						"name": "_assetsContract",
+						"type": "IAssets"
+					},
+					{
+						"components": [
+							{
+								"components": [
+									{
+										"internalType": "uint256",
+										"name": "traitGroupIndex",
+										"type": "uint256"
+									},
+									{
+										"internalType": "bytes",
+										"name": "traitGroupName",
+										"type": "bytes"
+									},
+									{
+										"internalType": "uint32[]",
+										"name": "paletteRgba",
+										"type": "uint32[]"
+									},
+									{
+										"components": [
+											{
+												"internalType": "bytes",
+												"name": "traitName",
+												"type": "bytes"
+											},
+											{
+												"internalType": "uint8",
+												"name": "layerType",
+												"type": "uint8"
+											},
+											{
+												"internalType": "uint8",
+												"name": "x1",
+												"type": "uint8"
+											},
+											{
+												"internalType": "uint8",
+												"name": "y1",
+												"type": "uint8"
+											},
+											{
+												"internalType": "uint8",
+												"name": "x2",
+												"type": "uint8"
+											},
+											{
+												"internalType": "uint8",
+												"name": "y2",
+												"type": "uint8"
+											},
+											{
+												"internalType": "bytes",
+												"name": "traitData",
+												"type": "bytes"
+											}
+										],
+										"internalType": "struct TraitInfo[]",
+										"name": "traits",
+										"type": "tuple[]"
+									},
+									{
+										"internalType": "uint8",
+										"name": "paletteIndexByteSize",
+										"type": "uint8"
+									}
+								],
+								"internalType": "struct TraitGroup[]",
+								"name": "traitGroups",
+								"type": "tuple[]"
+							},
+							{
+								"internalType": "bool[]",
+								"name": "traitGroupsLoaded",
+								"type": "bool[]"
+							}
+						],
+						"internalType": "struct CachedTraitGroups",
+						"name": "_cachedTraitGroups",
+						"type": "tuple"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_traitGroupIndex",
+						"type": "uint256"
+					}
+				],
+				"name": "loadAndCacheTraitGroup",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "traitGroupIndex",
+								"type": "uint256"
+							},
+							{
+								"internalType": "bytes",
+								"name": "traitGroupName",
+								"type": "bytes"
+							},
+							{
+								"internalType": "uint32[]",
+								"name": "paletteRgba",
+								"type": "uint32[]"
+							},
+							{
+								"components": [
+									{
+										"internalType": "bytes",
+										"name": "traitName",
+										"type": "bytes"
+									},
+									{
+										"internalType": "uint8",
+										"name": "layerType",
+										"type": "uint8"
+									},
+									{
+										"internalType": "uint8",
+										"name": "x1",
+										"type": "uint8"
+									},
+									{
+										"internalType": "uint8",
+										"name": "y1",
+										"type": "uint8"
+									},
+									{
+										"internalType": "uint8",
+										"name": "x2",
+										"type": "uint8"
+									},
+									{
+										"internalType": "uint8",
+										"name": "y2",
+										"type": "uint8"
+									},
+									{
+										"internalType": "bytes",
+										"name": "traitData",
+										"type": "bytes"
+									}
+								],
+								"internalType": "struct TraitInfo[]",
+								"name": "traits",
+								"type": "tuple[]"
+							},
+							{
+								"internalType": "uint8",
+								"name": "paletteIndexByteSize",
+								"type": "uint8"
+							}
+						],
+						"internalType": "struct TraitGroup",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"src/libraries/TraitsLoader.sol": "TraitsLoader"
+		},
+		"evmVersion": "osaka",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [
+			":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+			":ERC721A-Upgradeable/=lib/seadrop/lib/ERC721A-Upgradeable/contracts/",
+			":ERC721A/=lib/ERC721A/contracts/",
+			":create2-helpers/=lib/seadrop/lib/create2-helpers/",
+			":create2-scripts/=lib/seadrop/lib/create2-helpers/script/",
+			":ds-test/=lib/seadrop/lib/ds-test/src/",
+			":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+			":forge-std/=lib/forge-std/src/",
+			":halmos-cheatcodes/=lib/openzeppelin-contracts/lib/halmos-cheatcodes/src/",
+			":murky/=lib/seadrop/lib/murky/src/",
+			":openzeppelin-contracts-upgradeable/=lib/seadrop/lib/openzeppelin-contracts-upgradeable/",
+			":openzeppelin-contracts/=lib/openzeppelin-contracts/",
+			":operator-filter-registry/=lib/seadrop/lib/operator-filter-registry/src/",
+			":seadrop/=lib/seadrop/",
+			":solady/=lib/solady/src/",
+			":solmate/=lib/seadrop/lib/solmate/src/",
+			":utility-contracts/=lib/seadrop/lib/utility-contracts/"
+		],
+		"viaIR": true
+	},
+	"sources": {
+		"src/common/Enums.sol": {
+			"keccak256": "0xc76fb669b550af9b6f7004aeee81a412af04e3904678f598c65d90de220720e1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://be71aeb03be2321801a24b88251b57c11558fb68d2d1d58e50cc4325ac84f3f3",
+				"dweb:/ipfs/Qmf9uRzTFixhyqkaXVyso8nSEsATxb9yvq4nseDTfEzMGK"
+			]
+		},
+		"src/common/Structs.sol": {
+			"keccak256": "0x1d8037aba923bb9edb8b732806d621dd4cd6da55f27ac627629c201e2d03908f",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://35c751ff4b92b2c95f5a6a6441525936df46285f3302080edba972fb2367ef9c",
+				"dweb:/ipfs/QmUwscX8geh2hCabDcfu5C7cGjqVTGSePEvqSCMvqoisM3"
+			]
+		},
+		"src/interfaces/IAssets.sol": {
+			"keccak256": "0xfc63d80bc00d763caf12131f361ecaff58d8efcf9d6ccb3cc04f035d40773372",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6ad71f2f6b44a08a0bce1dd5563858e190dd3c84c513b37a08ac5775b98e02f4",
+				"dweb:/ipfs/QmXzaytGe3KT4aPofs9J63FZxaKKrVWJc43yYCyW4mAJyg"
+			]
+		},
+		"src/libraries/TraitsLoader.sol": {
+			"keccak256": "0x2e39d06c196c85869c134a7f6ad19f2ea11e8c8daca12304d2fb0993c3e43098",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://7402c5c65a1ad12de697b7751fb50e2a2da7b3d1623c233f416e979f27dc7039",
+				"dweb:/ipfs/QmYQGmHWYkLcZMDcvUK35dNtYmEn22XJrR7hreW1kiQpSV"
+			]
+		}
+	},
+	"version": 1
+}

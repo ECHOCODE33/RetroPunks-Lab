@@ -1,0 +1,130 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"title": "TraitsRenderer",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"notice": "Matrix-based renderer that supports \"pixel deletion\" via MAGIC_TRANSPARENT. Flattening traits into a bitmap ensures perfect layering and pixel-accurate results.",
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"src/libraries/TraitsRenderer.sol": "TraitsRenderer"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [
+			":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+			":ERC721A-Upgradeable/=lib/seadrop/lib/ERC721A-Upgradeable/contracts/",
+			":ERC721A/=lib/ERC721A/contracts/",
+			":create2-helpers/=lib/seadrop/lib/create2-helpers/",
+			":create2-scripts/=lib/seadrop/lib/create2-helpers/script/",
+			":ds-test/=lib/seadrop/lib/ds-test/src/",
+			":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+			":forge-std/=lib/forge-std/src/",
+			":halmos-cheatcodes/=lib/openzeppelin-contracts/lib/halmos-cheatcodes/src/",
+			":murky/=lib/seadrop/lib/murky/src/",
+			":openzeppelin-contracts-upgradeable/=lib/seadrop/lib/openzeppelin-contracts-upgradeable/",
+			":openzeppelin-contracts/=lib/openzeppelin-contracts/",
+			":operator-filter-registry/=lib/seadrop/lib/operator-filter-registry/src/",
+			":seadrop/=lib/seadrop/",
+			":solady/=lib/solady/src/",
+			":solmate/=lib/seadrop/lib/solmate/src/",
+			":utility-contracts/=lib/seadrop/lib/utility-contracts/"
+		],
+		"viaIR": true
+	},
+	"sources": {
+		"src/common/Enums.sol": {
+			"keccak256": "0xc76fb669b550af9b6f7004aeee81a412af04e3904678f598c65d90de220720e1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://be71aeb03be2321801a24b88251b57c11558fb68d2d1d58e50cc4325ac84f3f3",
+				"dweb:/ipfs/Qmf9uRzTFixhyqkaXVyso8nSEsATxb9yvq4nseDTfEzMGK"
+			]
+		},
+		"src/common/Structs.sol": {
+			"keccak256": "0x1d8037aba923bb9edb8b732806d621dd4cd6da55f27ac627629c201e2d03908f",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://35c751ff4b92b2c95f5a6a6441525936df46285f3302080edba972fb2367ef9c",
+				"dweb:/ipfs/QmUwscX8geh2hCabDcfu5C7cGjqVTGSePEvqSCMvqoisM3"
+			]
+		},
+		"src/interfaces/IAssets.sol": {
+			"keccak256": "0xfc63d80bc00d763caf12131f361ecaff58d8efcf9d6ccb3cc04f035d40773372",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6ad71f2f6b44a08a0bce1dd5563858e190dd3c84c513b37a08ac5775b98e02f4",
+				"dweb:/ipfs/QmXzaytGe3KT4aPofs9J63FZxaKKrVWJc43yYCyW4mAJyg"
+			]
+		},
+		"src/libraries/Division.sol": {
+			"keccak256": "0x0b05ad50310bc2078c323a0964254ba4f0322b3bb9ab797654204ca285f7ebeb",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d2fd6addb72877323031633ef1000dc233fd72252461f8380cbe933565554ce7",
+				"dweb:/ipfs/QmfELW2JKsjDvsjALuEV4PniB78wVrn4ZJfKupMGjeKKYu"
+			]
+		},
+		"src/libraries/DynamicBuffer.sol": {
+			"keccak256": "0xbb8a704340f51c09406f79780b7a4c0f61427fc977563589301d464dce1153a2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a2f18f2e4d990dd888dc1ac6f65826f97e4c5dd4d1813b0e08d7dd9cd4b9be2c",
+				"dweb:/ipfs/QmPgZPXcLczvjDvAPSeDhqag3iShXSBjW7BwDYLj8scXn5"
+			]
+		},
+		"src/libraries/LibBytes.sol": {
+			"keccak256": "0x8b30da2e6e6989769ac17a022225aca713dc4d1a6afcd4551753adcb57c55497",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://f450b3dfcf7db097eeabef9bdaaefe6b532eff0ef9e3d04d8b9d04a501489de4",
+				"dweb:/ipfs/QmScuQUv4sE4Q439XSkQK87iPqp9nXjoeui8diiassWQkn"
+			]
+		},
+		"src/libraries/LibString.sol": {
+			"keccak256": "0x2c489bef09b18b503ba5aab5e915cb3bdc026fed813125be407545f3292c60b5",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://18fa99f39d584fc5595534aae26ded3474c4609ecda450b3adbbba0488de0480",
+				"dweb:/ipfs/QmZv2fH5d5P9Z43qeXmh6mizNTgnGWUdLnG7XAxGyxy7nr"
+			]
+		},
+		"src/libraries/TraitsRenderer.sol": {
+			"keccak256": "0x293eeb202d9d959cdf370dcb0994c6a5cd324c0d00c5f21ba64edb17b2fd7e69",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://939552ad8f3d85c9b4c2e47360bde18f76d4f0f1b24902064a4e20fa09bedebc",
+				"dweb:/ipfs/QmepcqdnZGeDUnFGZAk4L8quLe4v38ttvMqMjoSZmhXbkD"
+			]
+		},
+		"src/libraries/Utils.sol": {
+			"keccak256": "0x864b1a5b3560ba6a4d50ce721d35d976eb1a3e364fae76f9bfd909cf62bec741",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://955d88cffc756060d138ff64cbad0059098dfb9c5ac4a5cc396215f05ff6c151",
+				"dweb:/ipfs/QmXsqXQYKrVgJJwudjPsnrTBCEdKgD8EaptzLtU5J9st7w"
+			]
+		}
+	},
+	"version": 1
+}

@@ -1,0 +1,384 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					}
+				],
+				"name": "OwnableInvalidOwner",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "OwnableUnauthorizedAccount",
+				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "key",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "pointer",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "size",
+						"type": "uint256"
+					}
+				],
+				"name": "AssetAdded",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "key",
+						"type": "uint256"
+					}
+				],
+				"name": "AssetRemoved",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "previousOwner",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "OwnershipTransferred",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "key",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "asset",
+						"type": "bytes"
+					}
+				],
+				"name": "addAsset",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "keys",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "bytes[]",
+						"name": "assets",
+						"type": "bytes[]"
+					}
+				],
+				"name": "addAssetsBatch",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "key",
+						"type": "uint256"
+					}
+				],
+				"name": "loadAssetDecompressed",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "",
+						"type": "bytes"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "key",
+						"type": "uint256"
+					}
+				],
+				"name": "loadAssetOriginal",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "",
+						"type": "bytes"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "key",
+						"type": "uint256"
+					}
+				],
+				"name": "removeAsset",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "renounceOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "transferOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"author": "ECHO",
+			"details": "Assets are compressed with LibZip before storage",
+			"errors": {
+				"OwnableInvalidOwner(address)": [
+					{
+						"details": "The owner is not a valid owner account. (eg. `address(0)`)"
+					}
+				],
+				"OwnableUnauthorizedAccount(address)": [
+					{
+						"details": "The caller account is not authorized to perform an operation."
+					}
+				]
+			},
+			"kind": "dev",
+			"methods": {
+				"addAsset(uint256,bytes)": {
+					"params": {
+						"asset": "Compressed asset data (use LibZip.flzCompress)",
+						"key": "Unique identifier for this asset"
+					}
+				},
+				"addAssetsBatch(uint256[],bytes[])": {
+					"params": {
+						"assets": "Array of compressed asset data",
+						"keys": "Array of asset keys"
+					}
+				},
+				"loadAssetDecompressed(uint256)": {
+					"params": {
+						"key": "Asset key"
+					},
+					"returns": {
+						"_0": "Decompressed asset data"
+					}
+				},
+				"loadAssetOriginal(uint256)": {
+					"params": {
+						"key": "Asset key"
+					},
+					"returns": {
+						"_0": "Compressed asset data"
+					}
+				},
+				"owner()": {
+					"details": "Returns the address of the current owner."
+				},
+				"removeAsset(uint256)": {
+					"params": {
+						"key": "Asset key to remove"
+					}
+				},
+				"renounceOwnership()": {
+					"details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
+				},
+				"transferOwnership(address)": {
+					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+				}
+			},
+			"title": "Assets",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"addAsset(uint256,bytes)": {
+					"notice": "Add a single compressed asset"
+				},
+				"addAssetsBatch(uint256[],bytes[])": {
+					"notice": "Add multiple assets in one transaction (gas efficient)"
+				},
+				"loadAssetDecompressed(uint256)": {
+					"notice": "Load and decompress asset"
+				},
+				"loadAssetOriginal(uint256)": {
+					"notice": "Load asset in original compressed form"
+				},
+				"removeAsset(uint256)": {
+					"notice": "Remove an asset (frees up the key, but data remains in SSTORE2)"
+				}
+			},
+			"notice": "Efficient on-chain asset storage using SSTORE2",
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"src/Assets.sol": "Assets"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [
+			":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+			":ERC721A-Upgradeable/=lib/seadrop/lib/ERC721A-Upgradeable/contracts/",
+			":ERC721A/=lib/ERC721A/contracts/",
+			":create2-helpers/=lib/seadrop/lib/create2-helpers/",
+			":create2-scripts/=lib/seadrop/lib/create2-helpers/script/",
+			":ds-test/=lib/seadrop/lib/ds-test/src/",
+			":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+			":forge-std/=lib/forge-std/src/",
+			":halmos-cheatcodes/=lib/openzeppelin-contracts/lib/halmos-cheatcodes/src/",
+			":murky/=lib/seadrop/lib/murky/src/",
+			":openzeppelin-contracts-upgradeable/=lib/seadrop/lib/openzeppelin-contracts-upgradeable/",
+			":openzeppelin-contracts/=lib/openzeppelin-contracts/",
+			":operator-filter-registry/=lib/seadrop/lib/operator-filter-registry/src/",
+			":seadrop/=lib/seadrop/",
+			":solady/=lib/solady/src/",
+			":solmate/=lib/seadrop/lib/solmate/src/",
+			":utility-contracts/=lib/seadrop/lib/utility-contracts/"
+		],
+		"viaIR": true
+	},
+	"sources": {
+		"lib/openzeppelin-contracts/contracts/access/Ownable.sol": {
+			"keccak256": "0xff6d0bb2e285473e5311d9d3caacb525ae3538a80758c10649a4d61029b017bb",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8ed324d3920bb545059d66ab97d43e43ee85fd3bd52e03e401f020afb0b120f6",
+				"dweb:/ipfs/QmfEckWLmZkDDcoWrkEvMWhms66xwTLff9DDhegYpvHo1a"
+			]
+		},
+		"lib/openzeppelin-contracts/contracts/utils/Context.sol": {
+			"keccak256": "0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6a708e8a5bdb1011c2c381c9a5cfd8a9a956d7d0a9dc1bd8bcdaf52f76ef2f12",
+				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
+			]
+		},
+		"src/Assets.sol": {
+			"keccak256": "0x9b24479cf551cd3c5f346e43bd25523d3586814c898845dd2926588574bdaaae",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c5412ada30058f41e271cdd32357cf357470c439a40b3af9d51353f586826af1",
+				"dweb:/ipfs/QmY7WZEEvDhZyFsJHUK86jMTy9mBP6DEivj64V69gpf82v"
+			]
+		},
+		"src/interfaces/IAssets.sol": {
+			"keccak256": "0xfc63d80bc00d763caf12131f361ecaff58d8efcf9d6ccb3cc04f035d40773372",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6ad71f2f6b44a08a0bce1dd5563858e190dd3c84c513b37a08ac5775b98e02f4",
+				"dweb:/ipfs/QmXzaytGe3KT4aPofs9J63FZxaKKrVWJc43yYCyW4mAJyg"
+			]
+		},
+		"src/libraries/LibZip.sol": {
+			"keccak256": "0x6ae40ee718bdead8c9cf4ad8f588df17e2bf178acd5e07eed26f10c09b128cce",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0c29b2b8e4252d314fd53f2b4931d79f3f977fce32fda522504a9ea157775c0f",
+				"dweb:/ipfs/QmSst4qDMHyRH7FwbeZHToE7L2M9EHxwv77eEZTznG2Lx9"
+			]
+		},
+		"src/libraries/SSTORE2.sol": {
+			"keccak256": "0x7af6ca508b6285f84ae9286923392084924bf70b255f405a8d4cd75a63b9f604",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://7a5c947cbbac8e90669e0693c4137500d689a50e19058f22cada07ec095bac41",
+				"dweb:/ipfs/QmaiCHtxhdMfhpj4pRmxiELC79LxGZ5DKqRNeqNzHkuc2A"
+			]
+		}
+	},
+	"version": 1
+}
