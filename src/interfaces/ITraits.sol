@@ -5,5 +5,5 @@ import { TraitsContext } from '../common/Structs.sol';
 
 
 interface ITraits {
-    function generateAllTraits(uint16 _tokenIdSeed, uint16 _backgroundIndex, uint _seed) external view returns (TraitsContext memory);
+    function generateAllTraits(uint16 _tokenIdSeed, uint8 _backgroundIndex, uint _seed) external view returns (TraitsContext memory);
 }

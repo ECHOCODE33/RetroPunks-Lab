@@ -24,7 +24,7 @@ import {Assets} from "../src/Assets.sol";
  * 4. Run with `forge script` (no --broadcast needed – view only).
  */
 contract VerifyAssets is Script {
-    address constant assetsAddress = 0xc5a5C42992dECbae36851359345FE25997F5C42d;
+    address constant assetsAddress = 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512;
 
     bool constant FULL_VERIFICATION = false;
 

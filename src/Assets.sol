@@ -14,17 +14,21 @@ import { IAssets } from "./interfaces/IAssets.sol";
  */
 
 contract Assets is Ownable, IAssets {
-    
-    mapping(uint => address) private _assetsMap;
+
+    error EmptyAsset();
+    error EmptyAssetInBatch();
+    error AssetKeyLengthMismatch();
+    error AssetDoesNotExist();
     
     event AssetAdded(uint indexed key, address indexed pointer, uint size);
-    
     event AssetRemoved(uint indexed key);
     
+    mapping(uint => address) private _assetsMap;
+
     constructor() Ownable(msg.sender) {}
 
     function addAsset(uint key, bytes memory asset) external onlyOwner {
-        require(asset.length > 0, "Empty asset");
+        if (asset.length == 0) revert EmptyAsset();
         
         address pointer = SSTORE2.write(asset);
         _assetsMap[key] = pointer;
@@ -33,10 +37,10 @@ contract Assets is Ownable, IAssets {
     }
     
     function addAssetsBatch(uint[] calldata keys, bytes[] calldata assets) external onlyOwner {
-        require(keys.length == assets.length, "Length mismatch between keys an assets");
+        if (keys.length != assets.length) revert AssetKeyLengthMismatch();
         
         for (uint i = 0; i < keys.length; i++) {
-            require(assets[i].length > 0, "Empty asset");
+            if (assets[i].length == 0) revert EmptyAssetInBatch();
             
             address pointer = SSTORE2.write(assets[i]);
             _assetsMap[keys[i]] = pointer;
@@ -46,7 +50,7 @@ contract Assets is Ownable, IAssets {
     }
 
     function removeAsset(uint key) external onlyOwner {
-        require(_assetsMap[key] != address(0), "Asset does not exist");
+        if (_assetsMap[key] == address(0)) revert AssetDoesNotExist();
         
         delete _assetsMap[key];
         emit AssetRemoved(key);
@@ -72,7 +76,8 @@ contract Assets is Ownable, IAssets {
 
     function _loadAsset(uint key, bool decompress) internal view returns (bytes memory) {
         address pointer = _assetsMap[key];
-        require(pointer != address(0), "Asset does not exist");
+
+        if (pointer == address(0)) revert AssetDoesNotExist();
 
         bytes memory asset = SSTORE2.read(pointer);
 

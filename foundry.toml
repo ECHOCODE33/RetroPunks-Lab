@@ -30,7 +30,8 @@ exclude_lints = [
     "unused-import",
     "named-struct-fields",
     "screaming-snake-case-const",
-    "unaliased-plain-import"
+    "unaliased-plain-import",
+    "incorrect-shift"
 ]
 
 

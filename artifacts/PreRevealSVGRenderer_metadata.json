@@ -1,0 +1,177 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "contract IAssets",
+						"name": "assetsContract",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes",
+						"name": "svgContent",
+						"type": "bytes"
+					}
+				],
+				"name": "renderHTML",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "html",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint16",
+						"name": "tokenIdSeed",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint16",
+						"name": "backgroundIndex",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint256",
+						"name": "globalSeed",
+						"type": "uint256"
+					}
+				],
+				"name": "renderSVG",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "svg",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "attributes",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"author": "ECHO",
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"src/PreRevealSVGRenderer.sol": "PreRevealSVGRenderer"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [
+			":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+			":ERC721A-Upgradeable/=lib/seadrop/lib/ERC721A-Upgradeable/contracts/",
+			":ERC721A/=lib/ERC721A/contracts/",
+			":create2-helpers/=lib/seadrop/lib/create2-helpers/",
+			":create2-scripts/=lib/seadrop/lib/create2-helpers/script/",
+			":ds-test/=lib/seadrop/lib/ds-test/src/",
+			":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+			":forge-std/=lib/forge-std/src/",
+			":halmos-cheatcodes/=lib/openzeppelin-contracts/lib/halmos-cheatcodes/src/",
+			":murky/=lib/seadrop/lib/murky/src/",
+			":openzeppelin-contracts-upgradeable/=lib/seadrop/lib/openzeppelin-contracts-upgradeable/",
+			":openzeppelin-contracts/=lib/openzeppelin-contracts/",
+			":operator-filter-registry/=lib/seadrop/lib/operator-filter-registry/src/",
+			":seadrop/=lib/seadrop/",
+			":solady/=lib/solady/src/",
+			":solmate/=lib/seadrop/lib/solmate/src/",
+			":utility-contracts/=lib/seadrop/lib/utility-contracts/"
+		]
+	},
+	"sources": {
+		"src/PreRevealSVGRenderer.sol": {
+			"keccak256": "0xfe3c72d0939a71ded464500fdc56ecaf5e54a94d40135fe58e53834792d1664c",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8a186df660ef20ae2daea5942ed670a2761ca640614d246d369365fa3ebc5e6e",
+				"dweb:/ipfs/QmbtavWKnFje8MiSuCkcTaj2Scnyo2uREDJ4mZhfJWgnaU"
+			]
+		},
+		"src/common/Enums.sol": {
+			"keccak256": "0x2e2f9a36f784470101e941228cb900db8420b6bec75f4302b5440366b32137c5",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://401382f3403d75155fdc4e16f136a82e18e4db888f1f0c63d5ee924c64c60d10",
+				"dweb:/ipfs/QmeDnq4eaaMrxrdgYSrf7rV8mT6MMTFx3aWVDo62cA1Vp3"
+			]
+		},
+		"src/common/Structs.sol": {
+			"keccak256": "0x1d734f7bb278f82f4b8a82b8a798cda5920b207d8687749e6e2d3abec1b9efb2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://362bd5d5e6e4696221f0169cfa4503c34a9d8c8323b14060f6b03810fdce5242",
+				"dweb:/ipfs/QmUw95JPV1cNhgFvTbyaBvXYFQLB8MZuA3XPA4kqFhhieL"
+			]
+		},
+		"src/interfaces/IAssets.sol": {
+			"keccak256": "0x00ea601a907279131f51bb8415c217568078181250a85e57d9d89894bde12afa",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://de6f2d05100f938ac2b0c298773b87f3ea49a1b68891cfef306b62e27f398225",
+				"dweb:/ipfs/QmWAfpH7pxE9hdynmSVw6nqvyEsTm2ai4P4srBAt6zcPpR"
+			]
+		},
+		"src/interfaces/ISVGRenderer.sol": {
+			"keccak256": "0x6abf03052c49964f39f54ad69491d7a3d82a1d938632ab87c1c3ff27123762c8",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://7c0fa385e0b7a19c32b5b6aa7a05a7798a5c2fc6df84fd8d5dd3f2894f43a7bb",
+				"dweb:/ipfs/QmZB4pEV1iRG5HwBtHCehvmaGAWfQvUJLpcMFahz6nKuPh"
+			]
+		},
+		"src/libraries/DynamicBuffer.sol": {
+			"keccak256": "0xbb8a704340f51c09406f79780b7a4c0f61427fc977563589301d464dce1153a2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a2f18f2e4d990dd888dc1ac6f65826f97e4c5dd4d1813b0e08d7dd9cd4b9be2c",
+				"dweb:/ipfs/QmPgZPXcLczvjDvAPSeDhqag3iShXSBjW7BwDYLj8scXn5"
+			]
+		},
+		"src/libraries/Utils.sol": {
+			"keccak256": "0x05347d57925194dbc072c0b8e4dc9d82e370923030469eec04a16856f4db97e3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8fcfa964a7696f9283972a9d8ffd54523f2ad50aa920cbbf2ab7279822f17ea0",
+				"dweb:/ipfs/QmVbgZkv3rs9h6M1jeFkr4ZuYY3yhjc4YdeiR47Kgjo9e9"
+			]
+		}
+	},
+	"version": 1
+}

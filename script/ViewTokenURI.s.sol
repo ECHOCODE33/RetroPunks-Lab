@@ -28,10 +28,10 @@ contract ViewTokenURI is Script {
     // ====================== CONFIGURATION ======================
 
     // Your deployed RetroPunks contract address
-    address constant retroPunksAddress = 0x9E545E3C0baAB3E08CdfD552C960A1050f373042;
+    address constant retroPunksAddress = 0x0165878A594ca255338adfa4d48449f69242Eb8F;
 
     // CHANGE THIS: Token ID you want to view
-    uint256 constant TOKEN_ID = 1;
+    uint256 constant TOKEN_ID = 3;
 
     // ====================== SCRIPT LOGIC ======================
 

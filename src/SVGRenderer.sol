@@ -2,7 +2,7 @@
 pragma solidity ^0.8.30;
 
 import { Utils } from './libraries/Utils.sol';
-import { TraitsUtils } from './libraries/TraitsUtils.sol';
+import { TraitsLib } from './libraries/TraitsLib.sol';
 import { DynamicBuffer } from './libraries/DynamicBuffer.sol';
 import { TraitsContext, CachedTraitGroups, TraitGroup, TraitInfo } from './common/Structs.sol';
 import { NUM_TRAIT_GROUPS, E_Special_1s, E_TraitsGroup } from "./common/Enums.sol";
@@ -14,6 +14,7 @@ import { ITraits } from './interfaces/ITraits.sol';
 
 
 contract SVGRenderer is ISVGRenderer {
+
     IAssets private immutable _ASSETS_CONTRACT;
     ITraits private immutable _TRAITS_CONTRACT;
 
@@ -74,13 +75,15 @@ contract SVGRenderer is ISVGRenderer {
         " Yellow Hat"
     ];
 
+    error BackgroundTraitsArrayIsEmpty(); 
+
     constructor(IAssets assetsContract, ITraits traitsContract) {
         _ASSETS_CONTRACT = assetsContract;
         _TRAITS_CONTRACT = traitsContract;
     }
 
-    function renderSVG(uint16 tokenIdSeed, uint16 backgroundIndex, uint256 globalSeed) public view returns (string memory svg, string memory attributes) {
-        bytes memory buffer = DynamicBuffer.allocate(40000);
+    function renderSVG(uint16 tokenIdSeed, uint8 backgroundIndex, uint256 globalSeed) public view returns (string memory svg, string memory attributes) {
+        bytes memory buffer = DynamicBuffer.allocate(20000);
 
         CachedTraitGroups memory cachedTraitGroups = TraitsLoader.initCachedTraitGroups(NUM_TRAIT_GROUPS);
         TraitsContext memory traits = _TRAITS_CONTRACT.generateAllTraits(tokenIdSeed, backgroundIndex, globalSeed);
@@ -97,45 +100,38 @@ contract SVGRenderer is ISVGRenderer {
         svg = string(buffer);
     }
 
-    function renderHTML(bytes memory svgContent) public pure returns (string memory html) {
-        html = "";
-    }
-
     function _prepareCache(CachedTraitGroups memory cachedTraitGroups, TraitsContext memory traits) internal view {
-        
         if (traits.specialId > 0) {
 
             if (_isPreRenderedSpecial(traits.specialId)) {
-                // Only load special 1s group for JSON metadata attribute names
-                TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, uint(E_TraitsGroup.Special_1s_Group));
-            }
-
+                // NEW: Capture return value to ensure memory reference updates in local scope
+                cachedTraitGroups.traitGroups[uint(E_TraitsGroup.Special_1s_Group)] = TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, uint(E_TraitsGroup.Special_1s_Group));
+            } 
             else {
-                // Rendered special 1s get background & special 1 trait
-                TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, uint(E_TraitsGroup.Background_Group));
-                TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, uint(E_TraitsGroup.Special_1s_Group));
+                // NEW: Re-assigning background and special groups to cache
+                cachedTraitGroups.traitGroups[uint(E_TraitsGroup.Background_Group)] = TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, uint(E_TraitsGroup.Background_Group));
+                cachedTraitGroups.traitGroups[uint(E_TraitsGroup.Special_1s_Group)] = TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, uint(E_TraitsGroup.Special_1s_Group));
             }
-        }
-
+        } 
         else {
-            // Load background
-            TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, uint(E_TraitsGroup.Background_Group));
+            // NEW: Background is loaded explicitly and captured in cache
+            cachedTraitGroups.traitGroups[uint(E_TraitsGroup.Background_Group)] = TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, uint(E_TraitsGroup.Background_Group));
 
-            // Load required trait groups
             for (uint i = 0; i < traits.traitsToRenderLength; i++) {
-
                 uint traitGroupIndex = uint8(traits.traitsToRender[i].traitGroup);
-                TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, traitGroupIndex);
+
+                // NEW: Assigning return value back to traitGroups array for persistence
+                cachedTraitGroups.traitGroups[traitGroupIndex] = TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, traitGroupIndex);
 
                 if (traits.traitsToRender[i].hasFiller) {
-                    uint fillerTraitGroupIndex = uint8(traits.traitsToRender[i].filler.traitGroup);
-                    TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, fillerTraitGroupIndex);
+                    uint fillerGroupIdx = uint8(traits.traitsToRender[i].filler.traitGroup);
+                    cachedTraitGroups.traitGroups[fillerGroupIdx] = TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, fillerGroupIdx);
                 }
             }
         }
     }
 
-    function _isPreRenderedSpecial(uint16 specialId) private pure returns (bool) {
+    function _isPreRenderedSpecial(uint16 specialId) internal pure returns (bool) {
         if (specialId == 0) return false;
         
         uint idx = specialId - 1;
@@ -150,7 +146,7 @@ contract SVGRenderer is ISVGRenderer {
         );
     }
 
-    function _renderPreRenderedSpecial(bytes memory buffer, TraitsContext memory traits, CachedTraitGroups memory cachedTraitGroups) private view returns (string memory svg, string memory attributes) {
+    function _renderPreRenderedSpecial(bytes memory buffer, TraitsContext memory traits, CachedTraitGroups memory cachedTraitGroups) internal view returns (string memory svg, string memory attributes) {
         /* Pre-rendered Special 1s
         
             Predator_Blue  --> key 105
@@ -179,14 +175,14 @@ contract SVGRenderer is ISVGRenderer {
         bytes memory attributesBuffer = DynamicBuffer.allocate(100);
         Utils.concat(attributesBuffer, '"attributes":["trait_type":"Special 1s","value":"');
         Utils.concat(attributesBuffer, specialName);
-        Utils.concat(attributesBuffer, '"');
+        Utils.concat(attributesBuffer, '"]');
 
         attributes = string(attributesBuffer);
     }
 
     function _getTraitsAsJson(CachedTraitGroups memory cachedTraitGroups, TraitsContext memory traits) internal view returns (string memory) {
         
-        bytes memory buffer = DynamicBuffer.allocate(2000);
+        bytes memory buffer = DynamicBuffer.allocate(2500);
         Utils.concat(buffer, '"attributes":[');
         
         // Birthday attribute (Always added)
@@ -198,10 +194,13 @@ contract SVGRenderer is ISVGRenderer {
         // Background attribute
         TraitGroup memory backgroundGroup = cachedTraitGroups.traitGroups[uint(E_TraitsGroup.Background_Group)];
         uint backgroundIdx = uint(traits.background);
-        // if (backgroundIdx < backgroundGroup.traits.length) {
-            string memory backgroundName = string(backgroundGroup.traits[backgroundIdx].traitName);
-            Utils.concat(buffer, _stringTrait("Background", backgroundName));
-        // }
+
+        if (backgroundGroup.traits.length == 0) { 
+            revert BackgroundTraitsArrayIsEmpty();
+        }
+
+        string memory backgroundName = string(backgroundGroup.traits[backgroundIdx].traitName);
+        Utils.concat(buffer, _stringTrait("Background", backgroundName));
 
         // Special 1s Attribute
         if (traits.specialId > 0) {
@@ -263,6 +262,8 @@ contract SVGRenderer is ISVGRenderer {
     function _getTraitBaseName(E_TraitsGroup group, string memory traitName, string[] memory suffixesArray) internal pure returns (string memory) {
         
         if (
+            group == E_TraitsGroup.Male_Headwear_Group ||
+            group == E_TraitsGroup.Female_Headwear_Group ||
             group == E_TraitsGroup.Male_Hair_Group ||
             group == E_TraitsGroup.Female_Hair_Group ||
             group == E_TraitsGroup.Male_Hat_Hair_Group ||

@@ -190,6 +190,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "keys",
+						"type": "uint256[]"
+					}
+				],
+				"name": "removeAssetsBatch",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "renounceOwnership",
 				"outputs": [],
@@ -212,7 +225,6 @@
 		],
 		"devdoc": {
 			"author": "ECHO",
-			"details": "Assets are compressed with LibZip before storage",
 			"errors": {
 				"OwnableInvalidOwner(address)": [
 					{
@@ -227,41 +239,8 @@
 			},
 			"kind": "dev",
 			"methods": {
-				"addAsset(uint256,bytes)": {
-					"params": {
-						"asset": "Compressed asset data (use LibZip.flzCompress)",
-						"key": "Unique identifier for this asset"
-					}
-				},
-				"addAssetsBatch(uint256[],bytes[])": {
-					"params": {
-						"assets": "Array of compressed asset data",
-						"keys": "Array of asset keys"
-					}
-				},
-				"loadAssetDecompressed(uint256)": {
-					"params": {
-						"key": "Asset key"
-					},
-					"returns": {
-						"_0": "Decompressed asset data"
-					}
-				},
-				"loadAssetOriginal(uint256)": {
-					"params": {
-						"key": "Asset key"
-					},
-					"returns": {
-						"_0": "Compressed asset data"
-					}
-				},
 				"owner()": {
 					"details": "Returns the address of the current owner."
-				},
-				"removeAsset(uint256)": {
-					"params": {
-						"key": "Asset key to remove"
-					}
 				},
 				"renounceOwnership()": {
 					"details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
@@ -275,24 +254,8 @@
 		},
 		"userdoc": {
 			"kind": "user",
-			"methods": {
-				"addAsset(uint256,bytes)": {
-					"notice": "Add a single compressed asset"
-				},
-				"addAssetsBatch(uint256[],bytes[])": {
-					"notice": "Add multiple assets in one transaction (gas efficient)"
-				},
-				"loadAssetDecompressed(uint256)": {
-					"notice": "Load and decompress asset"
-				},
-				"loadAssetOriginal(uint256)": {
-					"notice": "Load asset in original compressed form"
-				},
-				"removeAsset(uint256)": {
-					"notice": "Remove an asset (frees up the key, but data remains in SSTORE2)"
-				}
-			},
-			"notice": "Efficient on-chain asset storage using SSTORE2",
+			"methods": {},
+			"notice": "Efficient on-chain asset storage using SSTORE2 & LZ77 compression",
 			"version": 1
 		}
 	},
@@ -327,8 +290,7 @@
 			":solady/=lib/solady/src/",
 			":solmate/=lib/seadrop/lib/solmate/src/",
 			":utility-contracts/=lib/seadrop/lib/utility-contracts/"
-		],
-		"viaIR": true
+		]
 	},
 	"sources": {
 		"lib/openzeppelin-contracts/contracts/access/Ownable.sol": {
@@ -348,19 +310,19 @@
 			]
 		},
 		"src/Assets.sol": {
-			"keccak256": "0x9b24479cf551cd3c5f346e43bd25523d3586814c898845dd2926588574bdaaae",
+			"keccak256": "0x1162f88ee03ddb1189597df54ca018c38433e1a1012de8a3f2222741c2f47fc8",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c5412ada30058f41e271cdd32357cf357470c439a40b3af9d51353f586826af1",
-				"dweb:/ipfs/QmY7WZEEvDhZyFsJHUK86jMTy9mBP6DEivj64V69gpf82v"
+				"bzz-raw://92abef54666025e3e23bf76217e628b1cb176f0a622c5cc78d989cd760a2f59e",
+				"dweb:/ipfs/QmbLC6sBm3KW7fMAzcuxaWrWE2bf4L7JeMkQT6jAwRwNDU"
 			]
 		},
 		"src/interfaces/IAssets.sol": {
-			"keccak256": "0xfc63d80bc00d763caf12131f361ecaff58d8efcf9d6ccb3cc04f035d40773372",
+			"keccak256": "0x00ea601a907279131f51bb8415c217568078181250a85e57d9d89894bde12afa",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6ad71f2f6b44a08a0bce1dd5563858e190dd3c84c513b37a08ac5775b98e02f4",
-				"dweb:/ipfs/QmXzaytGe3KT4aPofs9J63FZxaKKrVWJc43yYCyW4mAJyg"
+				"bzz-raw://de6f2d05100f938ac2b0c298773b87f3ea49a1b68891cfef306b62e27f398225",
+				"dweb:/ipfs/QmWAfpH7pxE9hdynmSVw6nqvyEsTm2ai4P4srBAt6zcPpR"
 			]
 		},
 		"src/libraries/LibZip.sol": {
