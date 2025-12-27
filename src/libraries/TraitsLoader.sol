@@ -3,6 +3,8 @@ pragma solidity ^0.8.30;
 
 import { IAssets } from '../interfaces/IAssets.sol';
 import { TraitGroup, TraitInfo, CachedTraitGroups } from '../common/Structs.sol';
+import { E_TraitsGroup } from '../common/Enums.sol';
+
 
 library TraitsLoader {
     function initCachedTraitGroups(uint _traitGroupsLength) public pure returns (CachedTraitGroups memory) {
@@ -24,11 +26,14 @@ library TraitsLoader {
         
         uint index = 0;
         
+        // Decode Name
         traitGroup.traitGroupName = _decodeTraitGroupName(traitGroupData, index);
         index += 1 + traitGroup.traitGroupName.length;
         
+        // Decode Palette
         (traitGroup.paletteRgba, index) = _decodeTraitGroupPalette(traitGroupData, index);
 
+        // Decode Data
         traitGroup.paletteIndexByteSize = uint8(traitGroupData[index]);
         index++;
 
@@ -40,7 +45,7 @@ library TraitsLoader {
         for (uint i = 0; i < traitCount; i++) {
             TraitInfo memory t;
             
-            // Read 2 bytes Big Endian for pixel count
+            // [PixelCount:2][x1:1][y1:1][x2:1][y2:1][layerType:1][nameLen:1] = 8 bytes
             uint16 traitPixelCount = uint16(uint8(traitGroupData[index])) << 8 | uint16(uint8(traitGroupData[index + 1]));
             
             t.x1 = uint8(traitGroupData[index + 2]);
@@ -56,33 +61,29 @@ library TraitsLoader {
             _memoryCopy(t.traitName, 0, traitGroupData, index, traitNameLength);
             index += traitNameLength;
 
-            uint256 rleStartIndex = index;
-
-            // --- BLOCK SCOPE START (To prevent Stack Too Deep) ---
-            {
-                uint256 pixelsTracked = 0;
-                uint8 pSize = traitGroup.paletteIndexByteSize;
-                
-                if (traitPixelCount > 0) {
+            uint256 startOfData = index;
+            uint8 pSize = traitGroup.paletteIndexByteSize;
+            
+            if (traitPixelCount > 0) {
+                if (traitGroup.traitGroupIndex == uint8(E_TraitsGroup.Background_Group)) {
+                    index += (traitPixelCount * pSize);
+                } 
+                else {
+                    uint256 pixelsTracked = 0;
                     while (pixelsTracked < traitPixelCount) {
-                        if (index >= traitGroupData.length) revert("RLE data truncated");
-                        
                         uint8 runLength = uint8(traitGroupData[index++]);
-                        
-                        if (index + pSize > traitGroupData.length) revert("RLE palette index overflow");
                         index += pSize;
-
                         pixelsTracked += runLength;
-
-                        if (pixelsTracked > traitPixelCount) revert("RLE exceeds trait pixel count");
                     }
                 }
             }
-            // --- BLOCK SCOPE END ---
 
-            uint256 rleByteLength = index - rleStartIndex;
-            t.traitData = new bytes(rleByteLength);
-            _memoryCopy(t.traitData, 0, traitGroupData, rleStartIndex, rleByteLength);
+            uint256 dataLength = index - startOfData;
+            t.traitData = new bytes(dataLength);
+            
+            if (dataLength > 0) {
+                _memoryCopy(t.traitData, 0, traitGroupData, startOfData, dataLength);
+            }
 
             traitGroup.traits[i] = t;
         }
@@ -100,10 +101,8 @@ library TraitsLoader {
     }
 
     function _decodeTraitGroupPalette(bytes memory traitGroupData, uint startIndex) internal pure returns (uint32[] memory paletteRgba, uint nextIndex) {
-        // Read 2 bytes Big Endian for palette size
         uint16 paletteSize = uint16(uint8(traitGroupData[startIndex])) << 8 | uint16(uint8(traitGroupData[startIndex + 1]));
         
-        // If palette is empty (common for Background Images), return early
         if (paletteSize == 0) {
             return (new uint32[](0), startIndex + 2);
         }
@@ -111,14 +110,11 @@ library TraitsLoader {
         paletteRgba = new uint32[](paletteSize);
         uint cursor = startIndex + 2;
         
-        // Safety check for data length
-        require(traitGroupData.length >= cursor + (paletteSize * 4), "Insufficient palette data");
-        
         for (uint i = 0; i < paletteSize; i++) {
-            uint32 color;
-            assembly {
-                color := shr(224, mload(add(add(traitGroupData, 32), cursor)))
-            }
+            uint32 color = uint32(uint8(traitGroupData[cursor])) << 24 |
+                           uint32(uint8(traitGroupData[cursor + 1])) << 16 |
+                           uint32(uint8(traitGroupData[cursor + 2])) << 8 |
+                           uint32(uint8(traitGroupData[cursor + 3]));
             paletteRgba[i] = color;
             cursor += 4;
         }

@@ -8,7 +8,7 @@ import { E_TraitsGroup, E_Sex, E_Male_Skin, E_Male_Eyes, E_Male_Face, E_Male_Cha
 /// @author ECHO
 
 
-library TraitsUtils {
+library TraitsLib {
 
     function isMale(TraitsContext memory traits) internal pure returns (bool) {
         return traits.sex == E_Sex.Male;
@@ -85,7 +85,6 @@ library TraitsUtils {
     function maleIsZombie(TraitsContext memory traits) internal pure returns (bool) {
         return traits.maleSkin == E_Male_Skin.Zombie;
     }
-
 
     function femaleIsHuman(TraitsContext memory traits) internal pure returns (bool) {
         return uint8(traits.femaleSkin) >= uint8(E_Female_Skin.Human_1) && uint8(traits.femaleSkin) <= uint8(E_Female_Skin.Human_12);
@@ -165,24 +164,27 @@ library TraitsUtils {
     }
 
     function maleHasBlackFacialHair(TraitsContext memory traits) internal pure returns (bool) {
-        return traits.maleFacialHair == E_Male_Facial_Hair.Anchor_Beard_Black ||
-                   traits.maleFacialHair == E_Male_Facial_Hair.Beard_Black ||
-                   traits.maleFacialHair == E_Male_Facial_Hair.Big_Beard_Black ||
-                   traits.maleFacialHair == E_Male_Facial_Hair.Chin_Goatee_Black ||
-                   traits.maleFacialHair == E_Male_Facial_Hair.Chinstrap_Black ||
-                   traits.maleFacialHair == E_Male_Facial_Hair.Circle_Beard_Black ||
-                   traits.maleFacialHair == E_Male_Facial_Hair.Dutch_Black ||
-                   traits.maleFacialHair == E_Male_Facial_Hair.Fu_Manchu_Black ||
-                   traits.maleFacialHair == E_Male_Facial_Hair.Full_Goatee_Black ||
-                   traits.maleFacialHair == E_Male_Facial_Hair.Goatee_Black ||
-                   traits.maleFacialHair == E_Male_Facial_Hair.Handlebar_Black ||
-                   traits.maleFacialHair == E_Male_Facial_Hair.Horseshoe_Black ||
-                   traits.maleFacialHair == E_Male_Facial_Hair.Long_Beard_Black ||
-                   traits.maleFacialHair == E_Male_Facial_Hair.Luxurious_Beard_Black ||
-                   traits.maleFacialHair == E_Male_Facial_Hair.Luxurious_Full_Goatee_Black ||
-                   traits.maleFacialHair == E_Male_Facial_Hair.Mustache_Black ||
-                   traits.maleFacialHair == E_Male_Facial_Hair.Muttonchops_Black ||
-                   traits.maleFacialHair == E_Male_Facial_Hair.Pyramid_Mustache_Black ||
-                   traits.maleFacialHair == E_Male_Facial_Hair.Walrus_Black;
+        return (IS_BLACK_FACIAL_HAIR >> uint(traits.maleFacialHair)) & 1 == 1;
     }
+
+    uint256 private constant IS_BLACK_FACIAL_HAIR =
+        (1 << uint(E_Male_Facial_Hair.Anchor_Beard_Black)) |
+        (1 << uint(E_Male_Facial_Hair.Beard_Black)) |
+        (1 << uint(E_Male_Facial_Hair.Big_Beard_Black)) |
+        (1 << uint(E_Male_Facial_Hair.Chin_Goatee_Black)) |
+        (1 << uint(E_Male_Facial_Hair.Chinstrap_Black)) |
+        (1 << uint(E_Male_Facial_Hair.Circle_Beard_Black)) |
+        (1 << uint(E_Male_Facial_Hair.Dutch_Black)) |
+        (1 << uint(E_Male_Facial_Hair.Fu_Manchu_Black)) |
+        (1 << uint(E_Male_Facial_Hair.Full_Goatee_Black)) |
+        (1 << uint(E_Male_Facial_Hair.Goatee_Black)) |
+        (1 << uint(E_Male_Facial_Hair.Handlebar_Black)) |
+        (1 << uint(E_Male_Facial_Hair.Horseshoe_Black)) |
+        (1 << uint(E_Male_Facial_Hair.Long_Beard_Black)) |
+        (1 << uint(E_Male_Facial_Hair.Luxurious_Beard_Black)) |
+        (1 << uint(E_Male_Facial_Hair.Luxurious_Full_Goatee_Black)) |
+        (1 << uint(E_Male_Facial_Hair.Mustache_Black)) |
+        (1 << uint(E_Male_Facial_Hair.Muttonchops_Black)) |
+        (1 << uint(E_Male_Facial_Hair.Pyramid_Mustache_Black)) |
+        (1 << uint(E_Male_Facial_Hair.Walrus_Black));
 }

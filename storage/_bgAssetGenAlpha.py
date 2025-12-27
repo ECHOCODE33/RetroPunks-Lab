@@ -6,35 +6,14 @@ import struct
 # CONFIGURATION
 # ============================================================================
 OUTPUT_DIR = "output"
-COMBINED_FILENAME = "background_trait_hex.txt" # // NEW: Specific output file
+COMBINED_FILENAME = "background_trait_hex.txt"
 GROUP_NAME = "Background"
 
 # Background types matching your Solidity E_Background_Type enum
 BG_TYPE_NONE = 0
 BG_TYPE_IMAGE = 1
 BG_TYPE_SOLID = 2
-
-BG_TYPE_S_VERTICAL = 3
-BG_TYPE_P_VERTICAL = 4
-BG_TYPE_S_VERTICAL_INVERSE = 5
-BG_TYPE_P_VERTICAL_INVERSE = 6
-
-BG_TYPE_S_HORIZONTAL = 7
-BG_TYPE_P_HORIZONTAL = 8
-BG_TYPE_S_HORIZONTAL_INVERSE = 9
-BG_TYPE_P_HORIZONTAL_INVERSE = 10
-
-BG_TYPE_S_DIAGONAL = 11
-BG_TYPE_P_DIAGONAL = 12
-BG_TYPE_S_DIAGONAL_INVERSE = 13
-BG_TYPE_P_DIAGONAL_INVERSE = 14
-
-BG_TYPE_S_REVERSE_DIAGONAL = 15
-BG_TYPE_P_REVERSE_DIAGONAL = 16
-BG_TYPE_S_REVERSE_DIAGONAL_INVERSE = 17
-BG_TYPE_P_REVERSE_DIAGONAL_INVERSE = 18
-
-BG_TYPE_RADIAL = 19
+BG_TYPE_GRADIENT = 11 # Using 11 as generic gradient for this example config
 
 BACKGROUNDS = [
     {'name': 'Rainbow', 'layerType': 1, 'palette': []},
@@ -44,10 +23,6 @@ BACKGROUNDS = [
     {'name': 'Diagonal Gradient', 'layerType': 11, 'palette': ["#ff0000", "#00ff00", "#0000ff"]},
 ]
 
-# ============================================================================
-# UTILITIES
-# ============================================================================
-
 def parse_color(color):
     if isinstance(color, str):
         color = color.replace('#', '').replace('0x', '')
@@ -56,20 +31,13 @@ def parse_color(color):
     return color
 
 def get_gradient_coords(layer_type):
-    """
-    Maps layer types to SVG gradient vector coordinates.
-    Standard: (x1, y1, x2, y2)
-    """
+    # Maps layer types to SVG gradient vector coordinates (x1, y1, x2, y2).
     coords_map = {
         3:  (0, 0, 0, 1), # Vertical
         7:  (0, 0, 1, 0), # Horizontal
         11: (0, 0, 1, 1), # Diagonal
     }
     return coords_map.get(layer_type, (0, 0, 0, 0))
-
-# ============================================================================
-# ENCODING ENGINE
-# ============================================================================
 
 def encode_background_group():
     output = bytearray()
@@ -110,33 +78,47 @@ def encode_background_group():
         bg_colors = [parse_color(c) for c in bg['palette']]
         coords = get_gradient_coords(layer_type)
 
-        # Gradient stops are RLE runs of 1
-        rle_data = bytearray()
-        for color in bg_colors:
-            rle_data.append(1) # Run Length
-            idx = color_to_index[color]
-            if index_bytes == 2:
-                rle_data.extend(struct.pack('>H', idx))
-            else:
-                rle_data.append(idx)
+        trait_data = bytearray()
 
-        # // NEW: Header alignment to match TraitsLoader structure:
-        # [pixelCount:2][x1:1][y1:1][x2:1][y2:1][layerType:1][nameLen:1]
-        output.extend(struct.pack('>H', len(bg_colors))) # pixelCount = stopCount
-        output.extend([coords[0], coords[1], coords[2], coords[3], layer_type, len(bg_name)])
+        # --- LOGIC ALIGNMENT WITH TRAITSLOADER ---
+        # "Fast Path": Only write indices. No RLE headers.
+        if layer_type == BG_TYPE_SOLID:
+            if bg_colors:
+                idx = color_to_index[bg_colors[0]]
+                if index_bytes == 2:
+                    trait_data.extend(struct.pack('>H', idx))
+                else:
+                    trait_data.append(idx)
+        elif layer_type == BG_TYPE_IMAGE:
+            pass
+        else:
+            # Gradient: Sequence of indices
+            for color in bg_colors:
+                idx = color_to_index[color]
+                if index_bytes == 2:
+                    trait_data.extend(struct.pack('>H', idx))
+                else:
+                    trait_data.append(idx)
+
+        # Header: [pixelCount:2][x1:1][y1:1][x2:1][y2:1][layerType:1][nameLen:1]
+        # For backgrounds, pixelCount = number of stops (or 1 for solid)
+        stop_count = len(bg_colors) if layer_type != BG_TYPE_IMAGE else 0
+        
+        output.extend(struct.pack('>H', stop_count)) 
+        output.extend([
+            coords[0], coords[1], coords[2], coords[3], 
+            layer_type, 
+            len(bg_name)
+        ])
         
         output.extend(bg_name)
-        output.extend(rle_data)
+        output.extend(trait_data)
 
     return bytes(output)
 
-# ============================================================================
-# MAIN
-# ============================================================================
-
 def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    print(f"Generating Background Asset...")
+    print(f"Generating Background Asset Group...")
 
     data = encode_background_group()
     
@@ -150,6 +132,14 @@ def main():
         print(f"\n✓ Success! Asset saved to: {final_path}")
         print(f"  Binary Size: {len(data)} bytes")
         print(f"  Hex Length:  {len(hex_string)} chars")
+        
+        # VISUAL VERIFICATION
+        print("\n[IMPORTANT] Verify the start of your hex string:")
+        print(f"  Should start with 0a (len=10) and 42 ('B'): 0x{data.hex()[:20]}...")
+        if data.hex().startswith("0a42"):
+            print("  ✓ HEADER LOOKS CORRECT.")
+        else:
+            print("  X HEADER LOOKS WRONG. Check your group name length.")
 
 if __name__ == '__main__':
     main()

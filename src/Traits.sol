@@ -6,7 +6,7 @@ import { IMaleProbs } from './interfaces/IMaleProbs.sol';
 import { Random, RandomCtx } from "./libraries/Random.sol";
 import { TraitsContext, TraitToRender, FillerTrait } from "./common/Structs.sol";
 import { NUM_SPECIAL_1S, E_Sex, E_Special_1s, E_Background, E_Male_Skin, E_Male_Eyes, E_Male_Face, E_Male_Chain, E_Male_Earring, E_Male_Scarf, E_Male_Facial_Hair, E_Male_Mask, E_Male_Hair, E_Male_Hat_Hair, E_Male_Headwear, E_Male_Eye_Wear, E_Female_Skin, E_Female_Eyes, E_Female_Face, E_Female_Chain, E_Female_Earring, E_Female_Scarf, E_Female_Mask, E_Female_Hair, E_Female_Hat_Hair, E_Female_Headwear, E_Female_Eye_Wear, E_Mouth, E_Filler_Traits, E_TraitsGroup } from "./common/Enums.sol";
-import { TraitsUtils } from "./libraries/TraitsUtils.sol";
+import { TraitsLib } from "./libraries/TraitsLib.sol";
 import { ITraits } from './interfaces/ITraits.sol';
 
 error TraitsArrayOverflow(uint8 currentLength, uint8 maxLength);
@@ -22,7 +22,7 @@ contract Traits is ITraits {
         FEMALE_PROBS_CONTRACT = _femaleProbsContract;
     }
 
-    function generateAllTraits(uint16 _tokenIdSeed, uint16 _backgroundIndex, uint256 _globalSeed) external view returns (TraitsContext memory) {
+    function generateAllTraits(uint16 _tokenIdSeed, uint8 _backgroundIndex, uint256 _globalSeed) external view returns (TraitsContext memory) {
         RandomCtx memory rndCtx = Random.initCtx(_tokenIdSeed, _globalSeed);
         TraitsContext memory traits;
         traits.traitsToRender = new TraitToRender[](15);
@@ -81,7 +81,7 @@ contract Traits is ITraits {
             _addMaleEarring(traits);
 
             // 80% Facial Hair, 10% Mask, 10% nothing
-            if (TraitsUtils.maleHasFacialHair(traits)) {
+            if (TraitsLib.maleHasFacialHair(traits)) {
                 _addMaleFacialHair(traits);
             } else {
                 _addMaleMask(traits); 
@@ -90,7 +90,7 @@ contract Traits is ITraits {
             _addMaleScarf(traits);
             
             // 60% chance of headwear
-            if (TraitsUtils.maleHasHeadwear(traits)) {
+            if (TraitsLib.maleHasHeadwear(traits)) {
                 // 30% chance of hat hair
                 _addMaleHatHair(traits);
             } else {
@@ -130,7 +130,7 @@ contract Traits is ITraits {
             _addFemaleScarf(traits);
 
             // Hat hair or regular hair
-            if (TraitsUtils.femaleHasHeadwear(traits)) {
+            if (TraitsLib.femaleHasHeadwear(traits)) {
                 _addFemaleHatHair(traits);
             } else {
                 _addFemaleHair(traits);
@@ -144,7 +144,7 @@ contract Traits is ITraits {
         traits.mouth = MALE_PROBS_CONTRACT.selectMouth(traits, rndCtx);
         
         // Only add mouth if not wearing a mask
-        if (!TraitsUtils.femaleHasMask(traits) && !TraitsUtils.maleHasMask(traits)) {
+        if (!TraitsLib.femaleHasMask(traits) && !TraitsLib.maleHasMask(traits)) {
             _addMouth(traits);
         }
 

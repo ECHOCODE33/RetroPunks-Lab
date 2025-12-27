@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+ // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
 import { TraitInfo, TraitGroup, CachedTraitGroups, TraitsContext } from '../common/Structs.sol';
@@ -56,14 +56,10 @@ library TraitsRenderer {
 
     function _renderBackground(IAssets assetsContract, bytes memory buffer, CachedTraitGroups memory cachedTraitGroups, TraitsContext memory traits) private view {
         
-        uint bgGroupIndex = uint8(E_TraitsGroup.Background_Group);
+        uint bgGroupIndex = uint8(E_TraitsGroup.Background_Group); // this equals 1
 
         TraitGroup memory bgTraitGroup = cachedTraitGroups.traitGroups[bgGroupIndex];
-        // bool traitGroupIsLoaded = cachedTraitGroups.traitGroupsLoaded[bgGroupIndex];
 
-        // if (!traitGroupIsLoaded) {
-        //     revert TraitGroupNotLoaded(bgTraitGroup, traitGroupIsLoaded);    
-        // }
 
         if (uint8(traits.background) >= bgTraitGroup.traits.length) {
             // Check if length is 0 first to avoid the 0 - 1 underflow
