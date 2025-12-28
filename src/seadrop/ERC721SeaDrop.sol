@@ -23,7 +23,7 @@ import {
     ERC721SeaDropStructsErrorsAndEvents
 } from "./lib/ERC721SeaDropStructsErrorsAndEvents.sol";
 
-import { ReentrancyGuard } from "solmate/utils/ReentrancyGuard.sol";
+import { ReentrancyGuard } from "solady/utils/ReentrancyGuard.sol";
 
 import {
     IERC165

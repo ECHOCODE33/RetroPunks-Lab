@@ -19,7 +19,7 @@ library TraitsRenderer {
     function renderGridToSvg(IAssets assetsContract, bytes memory buffer, CachedTraitGroups memory cachedTraitGroups, TraitsContext memory traits) internal view {
         
         Utils.concat(buffer, '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">');  
-        Utils.concat(buffer, '<style>img{image-rendering:pixelated;}</style>');
+        Utils.concat(buffer, '<style> img {image-rendering: pixelated; shape-rendering: crispEdges; image-rendering: -moz-crisp-edges;} </style>');
         
         Utils.concat(buffer, '<g id="Background">');
         _renderBackground(assetsContract, buffer, cachedTraitGroups, traits);

@@ -6,16 +6,32 @@ import {console} from "forge-std/console.sol";
 
 import {RetroPunks} from "../src/RetroPunks.sol";
 
-
+/**
+ * @title ViewTokenURI (Simple & Correct)
+ * @notice Super-simple view-only script to fetch and print the full tokenURI.
+ *
+ * Your RetroPunks contract already returns the complete base64-encoded data URI
+ * from tokenURI() — no need for manual decoding in the script.
+ *
+ * This version just:
+ * - Calls tokenURI(tokenId)
+ * - Prints the entire string
+ *
+ * You can then:
+ *   • Paste it directly into any browser → instantly see your NFT
+ *   • Copy it for OpenSea/Zora/etc. metadata testing
+ *
+ * No Base64 decoding, no substring math → zero chance of overflow/panic.
+ */
 contract ViewTokenURI is Script {
- 
+
     // ====================== CONFIGURATION ======================
 
     // Your deployed RetroPunks contract address
     address constant retroPunksAddress = 0x0165878A594ca255338adfa4d48449f69242Eb8F;
 
     // CHANGE THIS: Token ID you want to view
-    uint256 constant TOKEN_ID = 103;
+    uint256 constant TOKEN_ID = 1;
 
     // ====================== SCRIPT LOGIC ======================
 

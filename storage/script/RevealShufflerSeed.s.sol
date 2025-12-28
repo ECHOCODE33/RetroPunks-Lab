@@ -6,13 +6,29 @@ import {console} from "forge-std/console.sol";
 
 import {RetroPunks} from "../src/RetroPunks.sol";
 
-
+/**
+ * @title RevealShufflerSeed
+ * @notice Script to reveal the committed shuffler seed on your RetroPunks contract.
+ *
+ * Use this BEFORE minting starts (or at least before any tokens are minted that would use the shuffled order).
+ * Revealing early ensures fairness — everyone can see the final shuffle order in advance.
+ *
+ * Requirements:
+ * - You must be the owner of the RetroPunks contract (the deployer).
+ * - You must know the original shuffler seed values used during deployment.
+ *
+ * From your original Deploy script:
+ *   committedShufflerSeedHash = keccak256(abi.encodePacked(uint256(1112131415), uint256(1617181920)))
+ * So the actual seed parts are:
+ *   uint128 seed1 = 1112131415;
+ *   uint128 seed2 = 1617181920;
+ */
 contract RevealShufflerSeed is Script {
 
     address constant retroPunksAddress = 0x0165878A594ca255338adfa4d48449f69242Eb8F;
 
-    uint256 constant SHUFFLER_SEED_PART1 = 7393514293;
-    uint256 constant SHUFFLER_SEED_PART2 = 3904021486;
+    uint256 constant SHUFFLER_SEED_PART1 = 1112131415;
+    uint256 constant SHUFFLER_SEED_PART2 = 1617181920;
 
     // ====================== SCRIPT LOGIC ======================
 
@@ -29,7 +45,7 @@ contract RevealShufflerSeed is Script {
             abi.encodePacked(uint256(SHUFFLER_SEED_PART1), uint256(SHUFFLER_SEED_PART2))
         );
 
-        bytes32 committedHash = retroPunks.COMMITTED_SHUFFLER_SEED_HASH();
+        bytes32 committedHash = retroPunks.committedShufflerSeedHash();
 
         console.log("Committed hash on-chain: %s", vm.toString(committedHash));
         console.log("Calculated hash from seeds: %s", vm.toString(expectedHash));
