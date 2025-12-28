@@ -19,33 +19,14 @@
 			{
 				"inputs": [
 					{
-						"internalType": "bytes",
-						"name": "svgContent",
-						"type": "bytes"
-					}
-				],
-				"name": "renderHTML",
-				"outputs": [
-					{
-						"internalType": "string",
-						"name": "html",
-						"type": "string"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "uint16",
 						"name": "tokenIdSeed",
 						"type": "uint16"
 					},
 					{
-						"internalType": "uint16",
+						"internalType": "uint8",
 						"name": "backgroundIndex",
-						"type": "uint16"
+						"type": "uint8"
 					},
 					{
 						"internalType": "uint256",
@@ -113,15 +94,16 @@
 			":solady/=lib/solady/src/",
 			":solmate/=lib/seadrop/lib/solmate/src/",
 			":utility-contracts/=lib/seadrop/lib/utility-contracts/"
-		]
+		],
+		"viaIR": true
 	},
 	"sources": {
 		"src/PreRevealSVGRenderer.sol": {
-			"keccak256": "0xfe3c72d0939a71ded464500fdc56ecaf5e54a94d40135fe58e53834792d1664c",
+			"keccak256": "0xb2c4369a7de55fb0572a7fffcaaad78b29bafeec64ae1ce32fc50719a2eb5230",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://8a186df660ef20ae2daea5942ed670a2761ca640614d246d369365fa3ebc5e6e",
-				"dweb:/ipfs/QmbtavWKnFje8MiSuCkcTaj2Scnyo2uREDJ4mZhfJWgnaU"
+				"bzz-raw://bcc3e66399d60f79c94440b40284fe602ded6408b0ec2e679b969581a8896c44",
+				"dweb:/ipfs/Qmbj74o4Uk8V4i3gmuEns1GJrHE5CJPRimMzfKRD6YaD4j"
 			]
 		},
 		"src/common/Enums.sol": {
@@ -149,11 +131,11 @@
 			]
 		},
 		"src/interfaces/ISVGRenderer.sol": {
-			"keccak256": "0x6abf03052c49964f39f54ad69491d7a3d82a1d938632ab87c1c3ff27123762c8",
+			"keccak256": "0x308bab08b35833c1768bbd109943336d2cc955a4eeabdb00b150d2984b5855cf",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://7c0fa385e0b7a19c32b5b6aa7a05a7798a5c2fc6df84fd8d5dd3f2894f43a7bb",
-				"dweb:/ipfs/QmZB4pEV1iRG5HwBtHCehvmaGAWfQvUJLpcMFahz6nKuPh"
+				"bzz-raw://d2ecb34d2dbd15c2351f006f04b5f93e2d99c3e433f1c09f76bb870349d2277b",
+				"dweb:/ipfs/QmSwyMkzx3o2fJHsr9qthvjyjEiXmPofg5tAQHZx5XCJyz"
 			]
 		},
 		"src/libraries/DynamicBuffer.sol": {

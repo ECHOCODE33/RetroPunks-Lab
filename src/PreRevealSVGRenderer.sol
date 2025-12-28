@@ -28,11 +28,11 @@ contract PreRevealSVGRenderer is ISVGRenderer {
             "]"
         );
 
-        bytes memory gifContent = _ASSETS_CONTRACT.loadAssetOriginal(33333333);
+        bytes memory gifContent = _ASSETS_CONTRACT.loadAssetOriginal(333);
         bytes memory buffer = DynamicBuffer.allocate(10000);
 
         Utils.concat(buffer, '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">');  
-        Utils.concat(buffer, '<style> img {image-rendering: pixelated;} </style>');
+        Utils.concat(buffer, '<style> img {image-rendering: pixelated; shape-rendering: crispEdges; image-rendering: -moz-crisp-edges;} </style>');
         Utils.concat(buffer, '<foreignObject width="24" height="24"><img xmlns="http://www.w3.org/1999/xhtml" src="data:image/gif;base64,');
         Utils.concatBase64(buffer, gifContent);
         Utils.concat(buffer, '" width="100%" height="100%" /></foreignObject></svg>');

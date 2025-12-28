@@ -1,0 +1,134 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "InvalidInitialLazyShufflerLength",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InvalidNewLazyShufflerLength",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "LazyShuffleFinished",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "LazyShufflerAlreadyInitialized",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "LazyShufflerGetOutOfBounds",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "LazyShufflerNotInitialized",
+				"type": "error"
+			}
+		],
+		"devdoc": {
+			"author": "Solady (https://github.com/vectorized/solady/blob/main/src/utils/LibPRNG.sol)LazyShuffler based on NextShuffler by aschlosberg (divergencearran) (https://github.com/divergencetech/ethier/blob/main/contracts/random/NextShuffler.sol)",
+			"errors": {
+				"InvalidInitialLazyShufflerLength()": [
+					{
+						"details": "The initial length must be greater than zero and less than `2**32 - 1`."
+					}
+				],
+				"InvalidNewLazyShufflerLength()": [
+					{
+						"details": "The new length must not be less than the current length."
+					}
+				],
+				"LazyShuffleFinished()": [
+					{
+						"details": "The lazy shuffle has finished."
+					}
+				],
+				"LazyShufflerAlreadyInitialized()": [
+					{
+						"details": "Cannot double initialize the lazy shuffler."
+					}
+				],
+				"LazyShufflerGetOutOfBounds()": [
+					{
+						"details": "The queried index is out of bounds."
+					}
+				],
+				"LazyShufflerNotInitialized()": [
+					{
+						"details": "The lazy shuffler has not been initialized."
+					}
+				]
+			},
+			"kind": "dev",
+			"methods": {},
+			"stateVariables": {
+				"WAD": {
+					"details": "The scalar of ETH and most ERC20s."
+				}
+			},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"notice": "Library for generating pseudorandom numbers.",
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"src/libraries/LibPRNG.sol": "LibPRNG"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [
+			":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+			":ERC721A-Upgradeable/=lib/seadrop/lib/ERC721A-Upgradeable/contracts/",
+			":ERC721A/=lib/ERC721A/contracts/",
+			":create2-helpers/=lib/seadrop/lib/create2-helpers/",
+			":create2-scripts/=lib/seadrop/lib/create2-helpers/script/",
+			":ds-test/=lib/seadrop/lib/ds-test/src/",
+			":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+			":forge-std/=lib/forge-std/src/",
+			":halmos-cheatcodes/=lib/openzeppelin-contracts/lib/halmos-cheatcodes/src/",
+			":murky/=lib/seadrop/lib/murky/src/",
+			":openzeppelin-contracts-upgradeable/=lib/seadrop/lib/openzeppelin-contracts-upgradeable/",
+			":openzeppelin-contracts/=lib/openzeppelin-contracts/",
+			":operator-filter-registry/=lib/seadrop/lib/operator-filter-registry/src/",
+			":seadrop/=lib/seadrop/",
+			":solady/=lib/solady/src/",
+			":solmate/=lib/seadrop/lib/solmate/src/",
+			":utility-contracts/=lib/seadrop/lib/utility-contracts/"
+		],
+		"viaIR": true
+	},
+	"sources": {
+		"src/libraries/LibPRNG.sol": {
+			"keccak256": "0x84f99f9cdd16971bbcd5d57611241136c612cdc7d1fd333c09ad4be90507615d",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6f1a676471152b31d03f187dc9deb9f4dbcf068eeff2aa6a7058bbf1bf7e8dde",
+				"dweb:/ipfs/QmdCBw8CBVL2VS2C7DVr3y5iPBtgbQsr8jj9iRJN3MzsZj"
+			]
+		}
+	},
+	"version": 1
+}

@@ -4,7 +4,7 @@ pragma solidity ^0.8.30;
 import { ISVGRenderer } from "./interfaces/ISVGRenderer.sol";
 import { NUM_SPECIAL_1S, NUM_BACKGROUND, E_Special_1s, E_Background } from "./common/Enums.sol";
 import { Utils } from "./libraries/Utils.sol";
-import { FisherYatesShuffler } from "./interfaces/FisherYatesShuffler.sol";
+import { LibPRNG } from "./libraries/LibPRNG.sol";
 import { ERC721SeaDropPausableAndQueryable } from "./seadrop/extensions/ERC721SeaDropPausableAndQueryable.sol";
 
 /**
@@ -17,7 +17,7 @@ struct TokenMetadata {
     string name;
 }
 
-contract RetroPunks is ERC721SeaDropPausableAndQueryable, FisherYatesShuffler {
+contract RetroPunks is ERC721SeaDropPausableAndQueryable {
 
     ISVGRenderer public renderer;
 
@@ -33,7 +33,10 @@ contract RetroPunks is ERC721SeaDropPausableAndQueryable, FisherYatesShuffler {
     uint public shufflerSeed;
 
     // tokenId -> TokenMetadata
-    mapping(uint => TokenMetadata) public globalTokenMetadata; 
+    mapping(uint => TokenMetadata) public globalTokenMetadata;
+
+    // LazyShuffler for token ID seed selection
+    LibPRNG.LazyShuffler private _tokenIdSeedShuffler; 
 
     uint8 constant public defaultBackgroundIndex = uint8(uint(E_Background.Standard));
 
@@ -146,10 +149,13 @@ contract RetroPunks is ERC721SeaDropPausableAndQueryable, FisherYatesShuffler {
         shufflerSeed = _seed;
         shufflerSeedRevealed = true;
         
+        // Initialize the LazyShuffler with max supply
+        LibPRNG.initialize(_tokenIdSeedShuffler, _maxSupply);
+        
         emit ShufflerSeedRevealed(_seed);
     }
 
-    uint public ownerMintsRemaining = 10;
+    uint public ownerMintsRemaining = 999;
 
     function ownerMint(address toAddress, uint256 quantity) external onlyOwner nonReentrant {
         if (!(ownerMintsRemaining >= quantity)) revert NotEnoughOwnerMintsRemaining();
@@ -214,7 +220,12 @@ contract RetroPunks is ERC721SeaDropPausableAndQueryable, FisherYatesShuffler {
     function _saveNewSeed(uint tokenId, uint remaining) internal {
         if (remaining == 0) revert NoRemainingTokenElements();
 
-        uint newTokenIdSeed = drawNextElement(shufflerSeed, msg.sender, remaining);
+        // Use LazyShuffler to get the next shuffled element
+        // Generate deterministic randomness from shufflerSeed and number of elements already shuffled
+        uint256 numShuffled = LibPRNG.numShuffled(_tokenIdSeedShuffler);
+        uint256 randomness = uint256(keccak256(abi.encodePacked(shufflerSeed, numShuffled, tokenId)));
+        
+        uint newTokenIdSeed = LibPRNG.next(_tokenIdSeedShuffler, randomness);
         
         globalTokenMetadata[tokenId] = TokenMetadata({
             tokenIdSeed: uint16(newTokenIdSeed),

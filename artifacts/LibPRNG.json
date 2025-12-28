@@ -1,0 +1,116 @@
+{
+	"deploy": {
+		"VM:-": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"main:1": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"ropsten:3": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"rinkeby:4": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"kovan:42": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"goerli:5": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"Custom": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		}
+	},
+	"data": {
+		"bytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"linkReferences": {},
+			"object": "6080806040523460175760399081601c823930815050f35b5f80fdfe5f80fdfea264697066735822122067beb27e30eea1732457b76aa3072e34b279b4dcb9450a451f75a0b539b44fd964736f6c634300081e0033",
+			"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x39 SWAP1 DUP2 PUSH1 0x1C DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 PUSH8 0xBEB27E30EEA17324 JUMPI 0xB7 PUSH11 0xA3072E34B279B4DCB9450A GASLIMIT 0x1F PUSH22 0xA0B539B44FD964736F6C634300081E00330000000000 ",
+			"sourceMap": "375:22129:0:-:0;;;;;;;;;;;;;;;;;;;;;"
+		},
+		"deployedBytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"immutableReferences": {},
+			"linkReferences": {},
+			"object": "5f80fdfea264697066735822122067beb27e30eea1732457b76aa3072e34b279b4dcb9450a451f75a0b539b44fd964736f6c634300081e0033",
+			"opcodes": "PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 PUSH8 0xBEB27E30EEA17324 JUMPI 0xB7 PUSH11 0xA3072E34B279B4DCB9450A GASLIMIT 0x1F PUSH22 0xA0B539B44FD964736F6C634300081E00330000000000 ",
+			"sourceMap": "375:22129:0:-:0;;"
+		},
+		"gasEstimates": {
+			"creation": {
+				"codeDepositCost": "11400",
+				"executionCost": "infinite",
+				"totalCost": "infinite"
+			},
+			"internal": {
+				"_toUints(address[] memory)": "infinite",
+				"_toUints(int256[] memory)": "infinite",
+				"exponentialWad(struct LibPRNG.PRNG memory)": "infinite",
+				"finished(struct LibPRNG.LazyShuffler storage pointer)": "infinite",
+				"get(struct LibPRNG.LazyShuffler storage pointer,uint256)": "infinite",
+				"grow(struct LibPRNG.LazyShuffler storage pointer,uint256)": "infinite",
+				"initialize(struct LibPRNG.LazyShuffler storage pointer,uint256)": "infinite",
+				"initialized(struct LibPRNG.LazyShuffler storage pointer)": "infinite",
+				"length(struct LibPRNG.LazyShuffler storage pointer)": "infinite",
+				"next(struct LibPRNG.LazyShuffler storage pointer,uint256)": "infinite",
+				"next(struct LibPRNG.PRNG memory)": "infinite",
+				"numShuffled(struct LibPRNG.LazyShuffler storage pointer)": "infinite",
+				"restart(struct LibPRNG.LazyShuffler storage pointer)": "infinite",
+				"seed(struct LibPRNG.PRNG memory,uint256)": "infinite",
+				"shuffle(struct LibPRNG.PRNG memory,address[] memory)": "infinite",
+				"shuffle(struct LibPRNG.PRNG memory,address[] memory,uint256)": "infinite",
+				"shuffle(struct LibPRNG.PRNG memory,bytes memory)": "infinite",
+				"shuffle(struct LibPRNG.PRNG memory,int256[] memory)": "infinite",
+				"shuffle(struct LibPRNG.PRNG memory,int256[] memory,uint256)": "infinite",
+				"shuffle(struct LibPRNG.PRNG memory,uint256[] memory)": "infinite",
+				"shuffle(struct LibPRNG.PRNG memory,uint256[] memory,uint256)": "infinite",
+				"standardNormalWad(struct LibPRNG.PRNG memory)": "infinite",
+				"uniform(struct LibPRNG.PRNG memory,uint256)": "infinite"
+			}
+		},
+		"methodIdentifiers": {}
+	},
+	"abi": [
+		{
+			"inputs": [],
+			"name": "InvalidInitialLazyShufflerLength",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "InvalidNewLazyShufflerLength",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "LazyShuffleFinished",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "LazyShufflerAlreadyInitialized",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "LazyShufflerGetOutOfBounds",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "LazyShufflerNotInitialized",
+			"type": "error"
+		}
+	]
+}

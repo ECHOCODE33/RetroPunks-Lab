@@ -6,27 +6,12 @@ import {console} from "forge-std/console.sol";
 
 import {Assets} from "../src/Assets.sol";
 
-/**
- * @title AddAssetsBatchScript
- * @notice Script to add multiple compressed assets to the Assets contract
- *         with optional names for each asset (useful for identifying trait groups).
- *
- * Key improvements:
- * - Each asset now has an optional "name" string (e.g., "Beard", "Hat", "Glasses").
- * - Names are only used for better console logging and readability.
- * - They do NOT get stored on-chain (saves gas) — purely for your convenience.
- *
- * How to use:
- * 1. Update assetsAddress with your deployed Assets contract.
- * 2. Adjust batchLimit if needed (default 10).
- * 3. Fill in the ASSETS in setUp() — now with (key, name, compressedData).
- * 4. Run the script with Forge.
- */
+
 contract AddAssetsBatch is Script {
 
     address constant assetsAddress = 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512;
 
-    uint constant batchLimit = 5;
+    uint constant batchLimit = 2;
 
     // ====================== ASSETS ======================
 

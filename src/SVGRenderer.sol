@@ -102,19 +102,12 @@ contract SVGRenderer is ISVGRenderer {
 
     function _prepareCache(CachedTraitGroups memory cachedTraitGroups, TraitsContext memory traits) internal view {
         if (traits.specialId > 0) {
-
-            if (_isPreRenderedSpecial(traits.specialId)) {
-                // NEW: Capture return value to ensure memory reference updates in local scope
-                cachedTraitGroups.traitGroups[uint(E_TraitsGroup.Special_1s_Group)] = TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, uint(E_TraitsGroup.Special_1s_Group));
-            } 
-            else {
-                // NEW: Re-assigning background and special groups to cache
-                cachedTraitGroups.traitGroups[uint(E_TraitsGroup.Background_Group)] = TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, uint(E_TraitsGroup.Background_Group));
-                cachedTraitGroups.traitGroups[uint(E_TraitsGroup.Special_1s_Group)] = TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, uint(E_TraitsGroup.Special_1s_Group));
-            }
+            // Special Tokens only need to load the Background and Special 1s groups
+            cachedTraitGroups.traitGroups[uint(E_TraitsGroup.Background_Group)] = TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, uint(E_TraitsGroup.Background_Group));
+            cachedTraitGroups.traitGroups[uint(E_TraitsGroup.Special_1s_Group)] = TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, uint(E_TraitsGroup.Special_1s_Group));
         } 
         else {
-            // NEW: Background is loaded explicitly and captured in cache
+            // Background is loaded explicitly and captured in cache
             cachedTraitGroups.traitGroups[uint(E_TraitsGroup.Background_Group)] = TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, uint(E_TraitsGroup.Background_Group));
 
             for (uint i = 0; i < traits.traitsToRenderLength; i++) {
@@ -160,7 +153,7 @@ contract SVGRenderer is ISVGRenderer {
         bytes memory rawPngBytes = _ASSETS_CONTRACT.loadAssetOriginal(traits.specialId + 100);
 
         Utils.concat(buffer, '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">');
-        Utils.concat(buffer, '<style>img{image-rendering:pixelated;}</style>');
+        Utils.concat(buffer, '<style> img {image-rendering: pixelated; shape-rendering: crispEdges; image-rendering: -moz-crisp-edges;} </style>');
         Utils.concat(buffer, '<g id="GeneratedImage">');
         Utils.concat(buffer, '<foreignObject width="48" height="48">');
         Utils.concat(buffer, '<img xmlns="http://www.w3.org/1999/xhtml" src="data:image/png;base64,');
@@ -169,13 +162,14 @@ contract SVGRenderer is ISVGRenderer {
 
         svg = string(buffer);
 
-
-        bytes memory specialName = cachedTraitGroups.traitGroups[uint(E_TraitsGroup.Special_1s_Group)].traitGroupName;
+        uint16 specialIdx = traits.specialId - 1;
+        string memory specialName = string(cachedTraitGroups.traitGroups[uint(E_TraitsGroup.Special_1s_Group)].traits[specialIdx].traitName);
 
         bytes memory attributesBuffer = DynamicBuffer.allocate(100);
-        Utils.concat(attributesBuffer, '"attributes":["trait_type":"Special 1s","value":"');
-        Utils.concat(attributesBuffer, specialName);
-        Utils.concat(attributesBuffer, '"]');
+
+        Utils.concat(attributesBuffer, '"attributes":[');
+        Utils.concat(buffer, _stringTrait("Special 1s", specialName));
+        Utils.concat(attributesBuffer, '],');
 
         attributes = string(attributesBuffer);
     }

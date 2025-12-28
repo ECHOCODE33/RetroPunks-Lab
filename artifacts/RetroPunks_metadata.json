@@ -57,6 +57,11 @@
 				"type": "error"
 			},
 			{
+				"inputs": [],
+				"name": "CallerIsNotTokenOwner",
+				"type": "error"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -65,6 +70,26 @@
 					}
 				],
 				"name": "CannotExceedMaxSupplyOfUint64",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "GlobalSeedAlreadyRevealed",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InvalidBackgroundIndex",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InvalidCharacterInName",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InvalidGlobalSeedReveal",
 				"type": "error"
 			},
 			{
@@ -85,7 +110,17 @@
 			},
 			{
 				"inputs": [],
+				"name": "InvalidShufflerSeedReveal",
+				"type": "error"
+			},
+			{
+				"inputs": [],
 				"name": "MintERC2309QuantityExceedsLimit",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "MintIsClosed",
 				"type": "error"
 			},
 			{
@@ -115,6 +150,11 @@
 				"type": "error"
 			},
 			{
+				"inputs": [],
+				"name": "NameIsTooLong",
+				"type": "error"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -137,7 +177,22 @@
 			},
 			{
 				"inputs": [],
+				"name": "NoRemainingTokenElements",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "NonExistentToken",
+				"type": "error"
+			},
+			{
+				"inputs": [],
 				"name": "NotCompatibleWithSpotMints",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "NotEnoughOwnerMintsRemaining",
 				"type": "error"
 			},
 			{
@@ -167,7 +222,17 @@
 			},
 			{
 				"inputs": [],
+				"name": "PreRenderedSpecialCustomization",
+				"type": "error"
+			},
+			{
+				"inputs": [],
 				"name": "ProvenanceHashCannotBeSetAfterMintStarted",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "Reentrancy",
 				"type": "error"
 			},
 			{
@@ -188,6 +253,16 @@
 			{
 				"inputs": [],
 				"name": "SequentialUpToTooSmall",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ShufflerSeedAlreadyRevealed",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ShufflerSeedNotRevealedYet",
 				"type": "error"
 			},
 			{
@@ -595,6 +670,32 @@
 			},
 			{
 				"inputs": [],
+				"name": "COMMITTED_GLOBAL_SEED_HASH",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "COMMITTED_SHUFFLER_SEED_HASH",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "acceptOwnership",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -679,38 +780,25 @@
 			},
 			{
 				"inputs": [],
-				"name": "committedGlobalSeedHash",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "committedShufflerSeedHash",
-				"outputs": [
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "contractURI",
 				"outputs": [
 					{
 						"internalType": "string",
 						"name": "",
 						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "defaultBackgroundIndex",
+				"outputs": [
+					{
+						"internalType": "uint8",
+						"name": "",
+						"type": "uint8"
 					}
 				],
 				"stateMutability": "view",
@@ -836,19 +924,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "getDefaultBackgroundIndex",
-				"outputs": [
-					{
-						"internalType": "uint16",
-						"name": "",
-						"type": "uint16"
-					}
-				],
-				"stateMutability": "pure",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -872,42 +947,6 @@
 						"internalType": "uint256",
 						"name": "maxSupply",
 						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "tokenId",
-						"type": "uint256"
-					}
-				],
-				"name": "getTokenMetadata",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "uint16",
-								"name": "tokenIdSeed",
-								"type": "uint16"
-							},
-							{
-								"internalType": "uint16",
-								"name": "backgroundIndex",
-								"type": "uint16"
-							},
-							{
-								"internalType": "string",
-								"name": "name",
-								"type": "string"
-							}
-						],
-						"internalType": "struct TokenMetadata",
-						"name": "",
-						"type": "tuple"
 					}
 				],
 				"stateMutability": "view",
@@ -986,9 +1025,9 @@
 						"type": "uint16"
 					},
 					{
-						"internalType": "uint16",
+						"internalType": "uint8",
 						"name": "backgroundIndex",
-						"type": "uint16"
+						"type": "uint8"
 					},
 					{
 						"internalType": "string",
@@ -1422,7 +1461,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "resetName",
+				"name": "resetTokenName",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -1590,24 +1629,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "tokenId",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "backgroundIndex",
-						"type": "uint256"
-					}
-				],
-				"name": "setBackground",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "string",
 						"name": "newBaseURI",
 						"type": "string"
@@ -1640,24 +1661,6 @@
 					}
 				],
 				"name": "setMaxSupply",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "tokenId",
-						"type": "uint256"
-					},
-					{
-						"internalType": "string",
-						"name": "name",
-						"type": "string"
-					}
-				],
-				"name": "setName",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -1709,6 +1712,42 @@
 					}
 				],
 				"name": "setRoyaltyInfo",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "backgroundIndex",
+						"type": "uint256"
+					}
+				],
+				"name": "setTokenBackground",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					}
+				],
+				"name": "setTokenName",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -2247,6 +2286,11 @@
 				"ProvenanceHashCannotBeSetAfterMintStarted()": [
 					{
 						"details": "Revert with an error when attempting to set the provenance      hash after the mint has started."
+					}
+				],
+				"Reentrancy()": [
+					{
+						"details": "Unauthorized reentrant call."
 					}
 				],
 				"RoyaltyAddressCannotBeZeroAddress()": [
@@ -2809,14 +2853,6 @@
 				"dweb:/ipfs/QmadRjHbkicwqwwh61raUEapaVEtaLMcYbQZWs9gUkgj3u"
 			]
 		},
-		"lib/seadrop/lib/solmate/src/utils/ReentrancyGuard.sol": {
-			"keccak256": "0xb282dd78aa7375d6b200b9a5d8dd214b2e5df1004f8217a4b4c2b07f0c5bfd01",
-			"license": "AGPL-3.0-only",
-			"urls": [
-				"bzz-raw://5fca62eb8d3dbd2b3b7e4bb051f6da16f4d0ff9cee61c39cebb80f031f6a8800",
-				"dweb:/ipfs/QmbrsXPK91iBFwHKwJs2HLRud2KzMoBDRiWYMUtyV5H57j"
-			]
-		},
 		"lib/seadrop/lib/utility-contracts/src/ConstructorInitializable.sol": {
 			"keccak256": "0xb932b0ee0aca22066696663aebb0c98ef1451b61299801948472465ac1f98433",
 			"license": "MIT",
@@ -2833,44 +2869,44 @@
 				"dweb:/ipfs/QmYwN548P3e4VjBLEt2PyGN7ktKAWMKeqVhwLYQanvNMNM"
 			]
 		},
-		"src/RetroPunks.sol": {
-			"keccak256": "0xeb487cc5716e4e9698dbdfd068413975e44b5118e82bf9bf0deb01c4cfb50c71",
+		"lib/solady/src/utils/ReentrancyGuard.sol": {
+			"keccak256": "0xdb28f318ec45197a6c7cc2abebed67d7cb8b965838ef962e3844423256a9ddb8",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://edf373a9756aef28ed6667e799583cc22db0efc41881e20292d800e4223e7fe9",
-				"dweb:/ipfs/QmdnxrYjZbcxn4VVb8RMiUE5aszAwrbejZYPrjYa4E6EzT"
+				"bzz-raw://873cd46b77a2aeb781e7a0d131e7299151323ed884c330101a51d0727e218d98",
+				"dweb:/ipfs/QmddadCjyedztvdSgLZEyKWoRes2SqtpviSjhEbSNrkUoi"
+			]
+		},
+		"src/RetroPunks.sol": {
+			"keccak256": "0xb01bf406c09646ad737cac0176efe0bd8337bbd886f9b7f5b8e6a1811ef52521",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://772b5109f6ca9e6dde7c65ad5161c5e0bac6b106b71d3fded1b0f15890a37c32",
+				"dweb:/ipfs/QmQ7NZDmT29SxiyhcfdDauD1wGgmxTVKqRKQEwBrKX8qER"
 			]
 		},
 		"src/common/Enums.sol": {
-			"keccak256": "0xc76fb669b550af9b6f7004aeee81a412af04e3904678f598c65d90de220720e1",
+			"keccak256": "0x2e2f9a36f784470101e941228cb900db8420b6bec75f4302b5440366b32137c5",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://be71aeb03be2321801a24b88251b57c11558fb68d2d1d58e50cc4325ac84f3f3",
-				"dweb:/ipfs/Qmf9uRzTFixhyqkaXVyso8nSEsATxb9yvq4nseDTfEzMGK"
-			]
-		},
-		"src/interfaces/FisherYatesShuffler.sol": {
-			"keccak256": "0x6a9187cbea83b8bc388b6e7bd56f5a9468b5b9dfddc530c76cd1dd45ad63867f",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://b664892718944a17f75215be9db545f54959601841c8aaf0834783caecf8ff73",
-				"dweb:/ipfs/QmXexmzsv6z3erorht78mBrYM9fnqt2kzQHfSzMrFyVQmW"
+				"bzz-raw://401382f3403d75155fdc4e16f136a82e18e4db888f1f0c63d5ee924c64c60d10",
+				"dweb:/ipfs/QmeDnq4eaaMrxrdgYSrf7rV8mT6MMTFx3aWVDo62cA1Vp3"
 			]
 		},
 		"src/interfaces/IAssets.sol": {
-			"keccak256": "0xfc63d80bc00d763caf12131f361ecaff58d8efcf9d6ccb3cc04f035d40773372",
+			"keccak256": "0x00ea601a907279131f51bb8415c217568078181250a85e57d9d89894bde12afa",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6ad71f2f6b44a08a0bce1dd5563858e190dd3c84c513b37a08ac5775b98e02f4",
-				"dweb:/ipfs/QmXzaytGe3KT4aPofs9J63FZxaKKrVWJc43yYCyW4mAJyg"
+				"bzz-raw://de6f2d05100f938ac2b0c298773b87f3ea49a1b68891cfef306b62e27f398225",
+				"dweb:/ipfs/QmWAfpH7pxE9hdynmSVw6nqvyEsTm2ai4P4srBAt6zcPpR"
 			]
 		},
 		"src/interfaces/ISVGRenderer.sol": {
-			"keccak256": "0xced6814312ac1c01fb6cb53a11d63ef321db86395824d3691702e5e3d809ec89",
+			"keccak256": "0x308bab08b35833c1768bbd109943336d2cc955a4eeabdb00b150d2984b5855cf",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://981d22395ce9936c1f7a3140b0f18c0a08524b4bda0f6526cc3dd6675539266b",
-				"dweb:/ipfs/Qmd9FNiPxRxoFoLHuuGTpPe5gzVyj5YXDfy3rfoP5TyMfN"
+				"bzz-raw://d2ecb34d2dbd15c2351f006f04b5f93e2d99c3e433f1c09f76bb870349d2277b",
+				"dweb:/ipfs/QmSwyMkzx3o2fJHsr9qthvjyjEiXmPofg5tAQHZx5XCJyz"
 			]
 		},
 		"src/libraries/DynamicBuffer.sol": {
@@ -2881,12 +2917,20 @@
 				"dweb:/ipfs/QmPgZPXcLczvjDvAPSeDhqag3iShXSBjW7BwDYLj8scXn5"
 			]
 		},
-		"src/libraries/Utils.sol": {
-			"keccak256": "0x864b1a5b3560ba6a4d50ce721d35d976eb1a3e364fae76f9bfd909cf62bec741",
+		"src/libraries/LibPRNG.sol": {
+			"keccak256": "0x84f99f9cdd16971bbcd5d57611241136c612cdc7d1fd333c09ad4be90507615d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://955d88cffc756060d138ff64cbad0059098dfb9c5ac4a5cc396215f05ff6c151",
-				"dweb:/ipfs/QmXsqXQYKrVgJJwudjPsnrTBCEdKgD8EaptzLtU5J9st7w"
+				"bzz-raw://6f1a676471152b31d03f187dc9deb9f4dbcf068eeff2aa6a7058bbf1bf7e8dde",
+				"dweb:/ipfs/QmdCBw8CBVL2VS2C7DVr3y5iPBtgbQsr8jj9iRJN3MzsZj"
+			]
+		},
+		"src/libraries/Utils.sol": {
+			"keccak256": "0x05347d57925194dbc072c0b8e4dc9d82e370923030469eec04a16856f4db97e3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8fcfa964a7696f9283972a9d8ffd54523f2ad50aa920cbbf2ab7279822f17ea0",
+				"dweb:/ipfs/QmVbgZkv3rs9h6M1jeFkr4ZuYY3yhjc4YdeiR47Kgjo9e9"
 			]
 		},
 		"src/seadrop/ERC721ContractMetadata.sol": {
@@ -2898,11 +2942,11 @@
 			]
 		},
 		"src/seadrop/ERC721SeaDrop.sol": {
-			"keccak256": "0x83aaf148c8b8ecca10f583f09ade2f6a6d37b8bc2cdade92df19c515283bc57f",
+			"keccak256": "0x624190e542244c72a0fb03ec91c3958cbc377c38fbeb5057632a58eb2e1871f0",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://41d0d922ab8875915f0b0232e6455fc48e9d9427ceb6557bbbca8cc5e19512e8",
-				"dweb:/ipfs/QmUWG2B169AXfDYwgK68AGY9jT8Bhi1QXhGGt9RKA4GmwN"
+				"bzz-raw://3e5f70b6ee868f80180856401faffac0257e7ad7fdc603469b12bb20dab9ecce",
+				"dweb:/ipfs/QmVrfA6Y13H8cCx3xM7kkF4U6kRAYbpdSLUjxuEivP9GLh"
 			]
 		},
 		"src/seadrop/extensions/ERC721SeaDropPausable.sol": {

@@ -32,13 +32,13 @@ contract Deploy is Script {
         );
 
         bytes32 committedGlobalSeedHash = keccak256(
-            abi.encodePacked(uint256(123456789), uint256(987654321))
+            abi.encodePacked(uint256(9836428957), uint256(2829003893))
         );
         bytes32 committedShufflerSeedHash = keccak256(
-            abi.encodePacked(uint256(1112131415), uint256(1617181920))
+            abi.encodePacked(uint256(7393514293), uint256(3904021486))
         );
 
-        uint maxSupply = 50;
+        uint maxSupply = 1000;
         address[] memory allowedSeaDrop = new address[](1);
         allowedSeaDrop[0] = 0x00005EA00Ac477B1030CE78506496e8C2dE24bf5;
 

@@ -11,17 +11,12 @@
 						"components": [
 							{
 								"internalType": "uint256",
-								"name": "seed",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "counter",
+								"name": "state",
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct RandomCtx",
-						"name": "rndCtx",
+						"internalType": "struct LibPRNG.PRNG",
+						"name": "prng",
 						"type": "tuple"
 					}
 				],
@@ -42,17 +37,12 @@
 						"components": [
 							{
 								"internalType": "uint256",
-								"name": "seed",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "counter",
+								"name": "state",
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct RandomCtx",
-						"name": "rndCtx",
+						"internalType": "struct LibPRNG.PRNG",
+						"name": "prng",
 						"type": "tuple"
 					}
 				],
@@ -73,17 +63,12 @@
 						"components": [
 							{
 								"internalType": "uint256",
-								"name": "seed",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "counter",
+								"name": "state",
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct RandomCtx",
-						"name": "rndCtx",
+						"internalType": "struct LibPRNG.PRNG",
+						"name": "prng",
 						"type": "tuple"
 					}
 				],
@@ -293,24 +278,19 @@
 							}
 						],
 						"internalType": "struct TraitsContext",
-						"name": "traits",
+						"name": "ctx",
 						"type": "tuple"
 					},
 					{
 						"components": [
 							{
 								"internalType": "uint256",
-								"name": "seed",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "counter",
+								"name": "state",
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct RandomCtx",
-						"name": "rndCtx",
+						"internalType": "struct LibPRNG.PRNG",
+						"name": "prng",
 						"type": "tuple"
 					}
 				],
@@ -520,24 +500,19 @@
 							}
 						],
 						"internalType": "struct TraitsContext",
-						"name": "traits",
+						"name": "ctx",
 						"type": "tuple"
 					},
 					{
 						"components": [
 							{
 								"internalType": "uint256",
-								"name": "seed",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "counter",
+								"name": "state",
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct RandomCtx",
-						"name": "rndCtx",
+						"internalType": "struct LibPRNG.PRNG",
+						"name": "prng",
 						"type": "tuple"
 					}
 				],
@@ -747,24 +722,19 @@
 							}
 						],
 						"internalType": "struct TraitsContext",
-						"name": "traits",
+						"name": "ctx",
 						"type": "tuple"
 					},
 					{
 						"components": [
 							{
 								"internalType": "uint256",
-								"name": "seed",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "counter",
+								"name": "state",
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct RandomCtx",
-						"name": "rndCtx",
+						"internalType": "struct LibPRNG.PRNG",
+						"name": "prng",
 						"type": "tuple"
 					}
 				],
@@ -974,24 +944,19 @@
 							}
 						],
 						"internalType": "struct TraitsContext",
-						"name": "traits",
+						"name": "ctx",
 						"type": "tuple"
 					},
 					{
 						"components": [
 							{
 								"internalType": "uint256",
-								"name": "seed",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "counter",
+								"name": "state",
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct RandomCtx",
-						"name": "rndCtx",
+						"internalType": "struct LibPRNG.PRNG",
+						"name": "prng",
 						"type": "tuple"
 					}
 				],
@@ -1201,24 +1166,19 @@
 							}
 						],
 						"internalType": "struct TraitsContext",
-						"name": "traits",
+						"name": "ctx",
 						"type": "tuple"
 					},
 					{
 						"components": [
 							{
 								"internalType": "uint256",
-								"name": "seed",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "counter",
+								"name": "state",
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct RandomCtx",
-						"name": "rndCtx",
+						"internalType": "struct LibPRNG.PRNG",
+						"name": "prng",
 						"type": "tuple"
 					}
 				],
@@ -1239,17 +1199,12 @@
 						"components": [
 							{
 								"internalType": "uint256",
-								"name": "seed",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "counter",
+								"name": "state",
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct RandomCtx",
-						"name": "rndCtx",
+						"internalType": "struct LibPRNG.PRNG",
+						"name": "prng",
 						"type": "tuple"
 					}
 				],
@@ -1270,17 +1225,12 @@
 						"components": [
 							{
 								"internalType": "uint256",
-								"name": "seed",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "counter",
+								"name": "state",
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct RandomCtx",
-						"name": "rndCtx",
+						"internalType": "struct LibPRNG.PRNG",
+						"name": "prng",
 						"type": "tuple"
 					}
 				],
@@ -1301,17 +1251,12 @@
 						"components": [
 							{
 								"internalType": "uint256",
-								"name": "seed",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "counter",
+								"name": "state",
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct RandomCtx",
-						"name": "rndCtx",
+						"internalType": "struct LibPRNG.PRNG",
+						"name": "prng",
 						"type": "tuple"
 					}
 				],
@@ -1332,17 +1277,12 @@
 						"components": [
 							{
 								"internalType": "uint256",
-								"name": "seed",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "counter",
+								"name": "state",
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct RandomCtx",
-						"name": "rndCtx",
+						"internalType": "struct LibPRNG.PRNG",
+						"name": "prng",
 						"type": "tuple"
 					}
 				],
@@ -1552,24 +1492,19 @@
 							}
 						],
 						"internalType": "struct TraitsContext",
-						"name": "traits",
+						"name": "ctx",
 						"type": "tuple"
 					},
 					{
 						"components": [
 							{
 								"internalType": "uint256",
-								"name": "seed",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "counter",
+								"name": "state",
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct RandomCtx",
-						"name": "rndCtx",
+						"internalType": "struct LibPRNG.PRNG",
+						"name": "prng",
 						"type": "tuple"
 					}
 				],
@@ -1633,11 +1568,11 @@
 	},
 	"sources": {
 		"src/MaleProbs.sol": {
-			"keccak256": "0xe9db518d9383bfccf0e91ddc7b58f74609fbbe5fbdfd183a251488dbbdfdbd40",
+			"keccak256": "0x508799e3fe7da042ed8c9cf60da7f2a959e2fc5a0cdcdabb97e2b33ba2592e86",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://301dcdd68702f8201d86c4d5bfae442cca7e53322b5ce432b25f31d70834af9e",
-				"dweb:/ipfs/QmTacpiXz2uVwKx8gytPQsgSQHy8KovL8tx8Wf12xZACUs"
+				"bzz-raw://96532b2595ebbcb4cfc9b5bc305c82eae4a4d1b2923394c2e329c97013088767",
+				"dweb:/ipfs/Qmd1YcSe2TZ3UatGWrLerirTRGHYcBUaTx55QKwtk4MTZK"
 			]
 		},
 		"src/common/Enums.sol": {
@@ -1657,27 +1592,27 @@
 			]
 		},
 		"src/interfaces/IMaleProbs.sol": {
-			"keccak256": "0x7c93bebc21e4924c034217f432a2b09bb2711794fc60db1f149d32f7f974a4ac",
+			"keccak256": "0x46800ec01d7f0bcb161dc0ab8c4ff4a8fa14147a020ac749e594c4d55efef6eb",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://62c0f13d7a37a19c6e499bfe9119d2bc1c4def1ee34a9a16645b47a46cf4e8a2",
-				"dweb:/ipfs/QmZJMwXq3bpsZitBVSo698qy6XydHyk6dEyFu2j3cR26jX"
+				"bzz-raw://f22193640677745206041467c2dd7b6076c428c93313194c73097e2feb2b3efe",
+				"dweb:/ipfs/QmY3JwS5GttVPNxxXzZMZcgdHrCEtbHM7XSSpzbyFyaqyz"
 			]
 		},
-		"src/libraries/Random.sol": {
-			"keccak256": "0x721a675b5c10386af9b8617971a84742a7d76b3adf5e8ef6c3fb1947148f220e",
+		"src/libraries/LibPRNG.sol": {
+			"keccak256": "0x84f99f9cdd16971bbcd5d57611241136c612cdc7d1fd333c09ad4be90507615d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://fc5d795e9a621e085fcfa5391cfb7d6e4b1b42d33048444c29b00d0f65537dc0",
-				"dweb:/ipfs/QmSLmCEeNwwbA1zZQicFAMfLPLw4qPDNJ6cdPG4D8NZ9a3"
+				"bzz-raw://6f1a676471152b31d03f187dc9deb9f4dbcf068eeff2aa6a7058bbf1bf7e8dde",
+				"dweb:/ipfs/QmdCBw8CBVL2VS2C7DVr3y5iPBtgbQsr8jj9iRJN3MzsZj"
 			]
 		},
-		"src/libraries/TraitsUtils.sol": {
-			"keccak256": "0x0ceadda4f8eca93385c8ba54f127c5c29eb8dc4d4780f71dfb2b20e84b255e7d",
+		"src/libraries/TraitsLib.sol": {
+			"keccak256": "0xad8783c023e308a859b4530933db0ad7d469c60d12ca2f7e8f7a1cf6fcf46cdb",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://ce8613930951d4cdc800d73fe2c9b0b027ba8f1ff6eab7352a0273d1547fe8ef",
-				"dweb:/ipfs/QmedVx43REDVVmNmTJ9Si7FE3A49vWjRKN9SMobsZ3bRba"
+				"bzz-raw://325999bc95b1183b9d725e0bf2bcaf9b69064923242cd603b017bebdde0eee6c",
+				"dweb:/ipfs/QmctboaYKTvbo4pXZfnfrFvb1iunjeVWDEDhbk8W7RHYc6"
 			]
 		}
 	},

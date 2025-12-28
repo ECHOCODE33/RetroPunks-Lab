@@ -11,6 +11,26 @@
 				"type": "constructor"
 			},
 			{
+				"inputs": [],
+				"name": "AssetDoesNotExist",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "AssetKeyLengthMismatch",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "EmptyAsset",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "EmptyAssetInBatch",
+				"type": "error"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -290,7 +310,8 @@
 			":solady/=lib/solady/src/",
 			":solmate/=lib/seadrop/lib/solmate/src/",
 			":utility-contracts/=lib/seadrop/lib/utility-contracts/"
-		]
+		],
+		"viaIR": true
 	},
 	"sources": {
 		"lib/openzeppelin-contracts/contracts/access/Ownable.sol": {
@@ -310,11 +331,11 @@
 			]
 		},
 		"src/Assets.sol": {
-			"keccak256": "0x1162f88ee03ddb1189597df54ca018c38433e1a1012de8a3f2222741c2f47fc8",
+			"keccak256": "0x7ac90466870a5941190e61f25827ce1220b789d5443e5db6b2f15602b05bc575",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://92abef54666025e3e23bf76217e628b1cb176f0a622c5cc78d989cd760a2f59e",
-				"dweb:/ipfs/QmbLC6sBm3KW7fMAzcuxaWrWE2bf4L7JeMkQT6jAwRwNDU"
+				"bzz-raw://b3d303facd709f5124a82e539c987ab481418d04e07abca11a7a1d2e9cfa0642",
+				"dweb:/ipfs/QmSrFzGX125j4s4vfW3r1F2qfPqmryeF9FDwztMPiXbVVG"
 			]
 		},
 		"src/interfaces/IAssets.sol": {

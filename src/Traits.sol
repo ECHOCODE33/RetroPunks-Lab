@@ -3,7 +3,7 @@ pragma solidity ^0.8.30;
 
 import { IFemaleProbs } from './interfaces/IFemaleProbs.sol';
 import { IMaleProbs } from './interfaces/IMaleProbs.sol';
-import { Random, RandomCtx } from "./libraries/Random.sol";
+import { LibPRNG } from "./libraries/LibPRNG.sol";
 import { TraitsContext, TraitToRender, FillerTrait } from "./common/Structs.sol";
 import { NUM_SPECIAL_1S, E_Sex, E_Special_1s, E_Background, E_Male_Skin, E_Male_Eyes, E_Male_Face, E_Male_Chain, E_Male_Earring, E_Male_Scarf, E_Male_Facial_Hair, E_Male_Mask, E_Male_Hair, E_Male_Hat_Hair, E_Male_Headwear, E_Male_Eye_Wear, E_Female_Skin, E_Female_Eyes, E_Female_Face, E_Female_Chain, E_Female_Earring, E_Female_Scarf, E_Female_Mask, E_Female_Hair, E_Female_Hat_Hair, E_Female_Headwear, E_Female_Eye_Wear, E_Mouth, E_Filler_Traits, E_TraitsGroup } from "./common/Enums.sol";
 import { TraitsLib } from "./libraries/TraitsLib.sol";
@@ -23,7 +23,8 @@ contract Traits is ITraits {
     }
 
     function generateAllTraits(uint16 _tokenIdSeed, uint8 _backgroundIndex, uint256 _globalSeed) external view returns (TraitsContext memory) {
-        RandomCtx memory rndCtx = Random.initCtx(_tokenIdSeed, _globalSeed);
+        LibPRNG.PRNG memory prng;
+        LibPRNG.seed(prng, uint256(keccak256(abi.encodePacked(_tokenIdSeed, _globalSeed))));
         TraitsContext memory traits;
         traits.traitsToRender = new TraitToRender[](15);
         traits.tokenIdSeed = _tokenIdSeed;
@@ -35,14 +36,14 @@ contract Traits is ITraits {
         // Birthday
         uint32 minDate = 4102444800; 
         uint32 maxDate = 4133941199; 
-        traits.birthday = uint32(Random.randRange(rndCtx, minDate, maxDate));
+        uint256 rangeSize = uint256(maxDate) - uint256(minDate) + 1;
+        traits.birthday = uint32(uint256(minDate) + LibPRNG.uniform(prng, rangeSize));
 
         // ----- SPECIAL 1s -----
         if (traits.specialId > 0) {
             uint specialIdx = traits.specialId - 1;
             
             if (_isPreRendered(specialIdx)) {
-                // No traits are added for pre-rendered special 1s
                 return traits; 
             } 
             
@@ -53,7 +54,7 @@ contract Traits is ITraits {
             return traits;
         }
 
-        traits.sex = Random.randBool(rndCtx, 7500) ? E_Sex.Male : E_Sex.Female;
+        traits.sex = LibPRNG.uniform(prng, 10000) < 7500 ? E_Sex.Male : E_Sex.Female;
 
         // ----- MALE TRAITS -----
         if (traits.sex == E_Sex.Male) {
@@ -61,18 +62,18 @@ contract Traits is ITraits {
             traits.background = E_Background(_backgroundIndex);
             _addBackground(traits);
 
-            traits.maleSkin = MALE_PROBS_CONTRACT.selectMaleSkin(rndCtx);
-            traits.maleEyes = MALE_PROBS_CONTRACT.selectMaleEyes(traits, rndCtx);
-            traits.maleFace = MALE_PROBS_CONTRACT.selectMaleFace(traits, rndCtx);
-            traits.maleChain = MALE_PROBS_CONTRACT.selectMaleChain(rndCtx);
-            traits.maleEarring = MALE_PROBS_CONTRACT.selectMaleEarring(rndCtx);
-            traits.maleFacialHair = MALE_PROBS_CONTRACT.selectMaleFacialHair(traits, rndCtx);
-            traits.maleMask = MALE_PROBS_CONTRACT.selectMaleMask(rndCtx);
-            traits.maleScarf = MALE_PROBS_CONTRACT.selectMaleScarf(rndCtx);
-            traits.maleHair = MALE_PROBS_CONTRACT.selectMaleHair(traits, rndCtx);
-            traits.maleHatHair = MALE_PROBS_CONTRACT.selectMaleHatHair(traits, rndCtx);
-            traits.maleHeadwear = MALE_PROBS_CONTRACT.selectMaleHeadwear(rndCtx);
-            traits.maleEyeWear = MALE_PROBS_CONTRACT.selectMaleEyeWear(rndCtx);
+            traits.maleSkin = MALE_PROBS_CONTRACT.selectMaleSkin(prng);
+            traits.maleEyes = MALE_PROBS_CONTRACT.selectMaleEyes(traits, prng);
+            traits.maleFace = MALE_PROBS_CONTRACT.selectMaleFace(traits, prng);
+            traits.maleChain = MALE_PROBS_CONTRACT.selectMaleChain(prng);
+            traits.maleEarring = MALE_PROBS_CONTRACT.selectMaleEarring(prng);
+            traits.maleFacialHair = MALE_PROBS_CONTRACT.selectMaleFacialHair(traits, prng);
+            traits.maleMask = MALE_PROBS_CONTRACT.selectMaleMask(prng);
+            traits.maleScarf = MALE_PROBS_CONTRACT.selectMaleScarf(prng);
+            traits.maleHair = MALE_PROBS_CONTRACT.selectMaleHair(traits, prng);
+            traits.maleHatHair = MALE_PROBS_CONTRACT.selectMaleHatHair(traits, prng);
+            traits.maleHeadwear = MALE_PROBS_CONTRACT.selectMaleHeadwear(prng);
+            traits.maleEyeWear = MALE_PROBS_CONTRACT.selectMaleEyeWear(prng);
 
             _addMaleSkin(traits);
             _addMaleEyes(traits);
@@ -109,17 +110,17 @@ contract Traits is ITraits {
             traits.background = E_Background(_backgroundIndex);
             _addBackground(traits);
 
-            traits.femaleSkin = FEMALE_PROBS_CONTRACT.selectFemaleSkin(rndCtx);
-            traits.femaleEyes = FEMALE_PROBS_CONTRACT.selectFemaleEyes(traits, rndCtx);
-            traits.femaleFace = FEMALE_PROBS_CONTRACT.selectFemaleFace(traits, rndCtx);
-            traits.femaleChain = FEMALE_PROBS_CONTRACT.selectFemaleChain(rndCtx);
-            traits.femaleEarring = FEMALE_PROBS_CONTRACT.selectFemaleEarring(rndCtx);
-            traits.femaleMask = FEMALE_PROBS_CONTRACT.selectFemaleMask(rndCtx);
-            traits.femaleScarf = FEMALE_PROBS_CONTRACT.selectFemaleScarf(rndCtx);
-            traits.femaleHair = FEMALE_PROBS_CONTRACT.selectFemaleHair(traits, rndCtx);
-            traits.femaleHatHair = FEMALE_PROBS_CONTRACT.selectFemaleHatHair(traits, rndCtx);
-            traits.femaleHeadwear = FEMALE_PROBS_CONTRACT.selectFemaleHeadwear(rndCtx);
-            traits.femaleEyeWear = FEMALE_PROBS_CONTRACT.selectFemaleEyeWear(rndCtx);
+            traits.femaleSkin = FEMALE_PROBS_CONTRACT.selectFemaleSkin(prng);
+            traits.femaleEyes = FEMALE_PROBS_CONTRACT.selectFemaleEyes(traits, prng);
+            traits.femaleFace = FEMALE_PROBS_CONTRACT.selectFemaleFace(traits, prng);
+            traits.femaleChain = FEMALE_PROBS_CONTRACT.selectFemaleChain(prng);
+            traits.femaleEarring = FEMALE_PROBS_CONTRACT.selectFemaleEarring(prng);
+            traits.femaleMask = FEMALE_PROBS_CONTRACT.selectFemaleMask(prng);
+            traits.femaleScarf = FEMALE_PROBS_CONTRACT.selectFemaleScarf(prng);
+            traits.femaleHair = FEMALE_PROBS_CONTRACT.selectFemaleHair(traits, prng);
+            traits.femaleHatHair = FEMALE_PROBS_CONTRACT.selectFemaleHatHair(traits, prng);
+            traits.femaleHeadwear = FEMALE_PROBS_CONTRACT.selectFemaleHeadwear(prng);
+            traits.femaleEyeWear = FEMALE_PROBS_CONTRACT.selectFemaleEyeWear(prng);
 
             _addFemaleSkin(traits);
             _addFemaleEyes(traits);
@@ -141,7 +142,7 @@ contract Traits is ITraits {
         }
 
         // === MOUTH (Both) ===
-        traits.mouth = MALE_PROBS_CONTRACT.selectMouth(traits, rndCtx);
+        traits.mouth = MALE_PROBS_CONTRACT.selectMouth(traits, prng);
         
         // Only add mouth if not wearing a mask
         if (!TraitsLib.femaleHasMask(traits) && !TraitsLib.maleHasMask(traits)) {

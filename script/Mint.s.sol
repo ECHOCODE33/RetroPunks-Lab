@@ -6,20 +6,7 @@ import {console} from "forge-std/console.sol";
 
 import {RetroPunks} from "../src/RetroPunks.sol";
 
-/**
- * @title Mint
- * @notice Simple and safe script to perform owner mints on RetroPunks.
- *
- * Use this as the contract owner to mint reserved NFTs (up to 10 total).
- * You can mint any quantity ≤ remaining ownerMintsRemaining in one transaction.
- *
- * Requirements:
- * - You must be the owner of the RetroPunks contract.
- * - ownerMintsRemaining must be ≥ quantity you request.
- * - Total supply + quantity must not exceed maxSupply.
- *
- * Mints directly to the address you specify (usually your wallet).
- */
+
 contract Mint is Script {
 
     // ====================== CONFIGURATION ======================
@@ -28,7 +15,7 @@ contract Mint is Script {
 
     address constant recipient = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
 
-    uint256 constant QUANTITY = 4;
+    uint256 constant QUANTITY = 300;
 
     // ====================== SCRIPT LOGIC ======================
 
