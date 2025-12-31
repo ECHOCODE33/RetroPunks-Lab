@@ -84,7 +84,8 @@ contract Base64Test is SoladyTest {
         assertEq(
             Base64.decode(
                 "TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQsIGNvbnNlY3RldHVyIGFkaXBpc2NpbmcgZWxpdC4="
-            ).length,
+            )
+            .length,
             56
         );
     }

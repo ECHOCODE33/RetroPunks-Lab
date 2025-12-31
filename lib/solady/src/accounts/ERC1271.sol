@@ -114,7 +114,9 @@ abstract contract ERC1271 is EIP712 {
         virtual
         returns (bool result)
     {
-        if (_erc1271CallerIsSafe()) result = _erc1271IsValidSignatureNowCalldata(hash, signature);
+        if (_erc1271CallerIsSafe()) {
+            result = _erc1271IsValidSignatureNowCalldata(hash, signature);
+        }
     }
 
     /// @dev ERC1271 signature validation (Nested EIP-712 workflow).
@@ -252,7 +254,9 @@ abstract contract ERC1271 is EIP712 {
                     let e := 0 // Length of `contentsName` in explicit mode.
                     for { let q := sub(add(p, c), 1) } 1 {} {
                         e := add(e, 1) // Scan backwards until we encounter a ')'.
-                        if iszero(gt(lt(e, c), eq(byte(0, mload(sub(q, e))), 41))) { break }
+                        if iszero(gt(lt(e, c), eq(byte(0, mload(sub(q, e))), 41))) {
+                            break
+                        }
                     }
                     c := sub(c, e) // Truncate `contentsDescription` to `contentsType`.
                     calldatacopy(p, add(add(o, 0x40), c), e) // Copy `contentsName`.

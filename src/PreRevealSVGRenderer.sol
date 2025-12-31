@@ -3,7 +3,7 @@ pragma solidity ^0.8.32;
 
 import { ISVGRenderer } from './interfaces/ISVGRenderer.sol';
 import { IAssets} from './interfaces/IAssets.sol';
-import { CachedTraitGroups, TraitGroup } from './common/Structs.sol';
+import { TraitGroup } from './common/Structs.sol';
 import { Utils } from './libraries/Utils.sol';
 import { DynamicBuffer } from './libraries/DynamicBuffer.sol';
 

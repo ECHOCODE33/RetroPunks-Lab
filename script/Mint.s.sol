@@ -11,11 +11,11 @@ contract Mint is Script {
 
     // ====================== CONFIGURATION ======================
 
-    address constant retroPunksAddress = 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707;
+    address constant retroPunksAddress = 0x167B5eD0fda3e2AE51282695B250E55cBC60615D;
 
-    address constant recipient = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
+    address constant recipient = 0x6A5ebe005B8Ef3d8ACdA293EFE5CD956a46b2457;
 
-    uint256 constant QUANTITY = 10;
+    uint256 constant QUANTITY = 50;
 
     // ====================== SCRIPT LOGIC ======================
 

@@ -193,8 +193,9 @@ abstract contract TimedRoles {
                 encodedTimeRoles := add(0x20, encodedTimeRoles)
                 mstore(0x00, mload(encodedTimeRoles))
                 let p := sload(keccak256(0x00, 0x38))
-                result :=
-                    iszero(or(lt(timestamp(), shr(216, p)), gt(timestamp(), and(0xffffffffff, p))))
+                result := iszero(
+                    or(lt(timestamp(), shr(216, p)), gt(timestamp(), and(0xffffffffff, p)))
+                )
             }
         }
     }
@@ -263,11 +264,10 @@ abstract contract TimedRoles {
         /// @solidity memory-safe-assembly
         assembly {
             mstore(0x00, 0x8da5cb5b) // `owner()`.
-            result :=
-                and(
-                    and(eq(caller(), mload(0x00)), gt(returndatasize(), 0x1f)),
-                    staticcall(gas(), address(), 0x1c, 0x04, 0x00, 0x20)
-                )
+            result := and(
+                and(eq(caller(), mload(0x00)), gt(returndatasize(), 0x1f)),
+                staticcall(gas(), address(), 0x1c, 0x04, 0x00, 0x20)
+            )
         }
     }
 

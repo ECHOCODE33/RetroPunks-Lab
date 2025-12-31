@@ -8,17 +8,6 @@ import { E_TraitsGroup } from '../common/Enums.sol';
 
 library TraitsLoader {
 
-    error InsufficientDataForTraitHeader();
-    error InsufficientDataForTraitName();
-    error InsufficientRLEData();
-    error RunLengthCannotBeZero();
-    error InsufficientPaletteIndexData();
-    error RLEPixelCountMismatch();
-    error InvalidNameStartIndex();
-    error InvalidNameLength();
-    error InsufficientDataForPaletteSize();
-    error InsufficientDataForPalette();
-
     function initCachedTraitGroups(uint _traitGroupsLength) public pure returns (CachedTraitGroups memory) {
         return CachedTraitGroups({ 
             traitGroups: new TraitGroup[](_traitGroupsLength), 
@@ -58,8 +47,6 @@ library TraitsLoader {
 
         unchecked {
             for (uint256 i = 0; i < traitCount; i++) {
-                if (!(index + 8 <= dataLength)) revert InsufficientDataForTraitHeader();
-                
                 TraitInfo memory t;
                 
                 // [PixelCount:2][x1:1][y1:1][x2:1][y2:1][layerType:1][nameLen:1] = 8 bytes
@@ -74,7 +61,6 @@ library TraitsLoader {
                 
                 index += 8; 
 
-                if (!(index + traitNameLength <= dataLength)) revert InsufficientDataForTraitName();
                 t.traitName = new bytes(traitNameLength);
                 _memoryCopy(t.traitName, 0, traitGroupData, index, traitNameLength);
                 index += traitNameLength;
@@ -88,15 +74,11 @@ library TraitsLoader {
                     else {
                         uint256 pixelsTracked = 0;
                         while (pixelsTracked < traitPixelCount) {
-                            if (!(index < dataLength)) revert InsufficientRLEData();
                             uint8 runLength = uint8(traitGroupData[index++]);
                             
-                            if (runLength == 0) revert RunLengthCannotBeZero();
-                            if (!(index + pSize <= dataLength)) revert InsufficientPaletteIndexData();
                             index += pSize;
                             pixelsTracked += runLength;
                         }
-                        if (pixelsTracked != traitPixelCount) revert RLEPixelCountMismatch();
                     }
                 }
 
@@ -117,23 +99,19 @@ library TraitsLoader {
     }
     
     function _decodeTraitGroupName(bytes memory traitGroupData, uint256 startIndex) internal pure returns (bytes memory) {
-        if (startIndex >= traitGroupData.length) revert InvalidNameStartIndex();
         uint8 nameLength = uint8(traitGroupData[startIndex]);
-        if (startIndex + 1 + nameLength > traitGroupData.length) revert InvalidNameLength();
         bytes memory name = new bytes(nameLength);
         unchecked { _memoryCopy(name, 0, traitGroupData, startIndex + 1, nameLength); }
         return name;
     }
 
     function _decodeTraitGroupPalette(bytes memory traitGroupData, uint256 startIndex) internal pure returns (uint32[] memory paletteRgba, uint256 nextIndex) {
-        if (startIndex + 2 > traitGroupData.length) revert InsufficientDataForPaletteSize();
         uint16 paletteSize = uint16(uint8(traitGroupData[startIndex])) << 8 | uint16(uint8(traitGroupData[startIndex + 1]));
         
         if (paletteSize == 0) {
             return (new uint32[](0), startIndex + 2);
         }
 
-        if (startIndex + 2 + (uint256(paletteSize) * 4) > traitGroupData.length) revert InsufficientDataForPalette();
         paletteRgba = new uint32[](paletteSize);
         uint256 cursor = startIndex + 2;
         

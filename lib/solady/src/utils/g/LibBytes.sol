@@ -174,7 +174,9 @@ library LibBytes {
             if iszero(gt(needleLen, mload(subject))) {
                 let subjectSearchEnd := add(sub(mload(0x00), needleLen), 1)
                 let h := 0 // The hash of `needle`.
-                if iszero(lt(needleLen, 0x20)) { h := keccak256(add(needle, 0x20), needleLen) }
+                if iszero(lt(needleLen, 0x20)) {
+                    h := keccak256(add(needle, 0x20), needleLen)
+                }
                 let s := mload(add(needle, 0x20))
                 for { let m := shl(3, sub(0x20, and(needleLen, 0x1f))) } 1 {} {
                     let t := mload(i)
@@ -518,11 +520,7 @@ library LibBytes {
 
     /// @dev Reduces the size of `subject` to `n`.
     /// If `n` is greater than the size of `subject`, this will be a no-op.
-    function truncate(bytes memory subject, uint256 n)
-        internal
-        pure
-        returns (bytes memory result)
-    {
+    function truncate(bytes memory subject, uint256 n) internal pure returns (bytes memory result) {
         /// @solidity memory-safe-assembly
         assembly {
             result := subject
@@ -560,7 +558,9 @@ library LibBytes {
                 let o := add(result, 0x20)
                 let subjectSearchEnd := add(sub(add(i, mload(subject)), searchLen), 1)
                 let h := 0 // The hash of `needle`.
-                if iszero(lt(searchLen, 0x20)) { h := keccak256(add(needle, 0x20), searchLen) }
+                if iszero(lt(searchLen, 0x20)) {
+                    h := keccak256(add(needle, 0x20), searchLen)
+                }
                 let s := mload(add(needle, 0x20))
                 for { let m := shl(3, sub(0x20, and(searchLen, 0x1f))) } 1 {} {
                     let t := mload(i)
@@ -786,11 +786,7 @@ library LibBytes {
     }
 
     /// @dev Returns the word at `offset`, without any bounds checks.
-    function loadCalldata(bytes calldata a, uint256 offset)
-        internal
-        pure
-        returns (bytes32 result)
-    {
+    function loadCalldata(bytes calldata a, uint256 offset) internal pure returns (bytes32 result) {
         /// @solidity memory-safe-assembly
         assembly {
             result := calldataload(add(a.offset, offset))

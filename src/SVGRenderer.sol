@@ -5,7 +5,7 @@ import { ISVGRenderer } from './interfaces/ISVGRenderer.sol';
 import { ITraits } from './interfaces/ITraits.sol';
 import { IAssets } from './interfaces/IAssets.sol';
 import { NUM_TRAIT_GROUPS, E_TraitsGroup } from "./common/Enums.sol";
-import { TraitsContext, CachedTraitGroups, TraitGroup, TraitInfo } from './common/Structs.sol';
+import { TraitsContext, CachedTraitGroups, TraitGroup } from './common/Structs.sol';
 import { TraitsRenderer } from './libraries/TraitsRenderer.sol';
 import { TraitsLoader } from './libraries/TraitsLoader.sol';
 import { Utils } from './libraries/Utils.sol';

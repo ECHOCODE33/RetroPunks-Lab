@@ -2,7 +2,7 @@
 pragma solidity ^0.8.32;
 
 import { TraitsContext } from "../common/Structs.sol";
-import { E_TraitsGroup, E_Sex, E_Male_Skin, E_Male_Eyes, E_Male_Face, E_Male_Chain, E_Male_Earring, E_Male_Scarf, E_Male_Facial_Hair, E_Male_Mask, E_Male_Hair, E_Male_Hat_Hair, E_Male_Headwear, E_Male_Eye_Wear, E_Female_Skin, E_Female_Eyes, E_Female_Face, E_Female_Chain, E_Female_Earring, E_Female_Scarf, E_Female_Mask, E_Female_Hair, E_Female_Hat_Hair, E_Female_Headwear, E_Female_Eye_Wear, E_Mouth } from "../common/Enums.sol";
+import { E_Sex, E_Male_Skin, E_Male_Facial_Hair, E_Male_Mask, E_Male_Headwear, E_Female_Skin, E_Female_Mask, E_Female_Headwear } from "../common/Enums.sol";
 
 
 /// @author ECHO
@@ -164,27 +164,30 @@ library LibTraits {
     }
 
     function maleHasBlackFacialHair(TraitsContext memory traits) internal pure returns (bool) {
-        return (IS_BLACK_FACIAL_HAIR >> uint(traits.maleFacialHair)) & 1 == 1;
+        unchecked {
+            return (IS_BLACK_FACIAL_HAIR & (uint256(1) << uint256(traits.maleFacialHair))) != 0;
+        }
     }
 
-    uint256 private constant IS_BLACK_FACIAL_HAIR =
-        (1 << uint(E_Male_Facial_Hair.Anchor_Beard_Black)) |
-        (1 << uint(E_Male_Facial_Hair.Beard_Black)) |
-        (1 << uint(E_Male_Facial_Hair.Big_Beard_Black)) |
-        (1 << uint(E_Male_Facial_Hair.Chin_Goatee_Black)) |
-        (1 << uint(E_Male_Facial_Hair.Chinstrap_Black)) |
-        (1 << uint(E_Male_Facial_Hair.Circle_Beard_Black)) |
-        (1 << uint(E_Male_Facial_Hair.Dutch_Black)) |
-        (1 << uint(E_Male_Facial_Hair.Fu_Manchu_Black)) |
-        (1 << uint(E_Male_Facial_Hair.Full_Goatee_Black)) |
-        (1 << uint(E_Male_Facial_Hair.Goatee_Black)) |
-        (1 << uint(E_Male_Facial_Hair.Handlebar_Black)) |
-        (1 << uint(E_Male_Facial_Hair.Horseshoe_Black)) |
-        (1 << uint(E_Male_Facial_Hair.Long_Beard_Black)) |
-        (1 << uint(E_Male_Facial_Hair.Luxurious_Beard_Black)) |
-        (1 << uint(E_Male_Facial_Hair.Luxurious_Full_Goatee_Black)) |
-        (1 << uint(E_Male_Facial_Hair.Mustache_Black)) |
-        (1 << uint(E_Male_Facial_Hair.Muttonchops_Black)) |
-        (1 << uint(E_Male_Facial_Hair.Pyramid_Mustache_Black)) |
-        (1 << uint(E_Male_Facial_Hair.Walrus_Black));
+    uint256 private constant IS_BLACK_FACIAL_HAIR = (
+        (uint256(1) << uint256(E_Male_Facial_Hair.Anchor_Beard_Black)) |
+        (uint256(1) << uint256(E_Male_Facial_Hair.Beard_Black)) |
+        (uint256(1) << uint256(E_Male_Facial_Hair.Big_Beard_Black)) |
+        (uint256(1) << uint256(E_Male_Facial_Hair.Chin_Goatee_Black)) |
+        (uint256(1) << uint256(E_Male_Facial_Hair.Chinstrap_Black)) |
+        (uint256(1) << uint256(E_Male_Facial_Hair.Circle_Beard_Black)) |
+        (uint256(1) << uint256(E_Male_Facial_Hair.Dutch_Black)) |
+        (uint256(1) << uint256(E_Male_Facial_Hair.Fu_Manchu_Black)) |
+        (uint256(1) << uint256(E_Male_Facial_Hair.Full_Goatee_Black)) |
+        (uint256(1) << uint256(E_Male_Facial_Hair.Goatee_Black)) |
+        (uint256(1) << uint256(E_Male_Facial_Hair.Handlebar_Black)) |
+        (uint256(1) << uint256(E_Male_Facial_Hair.Horseshoe_Black)) |
+        (uint256(1) << uint256(E_Male_Facial_Hair.Long_Beard_Black)) |
+        (uint256(1) << uint256(E_Male_Facial_Hair.Luxurious_Beard_Black)) |
+        (uint256(1) << uint256(E_Male_Facial_Hair.Luxurious_Full_Goatee_Black)) |
+        (uint256(1) << uint256(E_Male_Facial_Hair.Mustache_Black)) |
+        (uint256(1) << uint256(E_Male_Facial_Hair.Muttonchops_Black)) |
+        (uint256(1) << uint256(E_Male_Facial_Hair.Pyramid_Mustache_Black)) |
+        (uint256(1) << uint256(E_Male_Facial_Hair.Walrus_Black))
+    );
 }

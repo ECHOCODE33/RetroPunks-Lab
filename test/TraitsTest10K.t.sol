@@ -7,14 +7,7 @@ import "forge-std/console.sol";
 import { Traits } from "../src/Traits.sol";
 import { Probs } from "../src/Probs.sol";
 import { TraitsContext } from "../src/common/Structs.sol";
-import { 
-    E_Sex, E_Male_Skin, E_Male_Eyes, E_Male_Face, E_Male_Chain, 
-    E_Male_Earring, E_Male_Scarf, E_Male_Facial_Hair, E_Male_Mask, 
-    E_Male_Hair, E_Male_Hat_Hair, E_Male_Headwear, E_Male_Eye_Wear,
-    E_Female_Skin, E_Female_Eyes, E_Female_Face, E_Female_Chain, 
-    E_Female_Earring, E_Female_Scarf, E_Female_Mask, E_Female_Hair, 
-    E_Female_Hat_Hair, E_Female_Headwear, E_Female_Eye_Wear, E_Mouth 
-} from "../src/common/Enums.sol";
+import { E_Sex } from "../src/common/Enums.sol";
 
 contract CumulativeStats {
     mapping(string => mapping(uint256 => uint256)) public counts;
@@ -39,7 +32,7 @@ contract TraitsSimulationTest is Test {
     CumulativeStats public stats;
 
     function setUp() public {
-        traitsContract = new Traits(new Probs());
+        traitsContract = new Traits(/* new Probs() */);
         stats = new CumulativeStats();
     }
 

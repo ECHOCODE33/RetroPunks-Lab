@@ -2,7 +2,6 @@
 pragma solidity ^0.8.17;
 
 import { TraitsContext, MaleTraits, FemaleTraits } from '../common/Structs.sol';
-import { E_Mouth } from "../common/Enums.sol";
 import { LibPRNG } from "../libraries/LibPRNG.sol";
 
 
