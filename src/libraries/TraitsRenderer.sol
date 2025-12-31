@@ -1,5 +1,5 @@
  // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.32;
 
 import { TraitInfo, TraitGroup, CachedTraitGroups, TraitsContext } from '../common/Structs.sol';
 import { E_TraitsGroup, E_Background_Type } from '../common/Enums.sol';
@@ -86,7 +86,7 @@ library TraitsRenderer {
         }
 
         else if (bg == E_Background_Type.Background_Image) {
-            bytes memory pngBase64 = assetsContract.loadAssetOriginal(1000 + uint(traits.background));
+            bytes memory pngBase64 = assetsContract.loadAsset(1000 + uint(traits.background), false);
             Utils.concat(buffer, '<foreignObject width="48" height="48">');
             Utils.concat(buffer, '<img xmlns="http://www.w3.org/1999/xhtml" src="data:image/png;base64,');
             Utils.concatBase64(buffer, pngBase64);

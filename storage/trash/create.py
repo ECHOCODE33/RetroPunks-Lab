@@ -16,7 +16,7 @@ def hex_to_rgba(hex_str):
 def rgba_to_hex(r, g, b, a):
     return f'#{r:02x}{g:02x}{b:02x}{a:02x}'
 
-base_dir = '/Users/mani/Downloads/RPNKSLab/traitsColor'
+base_dir = '/Users/echo/Downloads/RPNKSLab/traitsColor'
 
 trait_groups = [
     {'index': 2, 'name': 'Male Skin', 'dir': os.path.join(base_dir, 'Male Skin')},

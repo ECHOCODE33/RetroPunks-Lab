@@ -9,12 +9,12 @@ interface IRetroPunks {
 }
 
 contract TokenURIBatchTest is Script {
-    address constant retroPunksAddress = 0x0165878A594ca255338adfa4d48449f69242Eb8F;
+    address constant retroPunksAddress = 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707;
 
     function run() external {
         vm.pauseGasMetering();
         
-        for (uint tokenId = 1; tokenId <= 999; tokenId++) {
+        for (uint tokenId = 1; tokenId <= 10; tokenId++) {
             bytes memory data = abi.encodeWithSignature("tokenURI(uint256)", tokenId);
             (bool success, bytes memory returnedData) = retroPunksAddress.staticcall(data);
 

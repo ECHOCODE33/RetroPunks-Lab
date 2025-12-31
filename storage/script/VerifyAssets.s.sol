@@ -66,13 +66,13 @@ contract VerifyAssets is Script {
         EXPECTED_ASSETS.push(ExpectedAsset(25, "Mouth"));
         EXPECTED_ASSETS.push(ExpectedAsset(26, "Filler Traits"));
 
-        EXPECTED_ASSETS.push(ExpectedAsset(105, "Predator Blue"));
-        EXPECTED_ASSETS.push(ExpectedAsset(106, "Predator Green"));
-        EXPECTED_ASSETS.push(ExpectedAsset(107, "Predator Red"));
-        EXPECTED_ASSETS.push(ExpectedAsset(108, "Santa Claus"));
-        EXPECTED_ASSETS.push(ExpectedAsset(109, "Shadow Ninja"));
-        EXPECTED_ASSETS.push(ExpectedAsset(112, "The Devil"));
-        EXPECTED_ASSETS.push(ExpectedAsset(114, "The Portrait"));
+        EXPECTED_ASSETS.push(ExpectedAsset(101, "Predator Blue"));
+        EXPECTED_ASSETS.push(ExpectedAsset(102, "Predator Green"));
+        EXPECTED_ASSETS.push(ExpectedAsset(103, "Predator Red"));
+        EXPECTED_ASSETS.push(ExpectedAsset(104, "Santa Claus"));
+        EXPECTED_ASSETS.push(ExpectedAsset(105, "Shadow Ninja"));
+        EXPECTED_ASSETS.push(ExpectedAsset(106, "The Devil"));
+        EXPECTED_ASSETS.push(ExpectedAsset(107, "The Portrait"));
 
         EXPECTED_ASSETS.push(ExpectedAsset(1000, "Rainbow"));
     }

@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.30+commit.73712a01"
+		"version": "0.8.33+commit.64118f21"
 	},
 	"language": "Solidity",
 	"output": {
@@ -1393,9 +1393,9 @@
 				"name": "ownerMintsRemaining",
 				"outputs": [
 					{
-						"internalType": "uint256",
+						"internalType": "uint16",
 						"name": "",
-						"type": "uint256"
+						"type": "uint16"
 					}
 				],
 				"stateMutability": "view",
@@ -2782,7 +2782,7 @@
 		"compilationTarget": {
 			"src/RetroPunks.sol": "RetroPunks"
 		},
-		"evmVersion": "prague",
+		"evmVersion": "osaka",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -2878,11 +2878,11 @@
 			]
 		},
 		"src/RetroPunks.sol": {
-			"keccak256": "0xb01bf406c09646ad737cac0176efe0bd8337bbd886f9b7f5b8e6a1811ef52521",
+			"keccak256": "0x7536e8dccdc52490f2ab8013ddc1631c2446f2c5e4a73899f833f1736d400f4d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://772b5109f6ca9e6dde7c65ad5161c5e0bac6b106b71d3fded1b0f15890a37c32",
-				"dweb:/ipfs/QmQ7NZDmT29SxiyhcfdDauD1wGgmxTVKqRKQEwBrKX8qER"
+				"bzz-raw://9ac9d707bf5add7a81dc8b592b44ba2c3285d600423257da5b65463ef39602f5",
+				"dweb:/ipfs/QmPXLRbfNt4PNfZfNiaDyeozZZctFt8LntBjdyjHe5ECnF"
 			]
 		},
 		"src/common/Enums.sol": {

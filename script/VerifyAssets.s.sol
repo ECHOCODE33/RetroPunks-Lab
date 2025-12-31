@@ -66,13 +66,13 @@ contract VerifyAssets is Script {
         EXPECTED_ASSETS.push(ExpectedAsset(25, "Mouth"));
         EXPECTED_ASSETS.push(ExpectedAsset(26, "Filler Traits"));
 
-        EXPECTED_ASSETS.push(ExpectedAsset(105, "Predator Blue"));
-        EXPECTED_ASSETS.push(ExpectedAsset(106, "Predator Green"));
-        EXPECTED_ASSETS.push(ExpectedAsset(107, "Predator Red"));
-        EXPECTED_ASSETS.push(ExpectedAsset(108, "Santa Claus"));
-        EXPECTED_ASSETS.push(ExpectedAsset(109, "Shadow Ninja"));
-        EXPECTED_ASSETS.push(ExpectedAsset(112, "The Devil"));
-        EXPECTED_ASSETS.push(ExpectedAsset(114, "The Portrait"));
+        EXPECTED_ASSETS.push(ExpectedAsset(101, "Predator Blue"));
+        EXPECTED_ASSETS.push(ExpectedAsset(102, "Predator Green"));
+        EXPECTED_ASSETS.push(ExpectedAsset(103, "Predator Red"));
+        EXPECTED_ASSETS.push(ExpectedAsset(104, "Santa Claus"));
+        EXPECTED_ASSETS.push(ExpectedAsset(105, "Shadow Ninja"));
+        EXPECTED_ASSETS.push(ExpectedAsset(106, "The Devil"));
+        EXPECTED_ASSETS.push(ExpectedAsset(107, "The Portrait"));
 
         EXPECTED_ASSETS.push(ExpectedAsset(1000, "Rainbow"));
     }
@@ -100,7 +100,7 @@ contract VerifyAssets is Script {
 
             // First: check if the asset exists at all (using a view call that reverts if missing)
             bool exists = true;
-            try assets.loadAssetOriginal(key) returns (bytes memory) {
+            try assets.loadAsset(key, false) returns (bytes memory) {
                 // If we reach here, the key exists
             } catch {
                 exists = false;
@@ -122,7 +122,7 @@ contract VerifyAssets is Script {
             }
 
             // Full verification: try to load and decompress
-            try assets.loadAssetDecompressed(key) returns (
+            try assets.loadAsset(key, true) returns (
                 bytes memory decompressed
             ) {
                 if (bytes(expected.name).length > 0) {

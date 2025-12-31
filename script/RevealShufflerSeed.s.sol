@@ -3,13 +3,12 @@ pragma solidity ^0.8.30;
 
 import {Script} from "forge-std/Script.sol";
 import {console} from "forge-std/console.sol";
-
 import {RetroPunks} from "../src/RetroPunks.sol";
 
 
 contract RevealShufflerSeed is Script {
 
-    address constant retroPunksAddress = 0x0165878A594ca255338adfa4d48449f69242Eb8F;
+    address constant retroPunksAddress = 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707;
 
     uint256 constant SHUFFLER_SEED_PART1 = 7393514293;
     uint256 constant SHUFFLER_SEED_PART2 = 3904021486;

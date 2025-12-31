@@ -73,7 +73,7 @@ def generate_solidity_enums(root_dir):
 
 if __name__ == "__main__":
     # Change 'assets' to the path of your main directory
-    target_directory = "/Users/mani/Downloads/RPNKSLab/traitsColor" 
+    target_directory = "/Users/echo/Downloads/RPNKSLab/traitsColor" 
     if os.path.exists(target_directory):
         generate_solidity_enums(target_directory)
     else:

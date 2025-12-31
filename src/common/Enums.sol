@@ -41,8 +41,8 @@ enum E_Sex {
 }
 
 enum E_TraitsGroup {
-    Special_1s_Group,
     Background_Group,
+    Special_1s_Group,
     Male_Skin_Group,
     Male_Eyes_Group,
     Male_Face_Group,
@@ -71,20 +71,20 @@ enum E_TraitsGroup {
 }
 
 enum E_Special_1s {
-    Ancient_Mummy,
-    CyberApe,
-    Old_Skeleton,
-    Pig,
     Predator_Blue,
     Predator_Green,
     Predator_Red,
     Santa_Claus,
     Shadow_Ninja,
+    The_Devil,
+    The_Portrait,
+    Ancient_Mummy,
+    CyberApe,
+    Old_Skeleton,
+    Pig,
     Slenderman,
     The_Clown,
-    The_Devil,
     The_Pirate,
-    The_Portrait,
     The_Witch,
     The_Wizard
 }
@@ -92,9 +92,28 @@ enum E_Special_1s {
 enum E_Background {
     Rainbow,
     Standard,
+
     Smooth_Vertical,
+    Pixelated_Vertical,
+    Smooth_Vertical_Inverse,
+    Pixelated_Vertical_Inverse,
+
     Smooth_Horizontal,
-    Diagonal_Gradient
+    Pixelated_Horizontal,
+    Smooth_Horizontal_Inverse,
+    Pixelated_Horizontal_Inverse,
+
+    Smooth_Diagonal,
+    Pixelated_Diagonal,
+    Smooth_Diagonal_Inverse,
+    Pixelated_Diagonal_Inverse,
+
+    Smooth_Reverse_Diagonal,
+    Pixelated_Reverse_Diagonal,
+    Smooth_Reverse_Diagonal_Inverse,
+    Pixelated_Reverse_Diagonal_Inverse,
+
+    Radial
 }
 
 enum E_Male_Skin {
