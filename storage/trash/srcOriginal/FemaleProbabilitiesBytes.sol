@@ -104,6 +104,9 @@ contract FemaleProbabilities is IFemaleProbabilities {
             // Possessed = 50
                 probs[uint(E_Female_Eyes.Possessed_Left)] = 25;
                 probs[uint(E_Female_Eyes.Possessed_Right)] = 25;
+
+                probs[uint(E_Female_Eyes.Ghost_Left)] = 0;
+                probs[uint(E_Female_Eyes.Ghost_Right)] = 0;
         }
 
         uint selected = Random.selectRandomTrait(rndCtx, probs);

@@ -4,8 +4,8 @@
 
 # The Default Profile
 [profile.default]
-solc_version = "0.8.30"
-evm_version = "paris" # Cancun will be tested in the CI.
+solc_version = "0.8.33"
+evm_version = "paris" # osaka will be tested in the CI.
 auto_detect_solc = false
 optimizer = true
 optimizer_runs = 1_000
@@ -15,12 +15,15 @@ fs_permissions = [{ access = "read", path = "./test/data"}]
 remappings = [
   "forge-std=test/utils/forge-std/"
 ]
+# remove memory-safe-assembly warning from compiler
+ignored_error_codes = [2424,8429,4591]
 
 [profile.pre_global_structs]
 skip = ["*/g/*", "*/*7702*", "*/*BlockHashLib*", "*/*Transient*", "*/ext/ithaca/*", "*/ext/zksync/*"]
 
-[profile.post_cancun]
-evm_version = "cancun"
+
+[profile.post_osaka]
+evm_version = "osaka"
 skip = ["*/ext/ithaca/*"]
 
 [profile.zksync]
@@ -29,8 +32,9 @@ evm_version = "cancun"
 skip = []
 
 [profile.ithaca]
-evm_version = "cancun"
-odyssey = true
+gas_limit = 16_777_216 # To prevent EVM error.
+evm_version = "prague"
+test = "test/ext/ithaca"
 skip = []
 
 [profile.solx]
@@ -44,8 +48,12 @@ remappings = [
   "forge-std=test/utils/forge-std/"
 ]
 
+[lint]
+lint_on_build = false
+
 [fmt]
 line_length = 100 # While we allow up to 120, we lint at 100 for readability.
+ignore = ["src/accounts/EIP7702Proxy.sol"]
 
 [profile.default.fuzz]
 runs = 256

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.32;
 
-import { IProbs } from './interfaces/IProbs.sol';
 import { E_Male_Skin, E_Male_Eyes, E_Male_Face, E_Male_Chain, E_Male_Earring, E_Male_Scarf, E_Male_Facial_Hair, E_Male_Mask, E_Male_Hair, E_Male_Hat_Hair, E_Male_Headwear, E_Male_Eye_Wear, E_Female_Skin, E_Female_Eyes, E_Female_Face, E_Female_Chain, E_Female_Earring, E_Female_Scarf, E_Female_Mask, E_Female_Hair, E_Female_Hat_Hair, E_Female_Headwear, E_Female_Eye_Wear, E_Female_Skin, E_Female_Eyes, E_Female_Face, E_Female_Chain, E_Female_Earring, E_Female_Scarf, E_Female_Mask, E_Female_Hair, E_Female_Hat_Hair, E_Female_Headwear, E_Female_Eye_Wear, E_Mouth } from "./common/Enums.sol";
 import { TraitsContext, MaleTraits, FemaleTraits } from './common/Structs.sol';
 import { LibPRNG } from "./libraries/LibPRNG.sol";
@@ -10,8 +9,7 @@ import { LibTraits } from "./libraries/LibTraits.sol";
 /**
  * @author ECHO
  */
-
-contract Probs is IProbs {
+contract Probs {
 
     // ---------- Male Probs ---------- //
 
@@ -50,7 +48,7 @@ contract Probs is IProbs {
 
         bytes private constant F_SKIN = hex"0000001900E1000F002D0041001402EE02EE02EE02EE02EE02EE02EE02EE02EE02EE02EE02EE00080019005A0016000A012C0096";
 
-        bytes private constant F_EYES = hex"000000320064000B000B000B000B000B000B000B000B000B00FA001E001E001E001E001E001E001E001E101D00190019101D007D01F401F4004B";
+        bytes private constant F_EYES = hex"000000320064000B000B000B000B000B000B000B000B000B00FA001E001E001E001E001E001E001E001E00000000101D00190019101D007D01F401F4004B";
 
         bytes private constant F_FACE_A = hex"24A10010000C004B0010007D0023000A000A00080012000A0016000C00C8000C0014000E0008";
         bytes private constant F_FACE_B = hex"25C100000000004B001000000000000A000A0000000000000000000C00C8000C000000000000";
@@ -72,7 +70,7 @@ contract Probs is IProbs {
 
         bytes private constant F_EYEWEAR = hex"03C801DB00160016001600160016000A000A000A000A000A000A000A000A002E002E002E002E002E002E002E002E002E002E002E0014001400140014001400140014001401DB00400040004000400040004000400040004000170118021C013D001C001C001C001C001C001C001C0190003E003E003E003E003E003E023A00040003000300050005000500050005000500050005023000E10045027401A900030003000300030003000300030003000300320032003200320032003200320032003200320032004000400040004000400040004000400040015B0021002100210021000500050005000500050005000500050005";
 
-    function selectAllMaleTraits(TraitsContext memory ctx, LibPRNG.PRNG memory prng) external pure returns (MaleTraits memory) {
+    function selectAllMaleTraits(TraitsContext memory ctx, LibPRNG.PRNG memory prng) internal pure returns (MaleTraits memory) {
 
         MaleTraits memory m;
 
@@ -98,7 +96,7 @@ contract Probs is IProbs {
         return m;
     }
 
-    function selectAllFemaleTraits(TraitsContext memory ctx, LibPRNG.PRNG memory prng) external pure returns (FemaleTraits memory) {
+    function selectAllFemaleTraits(TraitsContext memory ctx, LibPRNG.PRNG memory prng) internal pure returns (FemaleTraits memory) {
 
         FemaleTraits memory f;
 

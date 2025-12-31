@@ -2721,11 +2721,7 @@ library LibClone {
     }
 
     /// @dev Equivalent to `argsOnERC1967IBeaconProxy(instance, start, 2 ** 256 - 1)`.
-    function argsOnERC1967IBeaconProxy(address instance)
-        internal
-        view
-        returns (bytes memory args)
-    {
+    function argsOnERC1967IBeaconProxy(address instance) internal view returns (bytes memory args) {
         /// @solidity memory-safe-assembly
         assembly {
             args := mload(0x40)

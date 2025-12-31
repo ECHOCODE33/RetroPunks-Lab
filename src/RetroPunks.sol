@@ -6,6 +6,8 @@ import { NUM_SPECIAL_1S, NUM_BACKGROUND, E_Background } from "./common/Enums.sol
 import { LibPRNG } from "./libraries/LibPRNG.sol";
 import { Utils } from "./libraries/Utils.sol";
 import { ERC721SeaDropPausable } from "./seadrop/extensions/ERC721SeaDropPausable.sol";
+import { ERC721ContractMetadata } from "./seadrop/ERC721ContractMetadata.sol";
+import { ISeaDropTokenContractMetadata } from "./seadrop/interfaces/ISeaDropTokenContractMetadata.sol";
 
 /**
  * @author ECHO
@@ -26,7 +28,7 @@ contract RetroPunks is ERC721SeaDropPausable {
     bytes32 public immutable COMMITTED_GLOBAL_SEED_HASH;
     bytes32 public immutable COMMITTED_SHUFFLER_SEED_HASH;
 
-    uint16 public ownerMintsRemaining = 100;
+    uint16 public ownerMintsRemaining = 1000;
     uint public globalSeed;
     uint public shufflerSeed;
 
@@ -60,12 +62,13 @@ contract RetroPunks is ERC721SeaDropPausable {
     event BioChanged(uint256 indexed tokenId, string bio, address indexed owner);
     
     event MetadataUpdate(uint256 _tokenId);
+    event OwnerMintsUpdated(uint256 newAmount);
 
 
     // ----- Errors ----- //
 
     error MintIsClosed();
-    error PreRenderedSpecialCustomization();
+    error PreRenderedSpecialCannotBeCustomized();
     error NameIsTooLong();
     error BioIsTooLong();
     error InvalidCharacterInName();
@@ -79,27 +82,43 @@ contract RetroPunks is ERC721SeaDropPausable {
     error CallerIsNotTokenOwner();
     error NotEnoughOwnerMintsRemaining();
     error InvalidBackgroundIndex();
+    error MaxSupplyLessThanTotalMinted();
+    error Mint_Total_Supply_Before_Setting_Max_Supply();
 
 
     // ----- Modifiers ----- //
 
-    modifier tokenExists(uint _tokenId) {
-        if (!_exists(_tokenId)) revert NonExistentToken();
+    modifier tokenExists(uint256 _tokenId) {
+        _tokenExists(_tokenId);
         _;
     }
-
-    modifier onlyTokenOwner(uint _tokenId) {
-        if (ownerOf(_tokenId) != msg.sender) revert CallerIsNotTokenOwner();
+    
+    modifier onlyTokenOwner(uint256 _tokenId) {
+        _onlyTokenOwner(_tokenId);
         _;
     }
 
     modifier notSpecial(uint256 tokenId) {
-        uint16 tokenIdSeed = globalTokenMetadata[tokenId].tokenIdSeed;
-        if (tokenIdSeed < NUM_SPECIAL_1S) {
-            if (tokenIdSeed < 7) revert PreRenderedSpecialCustomization();
-        }
+        _notSpecial(tokenId);
         _;
     }
+
+    function _tokenExists(uint256 _tokenId) internal view {
+        if (!_exists(_tokenId)) revert NonExistentToken();
+    }
+
+    function _onlyTokenOwner(uint256 _tokenId) internal view {
+        if (ownerOf(_tokenId) != msg.sender) revert CallerIsNotTokenOwner();
+    }
+
+    function _notSpecial(uint256 tokenId) internal view {
+        uint16 tokenIdSeed = globalTokenMetadata[tokenId].tokenIdSeed;
+        if (tokenIdSeed < NUM_SPECIAL_1S) {
+            if (tokenIdSeed < 7) revert PreRenderedSpecialCannotBeCustomized();
+        }
+    }
+
+    // ----- Constructor ----- //
 
     constructor(
         ISVGRenderer _rendererParam, 
@@ -147,16 +166,41 @@ contract RetroPunks is ERC721SeaDropPausable {
         
         shufflerSeed = _seed;
         shufflerSeedRevealed = true;
-        _tokenIdSeedShuffler.initialize(_maxSupply);
+
+        // Initialize with the CURRENT max supply (e.g., 10,000).
+        // This guarantees all seeds (including the 7 specials) 
+        // are distributed within these 10,000 tokens.
+        _tokenIdSeedShuffler.initialize(_maxSupply); 
         
         emit ShufflerSeedRevealed(_seed);
     }
 
     function ownerMint(address toAddress, uint256 quantity) external onlyOwner nonReentrant {
-        if (!(ownerMintsRemaining >= quantity)) revert NotEnoughOwnerMintsRemaining();
+        if (ownerMintsRemaining < quantity) revert NotEnoughOwnerMintsRemaining();
         ownerMintsRemaining -= uint16(quantity);
         _checkMaxSupply(quantity);
+        
+        // CRITICAL: You must add this line so your owner mints get traits!
+        _addInternalMintMetadata(quantity); 
+        
         _safeMint(toAddress, quantity);
+    }
+
+    /**
+     * @dev Overrides the base setMaxSupply to add safety checks 
+     * ensuring rarity batches are completed before expansion.
+     */
+    function setMaxSupply(uint256 newMaxSupply) external onlyOwner override(ERC721ContractMetadata, ISeaDropTokenContractMetadata) {
+        // Safety check: Ensure the current batch is actually finished
+        if (_totalMinted() < _maxSupply) revert Mint_Total_Supply_Before_Setting_Max_Supply();
+        
+        if (newMaxSupply < _totalMinted()) revert MaxSupplyLessThanTotalMinted();
+        _maxSupply = newMaxSupply;
+
+        if (shufflerSeedRevealed) {
+            _tokenIdSeedShuffler.initialize(newMaxSupply);
+        }
+        emit MaxSupplyUpdated(newMaxSupply);
     }
 
 
@@ -214,22 +258,27 @@ contract RetroPunks is ERC721SeaDropPausable {
         if (remaining == 0) revert NoRemainingTokens();
 
         uint256 numShuffled = _tokenIdSeedShuffler.numShuffled();
-        uint256 randomness = uint256(keccak256(abi.encodePacked(shufflerSeed, numShuffled, tokenId)));
+        
+        // IMPORTANT: We use the shufflerSeed and the count.
+        // We DO NOT include _maxSupply in the salt here if we want 
+        // the sequence to stay stable when the supply increases.
+        uint256 randomness = uint256(keccak256(abi.encodePacked(shufflerSeed, numShuffled)));
+        
         uint newTokenIdSeed = _tokenIdSeedShuffler.next(randomness);
         
         globalTokenMetadata[tokenId] = TokenMetadata({
             tokenIdSeed: uint16(newTokenIdSeed),
             backgroundIndex: defaultBackgroundIndex,
             name: _getInitialName(tokenId, uint16(newTokenIdSeed)),
-            bio: "A RetroPunk living on-chain." // Default Bio
+            bio: "A RetroPunk living on-chain."
         });
     }
 
     function _addInternalMintMetadata(uint256 quantity) internal {
         if (!shufflerSeedRevealed) revert ShufflerSeedNotRevealedYet();
-        uint256 currentTokenId = totalSupply();
+        uint256 currentMintCount = _totalMinted(); // Changed from totalSupply()
         for(uint256 i = 0; i < quantity; i++) {
-            _saveNewSeed(currentTokenId + i + 1, _maxSupply - (currentTokenId + i));
+            _saveNewSeed(currentMintCount + i + 1, _maxSupply - (currentMintCount + i));
         }
     }
 

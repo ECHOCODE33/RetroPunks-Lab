@@ -110,10 +110,7 @@ abstract contract Test is Script {
         if (!__eq(left, right)) vm.assertEq(left, right);
     }
 
-    function assertEq(string memory left, string memory right, string memory err)
-        internal
-        virtual
-    {
+    function assertEq(string memory left, string memory right, string memory err) internal virtual {
         if (!__eq(left, right)) vm.assertEq(left, right, err);
     }
 
@@ -129,10 +126,7 @@ abstract contract Test is Script {
         if (!__eq(left, right)) vm.assertEq(left, right);
     }
 
-    function assertEq(bool[] memory left, bool[] memory right, string memory err)
-        internal
-        virtual
-    {
+    function assertEq(bool[] memory left, bool[] memory right, string memory err) internal virtual {
         if (!__eq(left, right)) vm.assertEq(left, right, err);
     }
 
@@ -577,7 +571,10 @@ abstract contract Test is Script {
         uint256 left,
         uint256 right,
         uint256 maxPercentDelta // An 18 decimal fixed point number, where 1e18 == 100%
-    ) internal virtual {
+    )
+        internal
+        virtual
+    {
         vm.assertApproxEqRel(left, right, maxPercentDelta);
     }
 
@@ -692,11 +689,7 @@ abstract contract Test is Script {
         }
     }
 
-    function __eq(int256[] memory left, int256[] memory right)
-        internal
-        pure
-        returns (bool result)
-    {
+    function __eq(int256[] memory left, int256[] memory right) internal pure returns (bool result) {
         /// @solidity memory-safe-assembly
         assembly {
             result := keccak256(left, shl(5, add(1, mload(left))))
@@ -716,11 +709,7 @@ abstract contract Test is Script {
         }
     }
 
-    function __eq(string[] memory left, string[] memory right)
-        internal
-        pure
-        returns (bool result)
-    {
+    function __eq(string[] memory left, string[] memory right) internal pure returns (bool result) {
         /// @solidity memory-safe-assembly
         assembly {
             let n := mload(left)

@@ -16,11 +16,9 @@ contract Deploy is Script {
 
         Assets assets = new Assets();
 
-        Probs probs = new Probs();
+        // Probs probs = new Probs();
 
-        Traits traits = new Traits(
-            Probs(address(probs))
-        );
+        Traits traits = new Traits(/* Probs(address(probs)) */);
 
         SVGRenderer renderer = new SVGRenderer(
             Assets(address(assets)),
@@ -47,7 +45,7 @@ contract Deploy is Script {
         );
 
         console.log("Assets::", address(assets));
-        console.log("Probs:", address(probs));
+        // console.log("Probs:", address(probs));
         console.log("Traits:", address(traits));
         console.log("SVGRenderer:", address(renderer));
         console.log("RetroPunks:", address(retroPunks));

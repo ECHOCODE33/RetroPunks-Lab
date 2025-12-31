@@ -24,7 +24,7 @@ import {Assets} from "../src/Assets.sol";
  * 4. Run with `forge script` (no --broadcast needed – view only).
  */
 contract VerifyAssets is Script {
-    address constant assetsAddress = 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512;
+    address constant assetsAddress = 0xE2576C57056F7D3d661aD0C7B1cF1187A72D8B93;
 
     bool constant FULL_VERIFICATION = false;
 
@@ -75,6 +75,8 @@ contract VerifyAssets is Script {
         EXPECTED_ASSETS.push(ExpectedAsset(107, "The Portrait"));
 
         EXPECTED_ASSETS.push(ExpectedAsset(1000, "Rainbow"));
+
+        EXPECTED_ASSETS.push(ExpectedAsset(333, "GIF"));
     }
 
     // ====================== SCRIPT LOGIC ======================

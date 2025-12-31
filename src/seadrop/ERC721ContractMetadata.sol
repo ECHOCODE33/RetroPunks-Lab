@@ -134,7 +134,7 @@ contract ERC721ContractMetadata is
      *
      * @param newMaxSupply The new max supply to set.
      */
-    function setMaxSupply(uint256 newMaxSupply) external {
+    function setMaxSupply(uint256 newMaxSupply) external virtual {
         // Ensure the sender is only the owner or contract itself.
         _onlyOwnerOrSelf();
 

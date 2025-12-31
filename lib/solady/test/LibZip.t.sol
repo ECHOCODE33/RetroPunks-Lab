@@ -187,7 +187,9 @@ contract LibZipTest is SoladyTest {
                         let d := byte(31, mload(data))
                         // Fill with either 0xff or 0x00.
                         mstore(o, not(0))
-                        if iszero(gt(d, 0x7f)) { calldatacopy(o, calldatasize(), add(d, 1)) }
+                        if iszero(gt(d, 0x7f)) {
+                            calldatacopy(o, calldatasize(), add(d, 1))
+                        }
                         o := add(o, add(and(d, 0x7f), 1))
                         continue
                     }
@@ -521,7 +523,8 @@ contract LibZipTest is SoladyTest {
         /// @solidity memory-safe-assembly
         assembly {
             let n := 0
-            for {} byte(n, s) { n := add(n, 1) } {} // Scan for '\0'.
+            for {} // Scan for '\0'.
+             byte(n, s) { n := add(n, 1) } {}
             expected := n
             let m := 0x7F7F7F7F7F7F7F7F7F7F7F7F7F7F7F7F7F7F7F7F7F7F7F7F7F7F7F7F7F7F7F7F
             let x := not(or(or(add(and(s, m), m), s), m))

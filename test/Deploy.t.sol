@@ -23,9 +23,9 @@ contract RetroPunksTest is Test {
         // because we are testing locally, not on a real network.
 
         assets = new Assets();
-        probs = new Probs();
+        // probs = new Probs();
 
-        traits = new Traits(probs);
+        traits = new Traits(/* probs */);
 
         renderer = new SVGRenderer(assets, traits);
 
