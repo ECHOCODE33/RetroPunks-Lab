@@ -6,14 +6,14 @@ import {console} from "forge-std/console.sol";
 import {Assets} from "../src/Assets.sol";  // Adjust path to your Assets contract
 
 contract CheckMouthAsset is Script {
-    function run() external {
+    function run() external view {
         // Replace with your Assets contract address from the deployment
         address assetsAddress = 0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1;
         
         Assets assets = Assets(assetsAddress);
         
-        // Call loadAssetDecompressed for key 25 (Mouth Group)
-        bytes memory data = assets.loadAssetDecompressed(25);
+        // Call loadAsset (decompressed) for key 25 (Mouth Group)
+        bytes memory data = assets.loadAsset(25, true);
         
         // Log the length — should be >0 for valid data (e.g., hundreds of bytes for RLE + headers)
         console.log("Decompressed Length for Key 25: %s", data.length);

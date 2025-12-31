@@ -6,7 +6,29 @@ def generate_hex_string():
     # ---------------------------------------------------------
     input_code = """
             
-
+probs[uint(E_Male_Eyes.None)] = 0;
+            probs[uint(E_Male_Eyes.Left)] = 4125;
+            probs[uint(E_Male_Eyes.Right)] = 4125;
+            probs[uint(E_Male_Eyes.Tired_Left)] = 500;
+            probs[uint(E_Male_Eyes.Tired_Right)] = 500;
+            probs[uint(E_Male_Eyes.Confused)] = 250;
+            probs[uint(E_Male_Eyes.Tired_Confused)] = 125;
+            probs[uint(E_Male_Eyes.Closed)] = 100;
+            probs[uint(E_Male_Eyes.Wink)] = 76;
+            probs[uint(E_Male_Eyes.Blind)] = 50;
+            probs[uint(E_Male_Eyes.Clown_Eyes_Blue)] = 11;
+            probs[uint(E_Male_Eyes.Clown_Eyes_Green)] = 11;
+            probs[uint(E_Male_Eyes.Clown_Eyes_Orange)] = 11;
+            probs[uint(E_Male_Eyes.Clown_Eyes_Pink)] = 11;
+            probs[uint(E_Male_Eyes.Clown_Eyes_Purple)] = 11;
+            probs[uint(E_Male_Eyes.Clown_Eyes_Red)] = 11;
+            probs[uint(E_Male_Eyes.Clown_Eyes_Sky_Blue)] = 11;
+            probs[uint(E_Male_Eyes.Clown_Eyes_Turquoise)] = 11;
+            probs[uint(E_Male_Eyes.Clown_Eyes_Yellow)] = 11;
+            probs[uint(E_Male_Eyes.Possessed_Left)] = 25;
+            probs[uint(E_Male_Eyes.Possessed_Right)] = 25;
+            probs[uint(E_Male_Eyes.Ghost_Left)] = 0;
+            probs[uint(E_Male_Eyes.Ghost_Right)] = 0;
 
 
     """

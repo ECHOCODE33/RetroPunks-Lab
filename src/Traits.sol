@@ -1,28 +1,32 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.32;
 
-import { IFemaleProbs } from './interfaces/IFemaleProbs.sol';
-import { IMaleProbs } from './interfaces/IMaleProbs.sol';
-import { LibPRNG } from "./libraries/LibPRNG.sol";
-import { TraitsContext, TraitToRender, FillerTrait } from "./common/Structs.sol";
-import { NUM_SPECIAL_1S, E_Sex, E_Special_1s, E_Background, E_Male_Skin, E_Male_Eyes, E_Male_Face, E_Male_Chain, E_Male_Earring, E_Male_Scarf, E_Male_Facial_Hair, E_Male_Mask, E_Male_Hair, E_Male_Hat_Hair, E_Male_Headwear, E_Male_Eye_Wear, E_Female_Skin, E_Female_Eyes, E_Female_Face, E_Female_Chain, E_Female_Earring, E_Female_Scarf, E_Female_Mask, E_Female_Hair, E_Female_Hat_Hair, E_Female_Headwear, E_Female_Eye_Wear, E_Mouth, E_Filler_Traits, E_TraitsGroup } from "./common/Enums.sol";
-import { TraitsLib } from "./libraries/TraitsLib.sol";
 import { ITraits } from './interfaces/ITraits.sol';
+import { IProbs } from './interfaces/IProbs.sol';
+import { NUM_SPECIAL_1S, E_Sex, E_Background, E_Male_Skin, E_Male_Eyes, E_Male_Face, E_Male_Chain, E_Male_Earring, E_Male_Scarf, E_Male_Facial_Hair, E_Male_Mask, E_Male_Hair, E_Male_Hat_Hair, E_Male_Headwear, E_Male_Eye_Wear, E_Female_Skin, E_Female_Eyes, E_Female_Face, E_Female_Chain, E_Female_Earring, E_Female_Scarf, E_Female_Mask, E_Female_Hair, E_Female_Hat_Hair, E_Female_Headwear, E_Female_Eye_Wear, E_Mouth, E_Filler_Traits, E_TraitsGroup } from "./common/Enums.sol";
+import { TraitsContext, TraitToRender, FillerTrait, MaleTraits, FemaleTraits } from "./common/Structs.sol";
+import { LibPRNG } from "./libraries/LibPRNG.sol";
+import { LibTraits } from "./libraries/LibTraits.sol";
 
-error TraitsArrayOverflow(uint8 currentLength, uint8 maxLength);
-error InvalidTraitIndex(uint8 traitGroupIndex, uint8 traitIndex);
+/**
+ * @author ECHO
+ */
 
 contract Traits is ITraits {
 
-    IMaleProbs public immutable MALE_PROBS_CONTRACT;
-    IFemaleProbs public immutable FEMALE_PROBS_CONTRACT;
+    IProbs public immutable PROBS_CONTRACT;
 
-    constructor(IMaleProbs _maleProbsContract, IFemaleProbs _femaleProbsContract) {
-        MALE_PROBS_CONTRACT = _maleProbsContract;
-        FEMALE_PROBS_CONTRACT = _femaleProbsContract;
+    uint32 private constant MIN_DATE = 4102444800;
+    uint32 private constant RANGE_SIZE = 31496399; // (4133941199 - 4102444800) / max date - min date
+
+    error TraitsArrayOverflow(uint8 currentLength, uint8 maxLength);
+    error InvalidTraitIndex(uint8 traitGroupIndex, uint8 traitIndex);
+
+    constructor(IProbs _probsContract) {
+        PROBS_CONTRACT = _probsContract;
     }
 
-    function generateAllTraits(uint16 _tokenIdSeed, uint8 _backgroundIndex, uint256 _globalSeed) external view returns (TraitsContext memory) {
+    function generateTraitsContext(uint16 _tokenIdSeed, uint8 _backgroundIndex, uint256 _globalSeed) external view returns (TraitsContext memory) {
         LibPRNG.PRNG memory prng;
         LibPRNG.seed(prng, uint256(keccak256(abi.encodePacked(_tokenIdSeed, _globalSeed))));
         TraitsContext memory traits;
@@ -33,47 +37,45 @@ contract Traits is ITraits {
             traits.specialId = _tokenIdSeed + 1;
         }
 
-        // Birthday
-        uint32 minDate = 4102444800; 
-        uint32 maxDate = 4133941199; 
-        uint256 rangeSize = uint256(maxDate) - uint256(minDate) + 1;
-        traits.birthday = uint32(uint256(minDate) + LibPRNG.uniform(prng, rangeSize));
+        traits.birthday = uint32(MIN_DATE + LibPRNG.uniform(prng, RANGE_SIZE + 1));
 
-        // ----- SPECIAL 1s -----
         if (traits.specialId > 0) {
-            uint specialIdx = traits.specialId - 1;
             
-            if (_isPreRendered(specialIdx)) {
+            uint16 specialIdx = traits.specialId - 1;
+            
+            if (specialIdx < 7) {
                 return traits; 
             } 
             
-            // Rendered special 1s get background
             traits.background = E_Background(_backgroundIndex);
             _addBackground(traits);
             _addSpecial(traits, specialIdx);
+
             return traits;
         }
 
         traits.sex = LibPRNG.uniform(prng, 10000) < 7500 ? E_Sex.Male : E_Sex.Female;
-
-        // ----- MALE TRAITS -----
+        
         if (traits.sex == E_Sex.Male) {
 
             traits.background = E_Background(_backgroundIndex);
             _addBackground(traits);
 
-            traits.maleSkin = MALE_PROBS_CONTRACT.selectMaleSkin(prng);
-            traits.maleEyes = MALE_PROBS_CONTRACT.selectMaleEyes(traits, prng);
-            traits.maleFace = MALE_PROBS_CONTRACT.selectMaleFace(traits, prng);
-            traits.maleChain = MALE_PROBS_CONTRACT.selectMaleChain(prng);
-            traits.maleEarring = MALE_PROBS_CONTRACT.selectMaleEarring(prng);
-            traits.maleFacialHair = MALE_PROBS_CONTRACT.selectMaleFacialHair(traits, prng);
-            traits.maleMask = MALE_PROBS_CONTRACT.selectMaleMask(prng);
-            traits.maleScarf = MALE_PROBS_CONTRACT.selectMaleScarf(prng);
-            traits.maleHair = MALE_PROBS_CONTRACT.selectMaleHair(traits, prng);
-            traits.maleHatHair = MALE_PROBS_CONTRACT.selectMaleHatHair(traits, prng);
-            traits.maleHeadwear = MALE_PROBS_CONTRACT.selectMaleHeadwear(prng);
-            traits.maleEyeWear = MALE_PROBS_CONTRACT.selectMaleEyeWear(prng);
+            MaleTraits memory m = PROBS_CONTRACT.selectAllMaleTraits(traits, prng);
+            
+            traits.maleSkin = m.skin;
+            traits.maleEyes = m.eyes;
+            traits.maleFace = m.face;
+            traits.maleChain = m.chain;
+            traits.maleEarring = m.earring;
+            traits.maleFacialHair = m.facialHair;
+            traits.maleMask = m.mask;
+            traits.maleScarf = m.scarf;
+            traits.maleHair = m.hair;
+            traits.maleHatHair = m.hatHair;
+            traits.maleHeadwear = m.headwear;
+            traits.maleEyeWear = m.eyeWear;
+            traits.mouth = m.mouth;
 
             _addMaleSkin(traits);
             _addMaleEyes(traits);
@@ -82,7 +84,7 @@ contract Traits is ITraits {
             _addMaleEarring(traits);
 
             // 80% Facial Hair, 10% Mask, 10% nothing
-            if (TraitsLib.maleHasFacialHair(traits)) {
+            if (LibTraits.maleHasFacialHair(traits)) {
                 _addMaleFacialHair(traits);
             } else {
                 _addMaleMask(traits); 
@@ -91,7 +93,7 @@ contract Traits is ITraits {
             _addMaleScarf(traits);
             
             // 60% chance of headwear
-            if (TraitsLib.maleHasHeadwear(traits)) {
+            if (LibTraits.maleHasHeadwear(traits)) {
                 // 30% chance of hat hair
                 _addMaleHatHair(traits);
             } else {
@@ -102,25 +104,31 @@ contract Traits is ITraits {
 
             _addMaleHeadwear(traits);
             _addMaleEyeWear(traits);
+
+            if (!LibTraits.maleHasMask(traits)) {
+                _addMouth(traits);
+            }
         }
 
-        // ----- FEMALE TRAITS -----
         else {
             
             traits.background = E_Background(_backgroundIndex);
             _addBackground(traits);
 
-            traits.femaleSkin = FEMALE_PROBS_CONTRACT.selectFemaleSkin(prng);
-            traits.femaleEyes = FEMALE_PROBS_CONTRACT.selectFemaleEyes(traits, prng);
-            traits.femaleFace = FEMALE_PROBS_CONTRACT.selectFemaleFace(traits, prng);
-            traits.femaleChain = FEMALE_PROBS_CONTRACT.selectFemaleChain(prng);
-            traits.femaleEarring = FEMALE_PROBS_CONTRACT.selectFemaleEarring(prng);
-            traits.femaleMask = FEMALE_PROBS_CONTRACT.selectFemaleMask(prng);
-            traits.femaleScarf = FEMALE_PROBS_CONTRACT.selectFemaleScarf(prng);
-            traits.femaleHair = FEMALE_PROBS_CONTRACT.selectFemaleHair(traits, prng);
-            traits.femaleHatHair = FEMALE_PROBS_CONTRACT.selectFemaleHatHair(traits, prng);
-            traits.femaleHeadwear = FEMALE_PROBS_CONTRACT.selectFemaleHeadwear(prng);
-            traits.femaleEyeWear = FEMALE_PROBS_CONTRACT.selectFemaleEyeWear(prng);
+            FemaleTraits memory f = PROBS_CONTRACT.selectAllFemaleTraits(traits, prng);
+            
+            traits.femaleSkin = f.skin;
+            traits.femaleEyes = f.eyes;
+            traits.femaleFace = f.face;
+            traits.femaleChain = f.chain;
+            traits.femaleEarring = f.earring;
+            traits.femaleMask = f.mask;
+            traits.femaleScarf = f.scarf;
+            traits.femaleHair = f.hair;
+            traits.femaleHatHair = f.hatHair;
+            traits.femaleHeadwear = f.headwear;
+            traits.femaleEyeWear = f.eyeWear;
+            traits.mouth = f.mouth;
 
             _addFemaleSkin(traits);
             _addFemaleEyes(traits);
@@ -131,7 +139,7 @@ contract Traits is ITraits {
             _addFemaleScarf(traits);
 
             // Hat hair or regular hair
-            if (TraitsLib.femaleHasHeadwear(traits)) {
+            if (LibTraits.femaleHasHeadwear(traits)) {
                 _addFemaleHatHair(traits);
             } else {
                 _addFemaleHair(traits);
@@ -139,40 +147,18 @@ contract Traits is ITraits {
             
             _addFemaleHeadwear(traits);
             _addFemaleEyeWear(traits);
-        }
 
-        // === MOUTH (Both) ===
-        traits.mouth = MALE_PROBS_CONTRACT.selectMouth(traits, prng);
-        
-        // Only add mouth if not wearing a mask
-        if (!TraitsLib.femaleHasMask(traits) && !TraitsLib.maleHasMask(traits)) {
-            _addMouth(traits);
+            if (!LibTraits.femaleHasMask(traits)) {
+                _addMouth(traits);
+            }
         }
 
         return traits;
     }
 
-    function _isPreRendered(uint specialIdx) internal pure returns (bool) {
-        return (
-            specialIdx == uint(E_Special_1s.Predator_Blue) ||
-            specialIdx == uint(E_Special_1s.Predator_Green) ||
-            specialIdx == uint(E_Special_1s.Predator_Red) ||
-            specialIdx == uint(E_Special_1s.Santa_Claus) ||
-            specialIdx == uint(E_Special_1s.Shadow_Ninja) ||
-            specialIdx == uint(E_Special_1s.The_Devil) ||
-            specialIdx == uint(E_Special_1s.The_Portrait)
-        );
-    }
-
-    // ========================================================================
-    // INTERNAL TRAIT FUNCTIONS
-    // ========================================================================
-
     function _addSpecial(TraitsContext memory traits, uint specialIdx) internal pure {
         _addTraitToRender(traits, E_TraitsGroup.Special_1s_Group, uint8(specialIdx));
     }
-
-    // === MALE TRAITS ===
 
     function _addMaleSkin(TraitsContext memory traits) internal pure {
         _addTraitToRender(traits, E_TraitsGroup.Male_Skin_Group, uint8(traits.maleSkin));
@@ -243,8 +229,6 @@ contract Traits is ITraits {
         _addTraitToRender(traits, E_TraitsGroup.Male_Eye_Wear_Group, uint8(traits.maleEyeWear));
     }
 
-    // === FEMALE TRAITS ===
-
     function _addFemaleSkin(TraitsContext memory traits) internal pure {
         _addTraitToRender(traits, E_TraitsGroup.Female_Skin_Group, uint8(traits.femaleSkin));
     }
@@ -304,9 +288,7 @@ contract Traits is ITraits {
         _addTraitToRender(traits, E_TraitsGroup.Female_Eye_Wear_Group, uint8(traits.femaleEyeWear));
     }
 
-    // === SHARED TRAITS ===
-
-      function _addMouth(TraitsContext memory traits) internal pure {
+    function _addMouth(TraitsContext memory traits) internal pure {
         if (traits.mouth == E_Mouth.None) return;
         _addTraitToRender(traits, E_TraitsGroup.Mouth_Group, uint8(traits.mouth));
     }
@@ -314,10 +296,6 @@ contract Traits is ITraits {
     function _addBackground(TraitsContext memory traits) internal pure {
         _addTraitToRender(traits, E_TraitsGroup.Background_Group, uint8(traits.background));
     }
-
-    // ========================================================================
-    // TRAIT RENDERING HELPERS
-    // ========================================================================
 
     function _addTraitToRender(TraitsContext memory _traits, E_TraitsGroup _traitGroup, uint8 _traitIndex) internal pure {  
         TraitToRender memory traitToRender;

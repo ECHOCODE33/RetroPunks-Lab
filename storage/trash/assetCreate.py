@@ -47,7 +47,7 @@ def generate_gradient(input_colors, n):
 # --- Configuration ---
 
 # IMPORTANT: Ensure these paths exist on your system
-base_dir = '/Users/mani/Downloads/RPNKSLab/traitsColor'
+base_dir = '/Users/echo/Downloads/RPNKSLab/traitsColor'
 
 trait_groups = [
     {'index': 2, 'name': 'Male Skin', 'dir': os.path.join(base_dir, 'Male Skin')},

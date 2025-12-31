@@ -143,7 +143,7 @@ def decode_trait_group(encoded_data, trait_group_index):
 # IMPORTANT: Ensure these paths exist on your system
 # NOTE: Using a placeholder directory structure for execution.
 #       You will need to set this to a real path for the script to read files.
-base_dir = os.path.join(os.getcwd(), '/Users/mani/Downloads/RPNKSLab/traitsColor')
+base_dir = os.path.join(os.getcwd(), '/Users/echo/Downloads/RPNKSLab/traitsColor')
 
 trait_groups = [
     {'index': 2, 'name': 'Male Skin', 'dir': os.path.join(base_dir, 'Male Skin')},

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.32;
 
 import { Utils } from "./Utils.sol";
 import { LibString } from "./LibString.sol";
@@ -10,7 +10,7 @@ import { LibString } from "./LibString.sol";
 
 library Division {
     using Utils for int256;
-                        //        4               100,000,000             3
+
     function divisionStr(uint8 decimalPlaces, int256 numerator, int256 denominator) pure internal returns(string memory) {
         string memory result;
         (, , result) = _division(decimalPlaces, numerator, denominator);

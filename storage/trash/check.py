@@ -6,7 +6,7 @@ ENUM_STRING = """
 
 """
 
-SOLIDITY_FILE_PATH = "/Users/mani/Downloads/TestSpace/src/FemaleProbabilities.sol"
+SOLIDITY_FILE_PATH = "/Users/echo/Downloads/TestSpace/src/FemaleProbabilities.sol"
 # =================================================
 
 def audit_two_way():

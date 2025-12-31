@@ -15,7 +15,7 @@ import json
 # CONFIGURATION
 # ============================================================================
 
-TRAITS_DIR = "/Users/mani/Downloads/RPNKSLab/traitsColor"
+TRAITS_DIR = "/Users/echo/Downloads/RPNKSLab/traitsColor"
 OUTPUT_DIR = "output"
 DEBUG_DIR = "output/debug"
 
