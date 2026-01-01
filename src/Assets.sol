@@ -9,7 +9,6 @@ import { LibZip } from "./libraries/LibZip.sol";
 /**
  * @author ECHO
  */
-
 contract Assets is Ownable, IAssets {
 
     error EmptyAssetInBatch();

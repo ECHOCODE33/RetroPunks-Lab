@@ -46,11 +46,11 @@ contract Traits is ITraits, Probs {
     uint32 private constant MIN_DATE = 4102444800;
     uint32 private constant RANGE_SIZE = 31496399; 
 
-    uint256 private constant MALE_FILLER_MASK = (1 << uint8(E_Male_Skin.Robot)) | (1 << uint8(E_Male_Skin.Pumpkin));
-    uint256 private constant FEMALE_FILLER_MASK = (1 << uint8(E_Female_Skin.Robot));
+    uint256 private constant MALE_FILLER = (1 << uint8(E_Male_Skin.Robot)) | (1 << uint8(E_Male_Skin.Pumpkin));
+    uint256 private constant FEMALE_FILLER = (1 << uint8(E_Female_Skin.Robot));
 
 
-    function generateTraitsContext(uint16 _tokenIdSeed, uint8 _backgroundIndex, uint256 _globalSeed) external view returns (TraitsContext memory) {
+    function generateTraitsContext(uint16 _tokenIdSeed, uint8 _backgroundIndex, uint256 _globalSeed) external pure returns (TraitsContext memory) {
         LibPRNG.PRNG memory prng;
         LibPRNG.seed(prng, uint256(keccak256(abi.encodePacked(_tokenIdSeed, _globalSeed))));
 
@@ -109,14 +109,31 @@ contract Traits is ITraits, Probs {
 
             _addOptionalTrait(traits, E_TraitsGroup.Male_Scarf_Group, uint8(m.scarf));
             
+            // Add eye patch early (before hair/headwear) if applicable
+            if (LibTraits.maleEyeWearIsEyePatch(traits)) {
+                _addOptionalTrait(traits, E_TraitsGroup.Male_Eye_Wear_Group, uint8(m.eyeWear));
+            }
+
             if (LibTraits.maleHasHeadwear(traits)) {
                 _addOptionalTrait(traits, E_TraitsGroup.Male_Hat_Hair_Group, uint8(m.hatHair));
             } else {
                 _addOptionalTrait(traits, E_TraitsGroup.Male_Hair_Group, uint8(m.hair));
             }
 
-            _addMaleHeadwear(traits);
-            _addOptionalTrait(traits, E_TraitsGroup.Male_Eye_Wear_Group, uint8(m.eyeWear));
+            // Add headwear only if NOT Cloak/Hoodie
+            if (LibTraits.maleHasHeadwear(traits) && !LibTraits.maleHeadwearIsCloakOrHoodie(traits)) {
+                _addMaleHeadwear(traits);
+            }
+
+            // Add regular eye wear (excluding eye patches)
+            if (!LibTraits.maleEyeWearIsEyePatch(traits)) {
+                _addOptionalTrait(traits, E_TraitsGroup.Male_Eye_Wear_Group, uint8(m.eyeWear));
+            }
+
+            // Add Cloak/Hoodie headwear after eye wear
+            if (LibTraits.maleHasHeadwear(traits) && LibTraits.maleHeadwearIsCloakOrHoodie(traits)) {
+                _addMaleHeadwear(traits);
+            }
 
             if (!LibTraits.maleHasMask(traits)) {
                 _addOptionalTrait(traits, E_TraitsGroup.Mouth_Group, uint8(m.mouth));
@@ -146,14 +163,31 @@ contract Traits is ITraits, Probs {
             _addOptionalTrait(traits, E_TraitsGroup.Female_Mask_Group, uint8(f.mask));
             _addOptionalTrait(traits, E_TraitsGroup.Female_Scarf_Group, uint8(f.scarf));
 
+            // Add eye patch early (before hair/headwear) if applicable
+            if (LibTraits.femaleEyeWearIsEyePatch(traits)) {
+                _addOptionalTrait(traits, E_TraitsGroup.Female_Eye_Wear_Group, uint8(f.eyeWear));
+            }
+
             if (LibTraits.femaleHasHeadwear(traits)) {
                 _addOptionalTrait(traits, E_TraitsGroup.Female_Hat_Hair_Group, uint8(f.hatHair));
             } else {
                 _addOptionalTrait(traits, E_TraitsGroup.Female_Hair_Group, uint8(f.hair));
             }
             
-            _addFemaleHeadwear(traits);
-            _addOptionalTrait(traits, E_TraitsGroup.Female_Eye_Wear_Group, uint8(f.eyeWear));
+            // Add headwear only if NOT Cloak/Hoodie
+            if (LibTraits.femaleHasHeadwear(traits) && !LibTraits.femaleHeadwearIsCloakOrHoodie(traits)) {
+                _addFemaleHeadwear(traits);
+            }
+
+            // Add regular eye wear (excluding eye patches)
+            if (!LibTraits.femaleEyeWearIsEyePatch(traits)) {
+                _addOptionalTrait(traits, E_TraitsGroup.Female_Eye_Wear_Group, uint8(f.eyeWear));
+            }
+
+            // Add Cloak/Hoodie headwear after eye wear
+            if (LibTraits.femaleHasHeadwear(traits) && LibTraits.femaleHeadwearIsCloakOrHoodie(traits)) {
+                _addFemaleHeadwear(traits);
+            }
 
             if (!LibTraits.femaleHasMask(traits)) {
                 _addOptionalTrait(traits, E_TraitsGroup.Mouth_Group, uint8(f.mouth));
@@ -163,34 +197,34 @@ contract Traits is ITraits, Probs {
         return traits;
     }
 
-    // --- Optimized Internal Helpers ---
-
     function _addOptionalTrait(TraitsContext memory _traits, E_TraitsGroup _group, uint8 _index) internal pure {
         if (_index == 0) return; // index 0 is always 'None'
         _addTraitToRender(_traits, _group, _index);
     }
 
     function _addMaleHeadwear(TraitsContext memory traits) internal pure {
-        uint8 hw = uint8(traits.maleHeadwear);
-        if (hw == 0) return;
+        uint8 headwear = uint8(traits.maleHeadwear);
+        if (headwear == 0) return;
 
-        _addTraitToRender(traits, E_TraitsGroup.Male_Headwear_Group, hw);
+        _addTraitToRender(traits, E_TraitsGroup.Male_Headwear_Group, headwear);
         
-        if ((MALE_FILLER_MASK >> uint8(traits.maleSkin)) & 1 == 1) {
+        if ((MALE_FILLER >> uint8(traits.maleSkin)) & 1 == 1) {
+
             uint8 filler = traits.maleSkin == E_Male_Skin.Robot 
                 ? uint8(E_Filler_Traits.Male_Robot_Headwear_Cover) 
                 : uint8(E_Filler_Traits.Male_Pumpkin_Headwear_Cover);
+
             _addFillerTrait(traits, E_TraitsGroup.Filler_Traits_Group, filler);
         }
     }
 
     function _addFemaleHeadwear(TraitsContext memory traits) internal pure {
-        uint8 hw = uint8(traits.femaleHeadwear);
-        if (hw == 0) return;
+        uint8 headwear = uint8(traits.femaleHeadwear);
+        if (headwear == 0) return;
 
-        _addTraitToRender(traits, E_TraitsGroup.Female_Headwear_Group, hw);
+        _addTraitToRender(traits, E_TraitsGroup.Female_Headwear_Group, headwear);
 
-        if ((FEMALE_FILLER_MASK >> uint8(traits.femaleSkin)) & 1 == 1) {
+        if ((FEMALE_FILLER >> uint8(traits.femaleSkin)) & 1 == 1) {
             _addFillerTrait(traits, E_TraitsGroup.Filler_Traits_Group, uint8(E_Filler_Traits.Female_Robot_Headwear_Cover));
         }
     }

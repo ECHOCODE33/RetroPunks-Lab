@@ -9,17 +9,17 @@ import { ERC721SeaDropPausable } from "./seadrop/extensions/ERC721SeaDropPausabl
 import { ERC721ContractMetadata } from "./seadrop/ERC721ContractMetadata.sol";
 import { ISeaDropTokenContractMetadata } from "./seadrop/interfaces/ISeaDropTokenContractMetadata.sol";
 
-/**
- * @author ECHO
- */
  
 struct TokenMetadata {
     uint16 tokenIdSeed;
     uint8 backgroundIndex;
     string name;
-    string bio; // Added bio field
+    string bio;
 }
 
+/**
+ * @author ECHO
+ */
 contract RetroPunks is ERC721SeaDropPausable {
     using LibPRNG for LibPRNG.LazyShuffler;
 
@@ -167,9 +167,6 @@ contract RetroPunks is ERC721SeaDropPausable {
         shufflerSeed = _seed;
         shufflerSeedRevealed = true;
 
-        // Initialize with the CURRENT max supply (e.g., 10,000).
-        // This guarantees all seeds (including the 7 specials) 
-        // are distributed within these 10,000 tokens.
         _tokenIdSeedShuffler.initialize(_maxSupply); 
         
         emit ShufflerSeedRevealed(_seed);
@@ -180,18 +177,14 @@ contract RetroPunks is ERC721SeaDropPausable {
         ownerMintsRemaining -= uint16(quantity);
         _checkMaxSupply(quantity);
         
-        // CRITICAL: You must add this line so your owner mints get traits!
         _addInternalMintMetadata(quantity); 
         
         _safeMint(toAddress, quantity);
     }
 
-    /**
-     * @dev Overrides the base setMaxSupply to add safety checks 
-     * ensuring rarity batches are completed before expansion.
-     */
+
     function setMaxSupply(uint256 newMaxSupply) external onlyOwner override(ERC721ContractMetadata, ISeaDropTokenContractMetadata) {
-        // Safety check: Ensure the current batch is actually finished
+        
         if (_totalMinted() < _maxSupply) revert Mint_Total_Supply_Before_Setting_Max_Supply();
         
         if (newMaxSupply < _totalMinted()) revert MaxSupplyLessThanTotalMinted();
@@ -259,9 +252,6 @@ contract RetroPunks is ERC721SeaDropPausable {
 
         uint256 numShuffled = _tokenIdSeedShuffler.numShuffled();
         
-        // IMPORTANT: We use the shufflerSeed and the count.
-        // We DO NOT include _maxSupply in the salt here if we want 
-        // the sequence to stay stable when the supply increases.
         uint256 randomness = uint256(keccak256(abi.encodePacked(shufflerSeed, numShuffled)));
         
         uint newTokenIdSeed = _tokenIdSeedShuffler.next(randomness);
@@ -276,7 +266,7 @@ contract RetroPunks is ERC721SeaDropPausable {
 
     function _addInternalMintMetadata(uint256 quantity) internal {
         if (!shufflerSeedRevealed) revert ShufflerSeedNotRevealedYet();
-        uint256 currentMintCount = _totalMinted(); // Changed from totalSupply()
+        uint256 currentMintCount = _totalMinted();
         for(uint256 i = 0; i < quantity; i++) {
             _saveNewSeed(currentMintCount + i + 1, _maxSupply - (currentMintCount + i));
         }
@@ -313,13 +303,10 @@ contract RetroPunks is ERC721SeaDropPausable {
         string memory attributes;
         (svg, attributes) = renderer.renderSVG(_tokenIdSeed, _backgroundIndex, _globalSeed);
 
-        // Name Formatting Logic
         string memory displayName = keccak256(bytes(_name)) == keccak256(bytes(string.concat("#", Utils.toString(_tokenId))))
             ? _name
             : string.concat("#", Utils.toString(_tokenId), ": ", _name);
 
-        // JSON Construction
-        // We use the 'bio' as the 'description' field in the metadata
         string memory json = string.concat(
             '{"name":"', displayName,
             '","description":"', _bio, '",',

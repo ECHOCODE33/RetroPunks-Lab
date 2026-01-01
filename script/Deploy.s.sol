@@ -8,6 +8,7 @@ import {Assets} from "../src/Assets.sol";
 import {Probs} from "../src/Probs.sol";
 import {Traits} from "../src/Traits.sol";
 import {SVGRenderer} from "../src/SVGRenderer.sol";
+import {PreRevealSVGRenderer} from "../src/PreRevealSVGRenderer.sol";
 import {RetroPunks} from "../src/RetroPunks.sol";
 
 contract Deploy is Script {
@@ -16,14 +17,17 @@ contract Deploy is Script {
 
         Assets assets = new Assets();
 
-        // Probs probs = new Probs();
+        Traits traits = new Traits();
 
-        Traits traits = new Traits(/* Probs(address(probs)) */);
+        PreRevealSVGRenderer prerenderer = new PreRevealSVGRenderer(
+            Assets(address(assets))
+        );
 
         SVGRenderer renderer = new SVGRenderer(
             Assets(address(assets)),
             Traits(address(traits))
         );
+
 
         bytes32 committedGlobalSeedHash = keccak256(
             abi.encodePacked(uint256(9836428957), uint256(2829003893))
@@ -37,7 +41,7 @@ contract Deploy is Script {
         allowedSeaDrop[0] = 0x00005EA00Ac477B1030CE78506496e8C2dE24bf5;
 
         RetroPunks retroPunks = new RetroPunks(
-            SVGRenderer(address(renderer)),
+            PreRevealSVGRenderer(address(prerenderer)),
             committedGlobalSeedHash,
             committedShufflerSeedHash,
             maxSupply,
@@ -45,8 +49,8 @@ contract Deploy is Script {
         );
 
         console.log("Assets::", address(assets));
-        // console.log("Probs:", address(probs));
         console.log("Traits:", address(traits));
+        console.log("PreRevealSVGRenderer:", address(prerenderer));
         console.log("SVGRenderer:", address(renderer));
         console.log("RetroPunks:", address(retroPunks));
 

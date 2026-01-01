@@ -58,6 +58,11 @@
 			},
 			{
 				"inputs": [],
+				"name": "BioIsTooLong",
+				"type": "error"
+			},
+			{
+				"inputs": [],
 				"name": "CallerIsNotTokenOwner",
 				"type": "error"
 			},
@@ -93,11 +98,6 @@
 				"type": "error"
 			},
 			{
-				"inputs": [],
-				"name": "InvalidQueryRange",
-				"type": "error"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -111,6 +111,11 @@
 			{
 				"inputs": [],
 				"name": "InvalidShufflerSeedReveal",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "MaxSupplyLessThanTotalMinted",
 				"type": "error"
 			},
 			{
@@ -151,6 +156,11 @@
 			},
 			{
 				"inputs": [],
+				"name": "Mint_Total_Supply_Before_Setting_Max_Supply",
+				"type": "error"
+			},
+			{
+				"inputs": [],
 				"name": "NameIsTooLong",
 				"type": "error"
 			},
@@ -177,7 +187,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "NoRemainingTokenElements",
+				"name": "NoRemainingTokens",
 				"type": "error"
 			},
 			{
@@ -222,7 +232,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "PreRenderedSpecialCustomization",
+				"name": "PreRenderedSpecialCannotBeCustomized",
 				"type": "error"
 			},
 			{
@@ -433,6 +443,31 @@
 					{
 						"indexed": true,
 						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "bio",
+						"type": "string"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					}
+				],
+				"name": "BioChanged",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
 						"name": "fromTokenId",
 						"type": "uint256"
 					},
@@ -501,13 +536,26 @@
 				"anonymous": false,
 				"inputs": [
 					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "_tokenId",
+						"type": "uint256"
+					}
+				],
+				"name": "MetadataUpdate",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
 						"indexed": true,
 						"internalType": "uint256",
 						"name": "tokenId",
 						"type": "uint256"
 					},
 					{
-						"indexed": true,
+						"indexed": false,
 						"internalType": "string",
 						"name": "name",
 						"type": "string"
@@ -520,6 +568,19 @@
 					}
 				],
 				"name": "NameChanged",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "newAmount",
+						"type": "uint256"
+					}
+				],
+				"name": "OwnerMintsUpdated",
 				"type": "event"
 			},
 			{
@@ -830,88 +891,6 @@
 						"type": "uint256"
 					}
 				],
-				"name": "explicitOwnershipOf",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "addr",
-								"type": "address"
-							},
-							{
-								"internalType": "uint64",
-								"name": "startTimestamp",
-								"type": "uint64"
-							},
-							{
-								"internalType": "bool",
-								"name": "burned",
-								"type": "bool"
-							},
-							{
-								"internalType": "uint24",
-								"name": "extraData",
-								"type": "uint24"
-							}
-						],
-						"internalType": "struct IERC721A.TokenOwnership",
-						"name": "ownership",
-						"type": "tuple"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256[]",
-						"name": "tokenIds",
-						"type": "uint256[]"
-					}
-				],
-				"name": "explicitOwnershipsOf",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "addr",
-								"type": "address"
-							},
-							{
-								"internalType": "uint64",
-								"name": "startTimestamp",
-								"type": "uint64"
-							},
-							{
-								"internalType": "bool",
-								"name": "burned",
-								"type": "bool"
-							},
-							{
-								"internalType": "uint24",
-								"name": "extraData",
-								"type": "uint24"
-							}
-						],
-						"internalType": "struct IERC721A.TokenOwnership[]",
-						"name": "",
-						"type": "tuple[]"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "tokenId",
-						"type": "uint256"
-					}
-				],
 				"name": "getApproved",
 				"outputs": [
 					{
@@ -1032,6 +1011,11 @@
 					{
 						"internalType": "string",
 						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "bio",
 						"type": "string"
 					}
 				],
@@ -1457,19 +1441,6 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "tokenId",
-						"type": "uint256"
-					}
-				],
-				"name": "resetTokenName",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
 						"name": "_seed",
 						"type": "uint256"
 					},
@@ -1743,6 +1714,24 @@
 					},
 					{
 						"internalType": "string",
+						"name": "bio",
+						"type": "string"
+					}
+				],
+				"name": "setTokenBio",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
 						"name": "name",
 						"type": "string"
 					}
@@ -1837,54 +1826,6 @@
 						"internalType": "string",
 						"name": "",
 						"type": "string"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "owner",
-						"type": "address"
-					}
-				],
-				"name": "tokensOfOwner",
-				"outputs": [
-					{
-						"internalType": "uint256[]",
-						"name": "",
-						"type": "uint256[]"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "owner",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "start",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "stop",
-						"type": "uint256"
-					}
-				],
-				"name": "tokensOfOwnerIn",
-				"outputs": [
-					{
-						"internalType": "uint256[]",
-						"name": "",
-						"type": "uint256[]"
 					}
 				],
 				"stateMutability": "view",
@@ -2354,12 +2295,6 @@
 						"toTokenId": "The end token id."
 					}
 				},
-				"explicitOwnershipOf(uint256)": {
-					"details": "Returns the `TokenOwnership` struct at `tokenId` without reverting. If the `tokenId` is out of bounds: - `addr = address(0)` - `startTimestamp = 0` - `burned = false` - `extraData = 0` If the `tokenId` is burned: - `addr = <Address of owner before token was burned>` - `startTimestamp = <Timestamp when token was burned>` - `burned = true` - `extraData = <Extra data when token was burned>` Otherwise: - `addr = <Address of owner>` - `startTimestamp = <Timestamp of start of ownership>` - `burned = false` - `extraData = <Extra data at start of ownership>`"
-				},
-				"explicitOwnershipsOf(uint256[])": {
-					"details": "Returns an array of `TokenOwnership` structs at `tokenIds` in order. See {ERC721AQueryable-explicitOwnershipOf}"
-				},
 				"getApproved(uint256)": {
 					"details": "Returns the account approved for `tokenId` token. Requirements: - `tokenId` must exist."
 				},
@@ -2422,9 +2357,7 @@
 					}
 				},
 				"setMaxSupply(uint256)": {
-					"params": {
-						"newMaxSupply": "The new max supply to set."
-					}
+					"details": "Overrides the base setMaxSupply to add safety checks  ensuring rarity batches are completed before expansion."
 				},
 				"setProvenanceHash(bytes32)": {
 					"params": {
@@ -2446,12 +2379,6 @@
 				},
 				"tokenURI(uint256)": {
 					"details": "Overrides the `tokenURI()` function from ERC721A      to return just the base URI if it is implied to not be a directory.      This is to help with ERC721 contracts in which the same token URI      is desired for each token, such as when the tokenURI is 'unrevealed'."
-				},
-				"tokensOfOwner(address)": {
-					"details": "Returns an array of token IDs owned by `owner`. This function scans the ownership mapping and is O(`totalSupply`) in complexity. It is meant to be called off-chain. See {ERC721AQueryable-tokensOfOwnerIn} for splitting the scan into multiple smaller scans if the collection is large enough to cause an out-of-gas error (10K collections should be fine)."
-				},
-				"tokensOfOwnerIn(address,uint256,uint256)": {
-					"details": "Returns an array of token IDs owned by `owner`, in the range [`start`, `stop`) (i.e. `start <= tokenId < stop`). This function allows for tokens to be queried if the collection grows too big for a single call of {ERC721AQueryable-tokensOfOwner}. Requirements: - `start < stop`"
 				},
 				"totalSupply()": {
 					"details": "Returns the total number of tokens in existence. Burned tokens will reduce the count. To get the total number of tokens minted, please see {_totalMinted}."
@@ -2544,11 +2471,6 @@
 				"CannotExceedMaxSupplyOfUint64(uint256)": [
 					{
 						"notice": "Throw if the max supply exceeds uint64, a limit         due to the storage of bit-packed variables in ERC721A."
-					}
-				],
-				"InvalidQueryRange()": [
-					{
-						"notice": "Invalid query range (`start` >= `stop`)."
 					}
 				],
 				"MintERC2309QuantityExceedsLimit()": [
@@ -2726,9 +2648,6 @@
 				"setContractURI(string)": {
 					"notice": "Sets the contract URI for contract metadata."
 				},
-				"setMaxSupply(uint256)": {
-					"notice": "Sets the max token supply and emits an event."
-				},
 				"setProvenanceHash(bytes32)": {
 					"notice": "Sets the provenance hash and emits an event.         The provenance hash is used for random reveals, which         is a hash of the ordered metadata to show it has not been         modified after mint started.         This function will revert after the first item has been minted."
 				},
@@ -2829,14 +2748,6 @@
 				"dweb:/ipfs/QmeyDLmNk1gVAS4Fj4cpiiV8SgXEQJeJwDfLhQdD6oKHhz"
 			]
 		},
-		"lib/openzeppelin-contracts/contracts//interfaces/IERC2981.sol": {
-			"keccak256": "0xafab0e6c71905303c47dd254168cb31efc91f0ae284cde609b0202f97f85469e",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://824d05aec56eb82a2a3c28eece530dc0792d3a008b09d01444e57cf4aceb0445",
-				"dweb:/ipfs/QmVvqmJ5UobuRU9Q4JMyXxBfzKs2cpjbWXMNpxX4binTX8"
-			]
-		},
 		"lib/openzeppelin-contracts/contracts/interfaces/IERC2981.sol": {
 			"keccak256": "0xafab0e6c71905303c47dd254168cb31efc91f0ae284cde609b0202f97f85469e",
 			"license": "MIT",
@@ -2878,35 +2789,27 @@
 			]
 		},
 		"src/RetroPunks.sol": {
-			"keccak256": "0x7536e8dccdc52490f2ab8013ddc1631c2446f2c5e4a73899f833f1736d400f4d",
+			"keccak256": "0x410a3f5894fdc65f0adf3a76cabaf4e3c577542b41626a06f9bff8b73834b97f",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://9ac9d707bf5add7a81dc8b592b44ba2c3285d600423257da5b65463ef39602f5",
-				"dweb:/ipfs/QmPXLRbfNt4PNfZfNiaDyeozZZctFt8LntBjdyjHe5ECnF"
+				"bzz-raw://9502743272e74b3199e0400be70acdc0d47e3e16c11239cb4890d1e82691ffd9",
+				"dweb:/ipfs/QmXfU2okTHHawMReRxeGBgHrjA4Er9CrTumoq1NUdG29yD"
 			]
 		},
 		"src/common/Enums.sol": {
-			"keccak256": "0x2e2f9a36f784470101e941228cb900db8420b6bec75f4302b5440366b32137c5",
+			"keccak256": "0xe72dee4a67bf5ed3757ac779dffe26c470d252df74b351cbc4f694b1ac4b5e02",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://401382f3403d75155fdc4e16f136a82e18e4db888f1f0c63d5ee924c64c60d10",
-				"dweb:/ipfs/QmeDnq4eaaMrxrdgYSrf7rV8mT6MMTFx3aWVDo62cA1Vp3"
-			]
-		},
-		"src/interfaces/IAssets.sol": {
-			"keccak256": "0x00ea601a907279131f51bb8415c217568078181250a85e57d9d89894bde12afa",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://de6f2d05100f938ac2b0c298773b87f3ea49a1b68891cfef306b62e27f398225",
-				"dweb:/ipfs/QmWAfpH7pxE9hdynmSVw6nqvyEsTm2ai4P4srBAt6zcPpR"
+				"bzz-raw://1a091ff46cdfe52a9a2ad49b6c15605aacf87609dd9bc1d6d21109753b9f1d9f",
+				"dweb:/ipfs/QmQ7RT4D3nPD5oX63DjbtN7fdLAJvDNFb3n7hYjA2KTNXg"
 			]
 		},
 		"src/interfaces/ISVGRenderer.sol": {
-			"keccak256": "0x308bab08b35833c1768bbd109943336d2cc955a4eeabdb00b150d2984b5855cf",
+			"keccak256": "0x5fe1fd3e6f0d42cd872d3a055846f20a42b699db7c6209da67063be261a1880c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d2ecb34d2dbd15c2351f006f04b5f93e2d99c3e433f1c09f76bb870349d2277b",
-				"dweb:/ipfs/QmSwyMkzx3o2fJHsr9qthvjyjEiXmPofg5tAQHZx5XCJyz"
+				"bzz-raw://de9a9764717ef4f978bda8fe542cb6ac466ca12c5d5d50f7a53fdd207b662e11",
+				"dweb:/ipfs/QmWKaKtXg2YQMdZNXJ89rgTMhbnEmAVKmnyKf7kqiNGmXr"
 			]
 		},
 		"src/libraries/DynamicBuffer.sol": {
@@ -2926,19 +2829,19 @@
 			]
 		},
 		"src/libraries/Utils.sol": {
-			"keccak256": "0x05347d57925194dbc072c0b8e4dc9d82e370923030469eec04a16856f4db97e3",
+			"keccak256": "0xf541b1c7d16e916f9cefb7ce15d5f015386bb7e27e644b746fd33597827699ff",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://8fcfa964a7696f9283972a9d8ffd54523f2ad50aa920cbbf2ab7279822f17ea0",
-				"dweb:/ipfs/QmVbgZkv3rs9h6M1jeFkr4ZuYY3yhjc4YdeiR47Kgjo9e9"
+				"bzz-raw://0b9de239e5689ec93e2c2854b8092676416c2d517bdb9761f418589cfda34e3b",
+				"dweb:/ipfs/QmWxLYiqMQWeMQCAShTMNMP85VNppURivv9oa4RiAheAXD"
 			]
 		},
 		"src/seadrop/ERC721ContractMetadata.sol": {
-			"keccak256": "0x1431b518160e32396f630fa0ea09963cefc1514c8b3e84d96554269a1e072eb4",
+			"keccak256": "0x15767bbf42e06feddcdd34f58add1f001b04b27705e62632a29383e0502f8a62",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6804edc2c3565c0f158d4615ca3721d6bf27422aadc55c20d7f8b4141d1648e5",
-				"dweb:/ipfs/QmansZHznATeZ2XmdGcsSxjKCSmzvXAbvRHEu63oTeqRQD"
+				"bzz-raw://b5d46f4a4eb04ffededb71c88ee57b211721d5c6dba813bad8756161f2094c53",
+				"dweb:/ipfs/QmQufq3w5vQSFv7nVzFzEyfN8eLMyjFBivpJzSSZxUsE7A"
 			]
 		},
 		"src/seadrop/ERC721SeaDrop.sol": {
@@ -2955,14 +2858,6 @@
 			"urls": [
 				"bzz-raw://6a5e3b9ed45154a502673e4285fe7f97fdeba40b209d733bd4b375581ec48325",
 				"dweb:/ipfs/QmRWQx1sgB4W5uN8tyALShXc22QcrBkNbniEdvC6yCVTHY"
-			]
-		},
-		"src/seadrop/extensions/ERC721SeaDropPausableAndQueryable.sol": {
-			"keccak256": "0xdec497c034fb8fab9b63cfef707a9afe2499acc71bdf1bb1768d7ade3a7af64c",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://a984aae8df70195457a43fab328505d0b7f46a1987d3eb3e4cb56b0606eb509e",
-				"dweb:/ipfs/QmcVxm8ctMfshesXHcpaa2uM9qkgt2HXYJw7ZdPC2jP2W9"
 			]
 		},
 		"src/seadrop/interfaces/ICreatorToken.sol": {
@@ -2990,11 +2885,11 @@
 			]
 		},
 		"src/seadrop/interfaces/ISeaDropTokenContractMetadata.sol": {
-			"keccak256": "0x1b43ef94765cc93e3f143b1042e15f53a30ac21c2353e873936f4ea290920c6b",
+			"keccak256": "0xe45adbf8aed086ab7c87316a0b346b4e9b157d27d535d1c30ed98eef15b69ad3",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0da46c0845716be64bb383d0b39b146e74bd47557bdb410447ce14454bfb681b",
-				"dweb:/ipfs/QmWUC7sXV6zuLCZSKfcGL2dUqFuDY3GB2Nhy8UX4eiojjt"
+				"bzz-raw://b88882bb6056454d395eb80bf8f362df919e903623494b8b60eeb2ab5f8a9959",
+				"dweb:/ipfs/QmZyxB8mUQxNjwLqSPy49giPyqFUZFEUZruQtaR5UEC2R9"
 			]
 		},
 		"src/seadrop/interfaces/ITransferValidator.sol": {

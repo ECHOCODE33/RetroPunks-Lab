@@ -14,7 +14,6 @@ import { DynamicBuffer } from './libraries/DynamicBuffer.sol';
 /**
  * @author ECHO
  */
-
 contract SVGRenderer is ISVGRenderer {
 
     IAssets private immutable _ASSETS_CONTRACT;
@@ -22,7 +21,6 @@ contract SVGRenderer is ISVGRenderer {
 
     error BackgroundTraitsArrayIsEmpty(); 
 
-    // Constants for immutable SVG parts save gas
     bytes private constant SVG_HEADER = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><style>img{image-rendering:pixelated;shape-rendering:crispEdges;image-rendering:-moz-crisp-edges;}</style><g id="GeneratedImage"><foreignObject width="48" height="48"><img xmlns="http://www.w3.org/1999/xhtml" src="data:image/png;base64,';
     bytes private constant SVG_FOOTER = '" width="100%" height="100%"/></foreignObject></g></svg>';
 
