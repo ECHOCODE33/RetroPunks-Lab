@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-uint8 constant NUM_BACKGROUND = 5;
-uint8 constant NUM_SPECIAL_1S = 16;
-uint8 constant NUM_TRAIT_GROUPS = 27;
+uint8 constant NUM_BACKGROUND = uint8(type(E_Background).max) + 1;
 
-// S = Gradient Smooth
-// P = Gradient Pixelated
+uint16 constant NUM_SPECIAL_1S = uint16(type(E_Special_1s).max) + 1;
+
+uint8 constant NUM_TRAIT_GROUPS = uint8(type(E_TraitsGroup).max) + 1;
+
 enum E_Background_Type {
     None, // not a background
     Background_Image,

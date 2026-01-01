@@ -10,7 +10,6 @@ import { DynamicBuffer } from './libraries/DynamicBuffer.sol';
 /**
  * @author ECHO
  */
-
 contract PreRevealSVGRenderer is ISVGRenderer {
     IAssets private immutable _ASSETS_CONTRACT;
 

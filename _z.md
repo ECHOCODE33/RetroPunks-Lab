@@ -57,8 +57,9 @@ forge script script/Deploy.s.sol \
 forge script script/AddAssetsBatch.s.sol:AddAssetsBatch \
  --rpc-url $SEPOLIA_RPC_URL \
  --private-key $PRIVATE_KEY \
- --gas-estimate-multiplier 200 \
- --broadcast -v
+ --broadcast \
+ --verify \
+ -v
 
 forge script script/VerifyAssets.s.sol:VerifyAssets \
  --rpc-url $SEPOLIA_RPC_URL \
@@ -68,12 +69,25 @@ forge script script/VerifyAssets.s.sol:VerifyAssets \
 forge script script/RevealShufflerSeed.s.sol:RevealShufflerSeed \
  --rpc-url $SEPOLIA_RPC_URL \
  --private-key $PRIVATE_KEY \
- --broadcast -v
+ --broadcast \
+ --verify \
+ -v
+
 
 forge script script/Mint.s.sol:Mint \
  --rpc-url $SEPOLIA_RPC_URL \
  --private-key $PRIVATE_KEY \
- --broadcast -v
+ --broadcast \
+ --verify \
+ --etherscan-api-key $ETHERSCAN_API_KEY \
+ -v
+
+ forge script script/DeployAndSetRenderer.s.sol:DeployAndSetRenderer \
+    --rpc-url $SEPOLIA_RPC_URL \
+    --private-key $PRIVATE_KEY \
+    --broadcast \
+    --verify \
+    -v
 
 forge script script/ViewTokenURI.s.sol:ViewTokenURI \
  --rpc-url $SEPOLIA_RPC_URL \
@@ -98,21 +112,9 @@ forge verify-contract 0x50351EE22258b3E6B5C193F65F60dEf3bfB155b4 \
     --watch
 
 
-forge script script/Mint.s.sol:Mint \
- --rpc-url $SEPOLIA_RPC_URL \
- --private-key $PRIVATE_KEY \
- --broadcast \
- --verify \
- --etherscan-api-key $ETHERSCAN_API_KEY \
- -v
 
 
-forge script script/DeployAndSetRenderer.s.sol:DeployAndSetRenderer \
-    --rpc-url $SEPOLIA_RPC_URL \
-    --private-key $PRIVATE_KEY \
-    --broadcast \
-    --verify \
-    -v
+
 
 
 
