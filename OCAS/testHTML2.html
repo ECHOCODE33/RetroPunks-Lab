@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html>
+  <style>
+    body {
+      overflow: hidden;
+      margin: 0;
+    }
+
+    svg {
+      max-width: 100vw;
+      max-height: 100vh;
+      width: 100%;
+    }
+  </style>
+
+  <body onkeydown="handleKeyPress(event)" onclick="handleClick(event)">
+    <div id="svg-content-8bit-eto">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <style>
+          img {
+            width: 100%;
+            height: 100%;
+            image-rendering: optimizeSpeed;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -o-crisp-edges;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: optimize-contrast;
+            image-rendering: crisp-edges;
+            image-rendering: pixelated;
+            -ms-interpolation-mode: nearest-neighbor;
+          }
+        </style>
+        <g id="Background">
+          <defs>
+            <linearGradient id="bg-gradient-90" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#4c6464ff" />
+              <stop offset="100%" stop-color="#4c6464ff" />
+            </linearGradient>
+          </defs>
+          <rect
+            x="0"
+            y="0"
+            width="24"
+            height="24"
+            fill="url(#bg-gradient-90)"
+          />
+        </g>
+        <!-- <g id="GeneratedImage">
+          <foreignObject width="24" height="24"
+            ><img
+              xmlns="http://www.w3.org/1999/xhtml"
+              src="data:image/gif;base64,R0lGODdhGAAYAMQAAAAAABAQEDtBekxkZE89NJd3ZqJ7aqN9a7qiPL+EcMaL98eKdchQUMivQcy+Ws21QtKQetrLYOTK+QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJIQATACwAAAAAGAAYAAAFfeAgjmRpnmiqruwYtes7yDLriC8Ni07k/znboAf8wYhF44oIiSwWTqgwAnlarbDEdQsDeL/glnbxfSrO4md5IZEAsoUtNkuo2+30R0PPJ8DqDIGCgX4tAVoJATsiAY0HBgeNioaSDwcPkpMrjQMBAggCipwsWp0Cp4oLCSchACH5BAkhABkALAAAAAAYABgAhAAAABISEhgYGB4eHi4dMjgiHTguI0Q6MUYrJEsvJkxkZHtKXZ6MdZ6NeKSReq6agbWghr2njNJ+cdfX19rYxt/f3+TeyuXfzP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAWOoCKOZGmeaKqubOu+MCwIQW2/s00Fe+DmulsLyCv6WoOkcqlUTSqVhHQqrYwiponiSe1CR5BsNFEoS8uFr+IhHgMwGOkb83Uo7CUo4tCdqhkmUHoLhIWEVhUNJ4gVCAtwcG8GkxIrg4aFLnoJCIIvCBYWU6EILggJFxcEq6mcLacKqqwKriywsgQXtKUmIQAh+QQJIQAPACwAAAAAGAAYAIMAAAAgS5goXr46UjlMZGRMbElWelNZf1ZchFiZNT7Dt4HXyo7euGTtAAD///8AAAAEgZDISau9OOvNu/+Zsozk8oliOXaBgqrmFrTLW3KzW++jggcChHAoFMhmQeLQqEEqicyMs0AVUgtRjLPRAAgB3OzFaSgLywaxZcY4DN7wNwPXHgAcgDx+0Jm743B9EgcIBxRzHAcHCUMJih6ECIxCk4aJCAQJmpoEhR2EmZsJnZYVEQAh+QQJIQAJACwAAAAAGAAYAIMAAAAQEBBMZGRzSDx5TD+iZXy+vr79/f3///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAEY1DISau9OOvNu6fABwpAKEplGpbcqqreK5ObDBA3q8lE3+u7nG9o2g2GyM7AllLiAIdDKuo5In2fQWHL3WYLCEB4XPh2uZ/AcRA4Bd6+d7sjD8Tl9HbAwNfPN0cCe30CBAMXEQAh+QQJIQAUACwAAAAAGAAYAIQAAABMZGRTvk5WxFGXd2acdmScd2WeemiiemiifGukfmupdmS5Z3u/hHDHinXIr0HQ0NLSkHrf39////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFhmAgjmRpnmiqruwovHDrCkNt1y1978Oq8zcfkJf6DW3FW8TBbDpwqN/S2YSedA2q02rCaqu9JHNBHpPDxQdzMgEwAWx0EUL4OmSQBmTP38sCEBJsbHATEngSDIqLDIeIEpCREC0HDXoKeRAHkywGTgpOBi0NCQEOBQoFdwkNlHdMCEymBychACH5BAkhABAALAAAAAAYABgAhAAAAC4AAExkZFdg3XHdbJxY3clAPslW3d1WVt2OV93JbN9HSeqqvu9NT/9SUv9YXwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVtoCCOZGmeaKqu7Ai06yvIMgu8uFi3d9/PtpnPBxsabbcHwOFYNoOAB3M6hTWoWCuW2ro6FmAmeNFlBhgBM1q7ZcIEDYN8Ln/HEQkFYVA4GOx0dG9wDg2DIg2JU4mGZW2FZQKFk5KNK1eSXJAmIQAh+QQJIQAYACwAAAAAGAAYAIQAAABMZGSKRyGNSyaXd2aYemiad2Wcd2Wce2ieemiffmyifGupdmSqhnS3hHC/hHC/iXXDxKvExqzHinXMybDRwlzay2D///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFi2AgjmRpnmiqrmzrvnBcWbQVB3Ndv7m+S6wIZUgkRloRiXK5DABVuYl0KrWtaNSsNWV5WCaMsDTM2KK60ssFIAWoWTQBITttWQQPgX6vd90HaoFqA34CA4eIAwIwfHsuCQ8OCA0IDg8JLgdSCg0GDQpSBy0PCwEQBQ0FEAELDy0JEwETEAoQsROYJiEAIfkECSEAFAAsAAAAABgAGACEAAAAFBMRFxYUSQIvTGRkikchl3dmnHdlnnpooHhmonxrp31qqXZkuWd7vr6+v4Rwx4p1yK9B/4KC////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABZAgIY5kaZ5oqq4sEQhwDLfiK8u0fc+tvue7GG1ALBpbwVsLwIQAIE7nsgmtQgEqLNVaZWafEIYYKmZ4UczIVSJZS85owMPA7WLjzEdhz+cT7iZacgUAE0yFAAVLew2Njo2KLEwJEAmHNAQIDw4QCxAODwg0B1AOngucEActDwoEDrCwBAoPLQgQr7EOBBCiJiEAIfkECSEADgAsAAAAABgAGACDAAAAO0F6TGRkTz00V0Q5jHlbsYddtkNEto1kvUdHv5duyFBQ08el////AAAAAAAABHpQyEmrvTjrzekRSSKJnXSEKFmeaVgKbOt2sUyHCJLkuarhCp6wkzAEhTyiATnkFJlJjgFArVoB0lxVSyUOClCE1zAom8vO0IAAaFTdhPR6Qa8v4j+QYE3o+wcdDAx8fn2AG4KCa4sEh4gMAgwBA5N7kFmRAZqQCAYXEQAh+QQJIQATACwAAAAAGAAYAIQAAAAZGRgvPS8wNqYzOrFCNS1EODBEOjFGKyRHOTFLLyZMZGS6ojzGi/fIUFDIr0HNtULkyvn///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFcOAijmRpnmiqrmzrvjBMzPQs17VLD3w/6LOBYjj8qXo7H8+FIDqHzKez1VQ0rsNro/UYRiIAL5h5kEKZgbRajZa435KAK+2o2+vyKCK2MCAYRAwIBi4FQwIQiAJDBVQJCwICDJELCXssBgoLT5uEJiEAIfkECSEAEgAsAAAAABgAGACEAAAAGRkYGxsaRt/OSefWTGRkjHlbkXlXknhWk3xalXxbln9esYddtWJgto1kv5duw3REzHpHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXVgIY5kaZ5oqq5s675wDEU0Ldf4Ozt870SuiOPh67kYxCLvqDS2GM0liwEADK7V6wAwdQAIYB6YwGUFDFFXgBFou9uvgKBKrwbUgoZ+37jjBYCBfisJbIGHgykHPXKNAokpDAsFDggBlgVrLQkOlA4KSw4JJyEAIfkECSEAEgAsAAAAABgAGACEAAAAHhwYJiEaK7E/LELuLyklOjYxOzu9Pz7FQT03R0I8TGRkbEhMdU5S2ycn6csq7ysr////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABYfgIo5kaZ5oqq5s6y5DHL8mQZMO9Ow2neu8Xuu3KxKEK2KR5zogEDIZouVEJBTYbGKaOiychmsWu+WinIEwAIBdl7vPgCDBzgLeqfhcUcD28SdPcQyEhYRTZiWICA0Rjo+ODS2MDZWWli56AYIvAZ4CoJ4BLnKgpqajLHILAnKrrS2vp6ypJSEAIfkECSEAFwAsAAAAABgAGACEICAgJh4TMDAwMiYYNjY2OCobTGRkvbKrwbKsw7Osw7avxbavxrmzzLu108S92SMj6M3I7JGn8tbR9NXQ/9/a/+fi////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXegIY5kaZ5oqq5s677wOxR0Tct27gZ877e5YKE1qVCOyKNrkmwum0kiBUCoWqsAFlPw6Hq7AiL1as0SI+g0+jWJWN5wS4StVsMgDEjMsJhAFA4KEBMLLglHDA4IDgxHCUQNBhIHDgcSBg0TLQsUBhQSDBKdFIUmIQAh+QQJIQAUACwAAAAAGAAYAIQAAABMZGRXslRbu1eMeVuOeVmOfFuQfVyTgGCeiGenThSrhl+vjGaxh121YmC2jWS/l27LZSLTx6X///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFh2AgjmRpnmiqriwpBMMgyq0oxDhd33lcB7yerxUUEmOPxyCZ1KmQEKa0NWhEpUxqAztlVR+AcDIMaDXCijRazdo+IvAkPKIlcJPUqmPP33tjDQ4Tg4QTDn96fXwrMjISCwgLEo01EpYHCQeWEpWbCQUJm5wslgESBgkGnKVtD6YMCAycDw0nIQAh+QQJIQAHACwAAAAAGAAYAIIAAAASEhIVFRVMZGSPj4+UlJTBwcEAAAADVzi63P4wykmrvVLojcP+guWBHDWSWhUUBOu2rRrMdB1MQG7svJHjuh7vJ8kBfEEjAHg07pTM41NKjCilvSrk2vQhKdxr5Yo0WpzT5ViYXQ90P59bOJA7EgAh+QQJIQASACwAAAAAGAAYAIQAAAAQEBAZGRgeHh5MZGSReFeUfVuVfl2WgF6fHx+xh12yIyO1YmC2jWS/l27Ir0HNtULP8vgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFeyAhjmRpnmiqrmzrigABxPErz7h947PN/65Zo/FrBBuOIW7oUiSHRGgTSmW2FFXqdZbocr2syHBBHpNdgqy0JVAI3vD3SzCAPOz4AXrA6PsZensDg4QCLQGIAgcCAYyGLIiIBQgFkQGHlwEGCAaZlyxYBAENCA2XDQonIQAh+QQJIQARACwAAAAAGAAYAIQAAABMZGSnvHCpvHCqvW+rv3O0x3S0yHa2y3e8uqm8zlzD03XK057MyrfR4n7Z1sLf8IQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFfmAgjmRpnmiqrmzrvnD8zLRM326j77zeJsCg0AUoQgCQ47FVRCafSYBKaoRCi1PnYpvcLrCoZpLBcALI4DDAIbA+06bmWkGv06nhQNGhkDcVTHN2dURrBg5NLwUODgYIhw4FLgNQCFADLQ4HARAECAQQAQcOLQWhSQZJnJImIQAh+QQJIQAOACwAAAAAGAAYAIMAAAA6UjlMZGRMbElPPTRWelNXRDlZf1ZchFhnj2OZNT60OjrAPj7tAAAAAAAAAAAEdlDISau9OOvNJ+vbJ4git0gfCUoL476pKbTwC9K1vdEJgyA+oIyR+BmNoMNxmVweO0rEYPqbDqC/RgOQ3YIIiIL4Jy58D4S0Or0iGADwOMDwNQTu+AC9buj7CR0KgmAECoWAHIKKi4KBCgKMkI8cSpKKAggHFxEAIfkECSEAEwAsAAAAABgAGACEAAAATGRkTz00V0Q5jHlbkXlXknhWk3xalXxbln9el39eoHlVsYddto1kunS0vr6+v5du/4KC////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXZgII5kaZ5oqq5s675wLJdMzRhGDTONojS9n4sHASIQwMaw2AP+lC1e8pgcJhtUYBS46HK72wYgEgGOIy4B4XpNMwTwOPwlGEjueMkgPXD4/w57fAOEhQItBwwPcnEtBUAPSZENBVEJAQ+ZmQEJDIhKmpsNBychACH5BAkhABIALAAAAAAYABgAhAAAABAQEB4cGCYhGi8pJTo2MUE9N0dCPExkZGsQT2xITHVOUpsSccivQcnq8M/y+NbW1t/f3wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGICKOZGmeaKqubOu+cCyXUCTcd/TWQ+8POhZvUCj0ikBhhHhoOgvBVC1SMDidhiiqJqhem9lVDQBImMnmBEDcEAwY8CacoT1xB1ZCUx8W2xSAgYB1dhELDg+Iig8LLRALkJGSLhABbgIBEYQpAZ0+nQEuoAGfoC2dCJYDmKmhLG6pnwirJyEAIfkECSEAFQAsAAAAABgAGACEAAAAGRkZHh4eO0F6RiskSy8mTGRkTO5nV2DdWcdsXM1vXbWnX7qtcd1snFjdyK9ByVbd08el3VZW3Y5X3clsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABYygIY5kaZ5oqq5s677pYjAiQ7vyYs83rttAWg8lM/yCO9YRCVTlgAVGIRpNEqHT7HR4+mm/VtMPADgkDmQzmltiPAqAc2J6VgDYJFvgqw239QQBgoOCQihCDAECEhMUDQgOEAItegKWlwIBLgwRhIMuEaFZoRGgpKOkLaEGEQOupassBAWsrgOlBQQnIQAh+QQJIQAQACwAAAAAGAAYAIQAAABMZGSnThS9Uk+/Tk3BUVDJQD7LTkzLZSLMU1HPU1DlODjqRkbvTU//UlL/WF8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFcWAgjmRpnmiqruzJtCmzwO4y06Rs3/Tu862GY7h7OGBCI3H4QCqH0GMwSkU6ANghFhDECr5eMEvoQJiHZgRyQIXSGoa4PP42bO+G+lyOEzZwIgUNZA6DBTAEUAoOi0MEQQkBhQdCAQl/LAVHjJyShyYhACH5BAkhAA8ALAAAAAAYABgAgxkZGBoiqBsbGh0mviAgICIiIkxkZFlhWmVuZrGHXbViYLaNZNrXvNrYxv///wAAAARu0MhJq7046827/yA4DExpfqMZrKWXMs0atN1rnp2s78GWLMBg0PMjGI/GTsJ4aDKdnN8CQQVSER6AcJtNAL7g7wcgcJjPDkBWoGi7Feq1YE6PbwoFMr3OwePJgAJ2GngGf3kGAAVKC4Z+iwsJFxEAIfkECSEACgAsAAAAABgAGACDAAAATGRkUYmJV7JUWJWVW7tXXZ6ecsLDec3Ni9HRAAAAAAAAAAAAAAAAAAAAAAAABHAwyEmrvTjrzekIRSGJnTSEKFmeaVgGbOt2sUyHCFLkuarhCZ6wUzgEhTziATnkFJlJzhJhEBhyVUNnCjAAcl2AEpojFgnoNNoZOhAA8DiAwD6r0xuRfnlw+TQHgTyBByVTUIVSCAEIfIuNW49DkBYRACH5BAkhAA0ALAAAAAAYABgAgwAAAAQEBCIiIiMjIyUlJSsrKzU1NUYrJEsvJkxkZFXQUHtKXbezsAAAAAAAAAAAAASTMMlJq704682n+EJXfUVZgKJgrmXIqezqZnAsa3Wg70FLmwGFcKjonS45IUKBWC57MwosyGxam8aoZMoEeJtegM4nLQS9jDRaPdaqgs20Ic4w7I5l3eHKv7tLeguCg4J+I4ABBwthjAtZFlOJhIRQGJF7BzyPlgSdAwUDnQQgWhUEJp+fJQQdpwmgsK+sHK4sshcRACH5BAkhAAUALAAAAAAYABgAggAAABUVFSUlJUxkZP8AAAAAAAAAAAAAAANQOLrc/jBKBgC1c2Gd21ZfFoZiZZJSJZxVB64s+sSnS5v2LTv67uk5AIFQGfougIBS2coFTgEXqLJUSqe1K1Y7WJqWructmnkOWGfyxIxOPhIAOw=="
+              width="100%"
+              height="100%"
+            ></img
+          ></foreignObject>
+        </g> -->
+      </svg>
+    </div>
+
+    <script>
+      const colors = [
+        ["#3d4254ff"],
+        ["#8e95b3ff"],
+        ["#7b7e8dff"],
+        ["#6d738dff"],
+        ["#0001cbff"],
+        ["#00cc00ff"],
+        ["#cc0000ff"],
+        ["#00cbcbff"],
+        ["#e6dc00ff"],
+        ["#171717ff"],
+        ["#553e3eff"],
+        ["#a88989ff"],
+        ["#877777ff"],
+        ["#876a6aff"],
+        ["#3b3b3cff"],
+        ["#8e8e91ff"],
+        ["#626264ff"],
+        ["#985c73ff"],
+        ["#764558ff"],
+        ["#987884ff"],
+        ["#c7869fff"],
+        [
+          "#242d2dff",
+          "#2c3435ff",
+          "#394041ff",
+          "#444b4bff",
+          "#505656ff",
+          "#5d6363ff",
+          "#686e6eff",
+          "#747a7aff",
+          "#808685ff",
+          "#8b8f90ff",
+          "#989c9cff",
+          "#a5a8a8ff",
+        ],
+        [
+          "#a5a8a8ff",
+          "#989c9cff",
+          "#8b8f90ff",
+          "#808685ff",
+          "#747a7aff",
+          "#686e6eff",
+          "#5d6363ff",
+          "#505656ff",
+          "#444b4bff",
+          "#394041ff",
+          "#2c3435ff",
+          "#242d2dff",
+        ],
+        [
+          "#f6bf8dff",
+          "#efb178ff",
+          "#efa561ff",
+          "#d3755cff",
+          "#bc5464ff",
+          "#9a3661ff",
+          "#8a3259ff",
+          "#782d50ff",
+          "#662847ff",
+          "#53233eff",
+          "#451f38ff",
+          "#341a2fff",
+        ],
+        [
+          "#1f3736ff",
+          "#22383aff",
+          "#25393eff",
+          "#2a3b44ff",
+          "#2d3c49ff",
+          "#313e4eff",
+          "#353f53ff",
+          "#384057ff",
+          "#3c425cff",
+          "#404362ff",
+          "#444567ff",
+          "#47486cff",
+        ],
+        [
+          "#47486cff",
+          "#444567ff",
+          "#404362ff",
+          "#3c425cff",
+          "#384057ff",
+          "#353f53ff",
+          "#313e4eff",
+          "#2d3c49ff",
+          "#2a3b44ff",
+          "#25393eff",
+          "#22383aff",
+          "#1f3736ff",
+        ],
+        [
+          "#7e2a22ff",
+          "#923128ff",
+          "#a7382dff",
+          "#c24135ff",
+          "#c94b4fff",
+          "#c55471ff",
+          "#c15c8eff",
+          "#bd66b2ff",
+          "#ba6fd2ff",
+          "#b579f5ff",
+          "#ab86f3ff",
+          "#b792ffff",
+        ],
+        [
+          "#b792ffff",
+          "#ab86f3ff",
+          "#b579f5ff",
+          "#ba6fd2ff",
+          "#bd66b2ff",
+          "#c15c8eff",
+          "#c55471ff",
+          "#c94b4fff",
+          "#c24135ff",
+          "#a7382dff",
+          "#923128ff",
+          "#7e2a22ff",
+        ],
+        [
+          "#7a324cff",
+          "#803851ff",
+          "#883f5aff",
+          "#904561ff",
+          "#9a4e6aff",
+          "#a35673ff",
+          "#ad5f7dff",
+          "#b56685ff",
+          "#b96e8cff",
+          "#bb7491ff",
+          "#be7d99ff",
+          "#c1839fff",
+        ],
+        [
+          "#c1839fff",
+          "#be7d99ff",
+          "#bb7491ff",
+          "#b96e8cff",
+          "#b56685ff",
+          "#ad5f7dff",
+          "#a35673ff",
+          "#9a4e6aff",
+          "#904561ff",
+          "#883f5aff",
+          "#803851ff",
+          "#7a324cff",
+        ],
+        [
+          "#1e1424ff",
+          "#261628ff",
+          "#2e182cff",
+          "#381b31ff",
+          "#421e36ff",
+          "#4c213aff",
+          "#55233fff",
+          "#5f2644ff",
+          "#682948ff",
+          "#732c4dff",
+          "#7c2e52ff",
+          "#89315aff",
+        ],
+        [
+          "#89315aff",
+          "#7c2e52ff",
+          "#732c4dff",
+          "#682948ff",
+          "#5f2644ff",
+          "#55233fff",
+          "#4c213aff",
+          "#421e36ff",
+          "#381b31ff",
+          "#2e182cff",
+          "#261628ff",
+          "#1e1424ff",
+        ],
+        [
+          "#47eebfff",
+          "#41dcb1ff",
+          "#3dcfa6ff",
+          "#39bf9aff",
+          "#35b390ff",
+          "#31a585ff",
+          "#2e9b7dff",
+          "#298b6fff",
+          "#267e66ff",
+          "#216f59ff",
+          "#1e6652ff",
+          "#1a5948ff",
+        ],
+        [
+          "#1a5948ff",
+          "#1e6652ff",
+          "#216f59ff",
+          "#267e66ff",
+          "#298b6fff",
+          "#2e9b7dff",
+          "#31a585ff",
+          "#35b390ff",
+          "#39bf9aff",
+          "#3dcfa6ff",
+          "#41dcb1ff",
+          "#47eebfff",
+        ],
+        [
+          "#181818ff",
+          "#1f1f1fff",
+          "#2c2c2cff",
+          "#383838ff",
+          "#444444ff",
+          "#525252ff",
+          "#5e5e5eff",
+          "#6b6b6bff",
+          "#787878ff",
+          "#838383ff",
+          "#919191ff",
+          "#9f9f9fff",
+        ],
+        [
+          "#9f9f9fff",
+          "#919191ff",
+          "#838383ff",
+          "#787878ff",
+          "#6b6b6bff",
+          "#5e5e5eff",
+          "#525252ff",
+          "#444444ff",
+          "#383838ff",
+          "#2c2c2cff",
+          "#1f1f1fff",
+          "#181818ff",
+        ],
+        [
+          "#b67ed8ff",
+          "#a66bc9ff",
+          "#c14bb2ff",
+          "#d61c96ff",
+          "#d2017cff",
+          "#b9038dff",
+          "#940592ff",
+          "#5b099cff",
+          "#350ca3ff",
+          "#190a86ff",
+          "#1c076aff",
+          "#1d044eff",
+        ],
+        [
+          "#536f86ff",
+          "#4d6a7eff",
+          "#496776ff",
+          "#44636fff",
+          "#406069ff",
+          "#3c5d61ff",
+          "#395a5cff",
+          "#345654ff",
+          "#30534eff",
+          "#2b4f46ff",
+          "#284d41ff",
+          "#244a3bff",
+        ],
+        [
+          "#244a3bff",
+          "#284d41ff",
+          "#2b4f46ff",
+          "#30534eff",
+          "#345654ff",
+          "#395a5cff",
+          "#3c5d61ff",
+          "#406069ff",
+          "#44636fff",
+          "#496776ff",
+          "#4d6a7eff",
+          "#536f86ff",
+        ],
+        [
+          "#211a44ff",
+          "#2a254bff",
+          "#373256ff",
+          "#423d5fff",
+          "#4e4969ff",
+          "#5b5774ff",
+          "#67637eff",
+          "#736f89ff",
+          "#7f7c93ff",
+          "#8a869dff",
+          "#9794a8ff",
+          "#a4a1b3ff",
+        ],
+        [
+          "#a4a1b3ff",
+          "#9794a8ff",
+          "#8a869dff",
+          "#7f7c93ff",
+          "#736f89ff",
+          "#67637eff",
+          "#5b5774ff",
+          "#4e4969ff",
+          "#423d5fff",
+          "#373256ff",
+          "#2a254bff",
+          "#211a44ff",
+        ],
+        [
+          "#2a254bff",
+          "#302b53ff",
+          "#35315aff",
+          "#3e3966ff",
+          "#45406fff",
+          "#4d4779ff",
+          "#524d80ff",
+          "#5a558bff",
+          "#615b94ff",
+          "#69639fff",
+          "#716aa8ff",
+          "#7b73b6ff",
+        ],
+        [
+          "#7b73b6ff",
+          "#716aa8ff",
+          "#69639fff",
+          "#615b94ff",
+          "#5a558bff",
+          "#524d80ff",
+          "#4d4779ff",
+          "#45406fff",
+          "#3e3966ff",
+          "#35315aff",
+          "#302b53ff",
+          "#2a254bff",
+        ],
+        [
+          "#edebafff",
+          "#e4e2a8ff",
+          "#d4d29dff",
+          "#c0bf8eff",
+          "#b3b184ff",
+          "#a09e76ff",
+          "#93926dff",
+          "#807f5eff",
+          "#717054ff",
+          "#5e5d45ff",
+          "#53523dff",
+          "#474734ff",
+        ],
+        [
+          "#474734ff",
+          "#53523dff",
+          "#5e5d45ff",
+          "#717054ff",
+          "#807f5eff",
+          "#93926dff",
+          "#a09e76ff",
+          "#b3b184ff",
+          "#c0bf8eff",
+          "#d4d29dff",
+          "#e4e2a8ff",
+          "#edebafff",
+        ],
+        [
+          "#202828ff",
+          "#242d2dff",
+          "#293434ff",
+          "#2e3a3aff",
+          "#354242ff",
+          "#3b4a4aff",
+          "#415252ff",
+          "#465959ff",
+          "#4d6161ff",
+          "#526868ff",
+          "#597171ff",
+          "#5f7878ff",
+        ],
+        [
+          "#5f7878ff",
+          "#597171ff",
+          "#526868ff",
+          "#4d6161ff",
+          "#465959ff",
+          "#415252ff",
+          "#3b4a4aff",
+          "#354242ff",
+          "#2e3a3aff",
+          "#293434ff",
+          "#242d2dff",
+          "#202828ff",
+        ],
+        [
+          "#6d5affff",
+          "#6956f5ff",
+          "#6250e4ff",
+          "#5949cfff",
+          "#5244c0ff",
+          "#4a3dadff",
+          "#4438a0ff",
+          "#3b318bff",
+          "#352b7bff",
+          "#2c2466ff",
+          "#27205aff",
+          "#1f1a4aff",
+        ],
+        [
+          "#1f1a4aff",
+          "#27205aff",
+          "#2c2466ff",
+          "#352b7bff",
+          "#3b318bff",
+          "#4438a0ff",
+          "#4a3dadff",
+          "#5244c0ff",
+          "#5949cfff",
+          "#6250e4ff",
+          "#6956f5ff",
+          "#6d5affff",
+        ],
+        ["#702bc3ff"],
+        ["#526a77ff"],
+        ["#97bfd6ff"],
+        ["#9babb5ff"],
+        ["#7ca0b5ff"],
+        ["#b2c32bff"],
+        ["#2bc359ff"],
+        ["#3b4633ff"],
+        ["#7f966eff"],
+        ["#6e7867ff"],
+        ["#647855ff"],
+        ["#f1ebdaff"],
+        ["#2b7fc3ff"],
+        ["#bae1ffff"],
+        ["#baffc9ff"],
+        ["#ffdfbaff"],
+        ["#ffb3baff"],
+        ["#ffffbaff"],
+        ["#bd2bc3ff"],
+        ["#c32b2bff"],
+        ["#273f99ff"],
+        ["#6379e3ff"],
+        ["#9fa7cfff"],
+        ["#4257baff"],
+        ["#494438ff"],
+        ["#afa588ff"],
+        ["#7f7b71ff"],
+        ["#7f7863ff"],
+        ["#5b4474ff"],
+        ["#9c62dbff"],
+        ["#9278aeff"],
+        ["#887a97ff"],
+        ["#7c6397ff"],
+        ["#864239ff"],
+        ["#b86c62ff"],
+        ["#9a706aff"],
+        ["#9a554cff"],
+        ["#58a6a6ff"],
+        ["#334646ff"],
+        ["#5f7d7dff"],
+        ["#596464ff"],
+        ["#4c6464ff"],
+        ["#c4be8eff"],
+        ["#d5c655ff"],
+        ["#774c42ff"],
+        ["#977e78ff"],
+        ["#976457ff"],
+        ["#c3662bff"],
+        ["#ba4242ff"],
+        ["#8d80abff"],
+        ["#6c6186ff"],
+        ["#9c96abff"],
+        ["#ae9fd1ff"],
+        ["#efeeeaff"],
+      ];
+
+      const svgElement = document
+        .getElementById("svg-content-8bit-eto")
+        .getElementsByTagName("svg")[0];
+
+      let colorIndex = getCurrentBackgroundId();
+
+      function getCurrentBackgroundId() {
+        const backgroundGroup = svgElement.getElementById("Background");
+        if (!backgroundGroup) return 0;
+        const linearGradient =
+          backgroundGroup.getElementsByTagName("linearGradient")[0];
+        if (!linearGradient) return 0;
+        return parseInt(linearGradient.getAttribute("id").split("-")[2]) || 0;
+      }
+
+      function cycleBackground() {
+        const backgroundGroup = svgElement.getElementById("Background");
+
+        if (!backgroundGroup) {
+          return;
+        }
+
+        // remove all eleements from backgroundGroup
+        while (backgroundGroup.firstChild) {
+          backgroundGroup.removeChild(backgroundGroup.firstChild);
+        }
+
+        colorIndex = (colorIndex + 1) % colors.length;
+
+        const bcolors = colors[colorIndex];
+
+        let height = 24 / bcolors.length;
+
+        // Create a linear gradient for the background
+        const defs = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "defs"
+        );
+        const linearGradient = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "linearGradient"
+        );
+        const gradientId = "bg-gradient-" + colorIndex;
+
+        linearGradient.setAttribute("id", gradientId);
+        linearGradient.setAttribute("x1", "0");
+        linearGradient.setAttribute("y1", "0");
+        linearGradient.setAttribute("x2", "0");
+        linearGradient.setAttribute("y2", "1");
+
+        // Add gradient stops for each color
+        for (let c = 0; c < bcolors.length; c++) {
+          const stop = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "stop"
+          );
+          const nextStop = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "stop"
+          );
+
+          // Calculate start and end positions for this segment
+          const segmentSize = 100 / bcolors.length;
+          const startPosition = c * segmentSize;
+          const endPosition = (c + 1) * segmentSize;
+
+          // Add a stop at the beginning of this segment
+          stop.setAttribute("offset", `${startPosition}%`);
+          stop.setAttribute("stop-color", bcolors[c]);
+          linearGradient.appendChild(stop);
+
+          // If not the last color, add another stop at the end of this segment with the same color
+          // This creates the discrete effect by preventing color blending
+          if (c < bcolors.length - 1) {
+            nextStop.setAttribute("offset", `${endPosition - 0.001}%`);
+            nextStop.setAttribute("stop-color", bcolors[c]);
+            linearGradient.appendChild(nextStop);
+
+            // Add a stop for the next color at the exact same position
+            const nextColorStop = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "stop"
+            );
+            nextColorStop.setAttribute("offset", `${endPosition}%`);
+            nextColorStop.setAttribute("stop-color", bcolors[c + 1]);
+            linearGradient.appendChild(nextColorStop);
+          }
+        }
+
+        defs.appendChild(linearGradient);
+        backgroundGroup.appendChild(defs);
+
+        // Create a single rect with the gradient
+        const rect = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "rect"
+        );
+        rect.setAttribute("x", "0");
+        rect.setAttribute("y", "0");
+        rect.setAttribute("width", "24");
+        rect.setAttribute("height", "24");
+        rect.setAttribute("fill", `url(#${gradientId})`);
+
+        backgroundGroup.appendChild(rect);
+      }
+
+      function handleClick(event) {
+        cycleBackground();
+      }
+
+      function handleKeyPress(event) {
+        if (event.key === " " || event.key === "Enter" || event.key === "b") {
+          cycleBackground();
+        }
+      }
+    </script>
+  </body>
+</html>

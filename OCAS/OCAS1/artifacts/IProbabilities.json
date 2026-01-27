@@ -1,0 +1,1979 @@
+{
+	"deploy": {
+		"VM:-": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"main:1": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"ropsten:3": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"rinkeby:4": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"kovan:42": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"goerli:5": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"Custom": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		}
+	},
+	"data": {
+		"bytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"linkReferences": {},
+			"object": "",
+			"opcodes": "",
+			"sourceMap": ""
+		},
+		"deployedBytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"immutableReferences": {},
+			"linkReferences": {},
+			"object": "",
+			"opcodes": "",
+			"sourceMap": ""
+		},
+		"gasEstimates": null,
+		"methodIdentifiers": {
+			"getApeTeethProbabilities((uint8,(uint8,uint8,int8,bool,bool,(uint8,uint8))[],uint256,uint256,uint256,bool,bool,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint256,uint256,uint256,uint256,uint256,uint256))": "ca8c7e92",
+			"getBodyTypeProbabilties()": "7506c607",
+			"getClothes2Probabilities((uint8,(uint8,uint8,int8,bool,bool,(uint8,uint8))[],uint256,uint256,uint256,bool,bool,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint256,uint256,uint256,uint256,uint256,uint256))": "83efde51",
+			"getEyesProbabilities((uint8,(uint8,uint8,int8,bool,bool,(uint8,uint8))[],uint256,uint256,uint256,bool,bool,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint256,uint256,uint256,uint256,uint256,uint256))": "a6983a53",
+			"getEyewearProbabilities((uint8,(uint8,uint8,int8,bool,bool,(uint8,uint8))[],uint256,uint256,uint256,bool,bool,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint256,uint256,uint256,uint256,uint256,uint256))": "bda69320",
+			"getFacialHairProbabilities((uint8,(uint8,uint8,int8,bool,bool,(uint8,uint8))[],uint256,uint256,uint256,bool,bool,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint256,uint256,uint256,uint256,uint256,uint256))": "c794b622",
+			"getFemaleClothesProbabilities()": "435b7f95",
+			"getHairProbabilities((uint8,(uint8,uint8,int8,bool,bool,(uint8,uint8))[],uint256,uint256,uint256,bool,bool,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint256,uint256,uint256,uint256,uint256,uint256))": "074b0085",
+			"getHatHairProbabilities((uint8,(uint8,uint8,int8,bool,bool,(uint8,uint8))[],uint256,uint256,uint256,bool,bool,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint256,uint256,uint256,uint256,uint256,uint256))": "708e03d6",
+			"getHeadwearProbabilities((uint8,(uint8,uint8,int8,bool,bool,(uint8,uint8))[],uint256,uint256,uint256,bool,bool,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint256,uint256,uint256,uint256,uint256,uint256))": "081bb1aa",
+			"getLipGlossProbabilities((uint8,(uint8,uint8,int8,bool,bool,(uint8,uint8))[],uint256,uint256,uint256,bool,bool,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint256,uint256,uint256,uint256,uint256,uint256))": "9c598994",
+			"getMaleClothesProbabilities()": "a01c7393",
+			"getSkeletonTeethProbabilities((uint8,(uint8,uint8,int8,bool,bool,(uint8,uint8))[],uint256,uint256,uint256,bool,bool,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint256,uint256,uint256,uint256,uint256,uint256))": "cc505d1e",
+			"getTeethProbabilities((uint8,(uint8,uint8,int8,bool,bool,(uint8,uint8))[],uint256,uint256,uint256,bool,bool,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint256,uint256,uint256,uint256,uint256,uint256))": "de7dc821"
+		}
+	},
+	"abi": [
+		{
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "enum E_Background",
+							"name": "background",
+							"type": "uint8"
+						},
+						{
+							"components": [
+								{
+									"internalType": "enum E_TraitsGroup",
+									"name": "traitGroup",
+									"type": "uint8"
+								},
+								{
+									"internalType": "uint8",
+									"name": "traitIndex",
+									"type": "uint8"
+								},
+								{
+									"internalType": "int8",
+									"name": "traitId",
+									"type": "int8"
+								},
+								{
+									"internalType": "bool",
+									"name": "hasFiller",
+									"type": "bool"
+								},
+								{
+									"internalType": "bool",
+									"name": "fillerRenderedAtTheEnd",
+									"type": "bool"
+								},
+								{
+									"components": [
+										{
+											"internalType": "enum E_TraitsGroup",
+											"name": "traitGroup",
+											"type": "uint8"
+										},
+										{
+											"internalType": "uint8",
+											"name": "traitIndex",
+											"type": "uint8"
+										}
+									],
+									"internalType": "struct FillerTrait",
+									"name": "filler",
+									"type": "tuple"
+								}
+							],
+							"internalType": "struct TraitToRender[]",
+							"name": "traitsToRender",
+							"type": "tuple[]"
+						},
+						{
+							"internalType": "uint256",
+							"name": "traitsToRenderLength",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numTattoos",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numJewelry",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bool",
+							"name": "masculine",
+							"type": "bool"
+						},
+						{
+							"internalType": "bool",
+							"name": "isAngel",
+							"type": "bool"
+						},
+						{
+							"internalType": "enum E_1_Type",
+							"name": "bodyType",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_Mouth",
+							"name": "mouth",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_10_Headwear",
+							"name": "headwear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3_Clothes",
+							"name": "clothes",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3b_Clothes",
+							"name": "clothes2",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_6b_Eye_Wear",
+							"name": "eyeWear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_5_Hair",
+							"name": "hair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_9_Facial_Hair",
+							"name": "facialHair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tattooId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "jewelryId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "clothesId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "specialId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenIdSeed",
+							"type": "uint256"
+						}
+					],
+					"internalType": "struct TraitsContext",
+					"name": "traitsContext",
+					"type": "tuple"
+				}
+			],
+			"name": "getApeTeethProbabilities",
+			"outputs": [
+				{
+					"internalType": "uint32[11]",
+					"name": "",
+					"type": "uint32[11]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "getBodyTypeProbabilties",
+			"outputs": [
+				{
+					"internalType": "uint32[12]",
+					"name": "",
+					"type": "uint32[12]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "enum E_Background",
+							"name": "background",
+							"type": "uint8"
+						},
+						{
+							"components": [
+								{
+									"internalType": "enum E_TraitsGroup",
+									"name": "traitGroup",
+									"type": "uint8"
+								},
+								{
+									"internalType": "uint8",
+									"name": "traitIndex",
+									"type": "uint8"
+								},
+								{
+									"internalType": "int8",
+									"name": "traitId",
+									"type": "int8"
+								},
+								{
+									"internalType": "bool",
+									"name": "hasFiller",
+									"type": "bool"
+								},
+								{
+									"internalType": "bool",
+									"name": "fillerRenderedAtTheEnd",
+									"type": "bool"
+								},
+								{
+									"components": [
+										{
+											"internalType": "enum E_TraitsGroup",
+											"name": "traitGroup",
+											"type": "uint8"
+										},
+										{
+											"internalType": "uint8",
+											"name": "traitIndex",
+											"type": "uint8"
+										}
+									],
+									"internalType": "struct FillerTrait",
+									"name": "filler",
+									"type": "tuple"
+								}
+							],
+							"internalType": "struct TraitToRender[]",
+							"name": "traitsToRender",
+							"type": "tuple[]"
+						},
+						{
+							"internalType": "uint256",
+							"name": "traitsToRenderLength",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numTattoos",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numJewelry",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bool",
+							"name": "masculine",
+							"type": "bool"
+						},
+						{
+							"internalType": "bool",
+							"name": "isAngel",
+							"type": "bool"
+						},
+						{
+							"internalType": "enum E_1_Type",
+							"name": "bodyType",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_Mouth",
+							"name": "mouth",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_10_Headwear",
+							"name": "headwear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3_Clothes",
+							"name": "clothes",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3b_Clothes",
+							"name": "clothes2",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_6b_Eye_Wear",
+							"name": "eyeWear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_5_Hair",
+							"name": "hair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_9_Facial_Hair",
+							"name": "facialHair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tattooId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "jewelryId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "clothesId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "specialId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenIdSeed",
+							"type": "uint256"
+						}
+					],
+					"internalType": "struct TraitsContext",
+					"name": "traitsContext",
+					"type": "tuple"
+				}
+			],
+			"name": "getClothes2Probabilities",
+			"outputs": [
+				{
+					"internalType": "uint32[11]",
+					"name": "",
+					"type": "uint32[11]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "enum E_Background",
+							"name": "background",
+							"type": "uint8"
+						},
+						{
+							"components": [
+								{
+									"internalType": "enum E_TraitsGroup",
+									"name": "traitGroup",
+									"type": "uint8"
+								},
+								{
+									"internalType": "uint8",
+									"name": "traitIndex",
+									"type": "uint8"
+								},
+								{
+									"internalType": "int8",
+									"name": "traitId",
+									"type": "int8"
+								},
+								{
+									"internalType": "bool",
+									"name": "hasFiller",
+									"type": "bool"
+								},
+								{
+									"internalType": "bool",
+									"name": "fillerRenderedAtTheEnd",
+									"type": "bool"
+								},
+								{
+									"components": [
+										{
+											"internalType": "enum E_TraitsGroup",
+											"name": "traitGroup",
+											"type": "uint8"
+										},
+										{
+											"internalType": "uint8",
+											"name": "traitIndex",
+											"type": "uint8"
+										}
+									],
+									"internalType": "struct FillerTrait",
+									"name": "filler",
+									"type": "tuple"
+								}
+							],
+							"internalType": "struct TraitToRender[]",
+							"name": "traitsToRender",
+							"type": "tuple[]"
+						},
+						{
+							"internalType": "uint256",
+							"name": "traitsToRenderLength",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numTattoos",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numJewelry",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bool",
+							"name": "masculine",
+							"type": "bool"
+						},
+						{
+							"internalType": "bool",
+							"name": "isAngel",
+							"type": "bool"
+						},
+						{
+							"internalType": "enum E_1_Type",
+							"name": "bodyType",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_Mouth",
+							"name": "mouth",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_10_Headwear",
+							"name": "headwear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3_Clothes",
+							"name": "clothes",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3b_Clothes",
+							"name": "clothes2",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_6b_Eye_Wear",
+							"name": "eyeWear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_5_Hair",
+							"name": "hair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_9_Facial_Hair",
+							"name": "facialHair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tattooId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "jewelryId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "clothesId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "specialId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenIdSeed",
+							"type": "uint256"
+						}
+					],
+					"internalType": "struct TraitsContext",
+					"name": "traitsContext",
+					"type": "tuple"
+				}
+			],
+			"name": "getEyesProbabilities",
+			"outputs": [
+				{
+					"internalType": "uint32[11]",
+					"name": "",
+					"type": "uint32[11]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "enum E_Background",
+							"name": "background",
+							"type": "uint8"
+						},
+						{
+							"components": [
+								{
+									"internalType": "enum E_TraitsGroup",
+									"name": "traitGroup",
+									"type": "uint8"
+								},
+								{
+									"internalType": "uint8",
+									"name": "traitIndex",
+									"type": "uint8"
+								},
+								{
+									"internalType": "int8",
+									"name": "traitId",
+									"type": "int8"
+								},
+								{
+									"internalType": "bool",
+									"name": "hasFiller",
+									"type": "bool"
+								},
+								{
+									"internalType": "bool",
+									"name": "fillerRenderedAtTheEnd",
+									"type": "bool"
+								},
+								{
+									"components": [
+										{
+											"internalType": "enum E_TraitsGroup",
+											"name": "traitGroup",
+											"type": "uint8"
+										},
+										{
+											"internalType": "uint8",
+											"name": "traitIndex",
+											"type": "uint8"
+										}
+									],
+									"internalType": "struct FillerTrait",
+									"name": "filler",
+									"type": "tuple"
+								}
+							],
+							"internalType": "struct TraitToRender[]",
+							"name": "traitsToRender",
+							"type": "tuple[]"
+						},
+						{
+							"internalType": "uint256",
+							"name": "traitsToRenderLength",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numTattoos",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numJewelry",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bool",
+							"name": "masculine",
+							"type": "bool"
+						},
+						{
+							"internalType": "bool",
+							"name": "isAngel",
+							"type": "bool"
+						},
+						{
+							"internalType": "enum E_1_Type",
+							"name": "bodyType",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_Mouth",
+							"name": "mouth",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_10_Headwear",
+							"name": "headwear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3_Clothes",
+							"name": "clothes",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3b_Clothes",
+							"name": "clothes2",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_6b_Eye_Wear",
+							"name": "eyeWear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_5_Hair",
+							"name": "hair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_9_Facial_Hair",
+							"name": "facialHair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tattooId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "jewelryId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "clothesId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "specialId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenIdSeed",
+							"type": "uint256"
+						}
+					],
+					"internalType": "struct TraitsContext",
+					"name": "traitsContext",
+					"type": "tuple"
+				}
+			],
+			"name": "getEyewearProbabilities",
+			"outputs": [
+				{
+					"internalType": "uint32[32]",
+					"name": "",
+					"type": "uint32[32]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "enum E_Background",
+							"name": "background",
+							"type": "uint8"
+						},
+						{
+							"components": [
+								{
+									"internalType": "enum E_TraitsGroup",
+									"name": "traitGroup",
+									"type": "uint8"
+								},
+								{
+									"internalType": "uint8",
+									"name": "traitIndex",
+									"type": "uint8"
+								},
+								{
+									"internalType": "int8",
+									"name": "traitId",
+									"type": "int8"
+								},
+								{
+									"internalType": "bool",
+									"name": "hasFiller",
+									"type": "bool"
+								},
+								{
+									"internalType": "bool",
+									"name": "fillerRenderedAtTheEnd",
+									"type": "bool"
+								},
+								{
+									"components": [
+										{
+											"internalType": "enum E_TraitsGroup",
+											"name": "traitGroup",
+											"type": "uint8"
+										},
+										{
+											"internalType": "uint8",
+											"name": "traitIndex",
+											"type": "uint8"
+										}
+									],
+									"internalType": "struct FillerTrait",
+									"name": "filler",
+									"type": "tuple"
+								}
+							],
+							"internalType": "struct TraitToRender[]",
+							"name": "traitsToRender",
+							"type": "tuple[]"
+						},
+						{
+							"internalType": "uint256",
+							"name": "traitsToRenderLength",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numTattoos",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numJewelry",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bool",
+							"name": "masculine",
+							"type": "bool"
+						},
+						{
+							"internalType": "bool",
+							"name": "isAngel",
+							"type": "bool"
+						},
+						{
+							"internalType": "enum E_1_Type",
+							"name": "bodyType",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_Mouth",
+							"name": "mouth",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_10_Headwear",
+							"name": "headwear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3_Clothes",
+							"name": "clothes",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3b_Clothes",
+							"name": "clothes2",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_6b_Eye_Wear",
+							"name": "eyeWear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_5_Hair",
+							"name": "hair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_9_Facial_Hair",
+							"name": "facialHair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tattooId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "jewelryId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "clothesId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "specialId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenIdSeed",
+							"type": "uint256"
+						}
+					],
+					"internalType": "struct TraitsContext",
+					"name": "traitsContext",
+					"type": "tuple"
+				}
+			],
+			"name": "getFacialHairProbabilities",
+			"outputs": [
+				{
+					"internalType": "uint32[25]",
+					"name": "",
+					"type": "uint32[25]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "getFemaleClothesProbabilities",
+			"outputs": [
+				{
+					"internalType": "uint32[26]",
+					"name": "",
+					"type": "uint32[26]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "enum E_Background",
+							"name": "background",
+							"type": "uint8"
+						},
+						{
+							"components": [
+								{
+									"internalType": "enum E_TraitsGroup",
+									"name": "traitGroup",
+									"type": "uint8"
+								},
+								{
+									"internalType": "uint8",
+									"name": "traitIndex",
+									"type": "uint8"
+								},
+								{
+									"internalType": "int8",
+									"name": "traitId",
+									"type": "int8"
+								},
+								{
+									"internalType": "bool",
+									"name": "hasFiller",
+									"type": "bool"
+								},
+								{
+									"internalType": "bool",
+									"name": "fillerRenderedAtTheEnd",
+									"type": "bool"
+								},
+								{
+									"components": [
+										{
+											"internalType": "enum E_TraitsGroup",
+											"name": "traitGroup",
+											"type": "uint8"
+										},
+										{
+											"internalType": "uint8",
+											"name": "traitIndex",
+											"type": "uint8"
+										}
+									],
+									"internalType": "struct FillerTrait",
+									"name": "filler",
+									"type": "tuple"
+								}
+							],
+							"internalType": "struct TraitToRender[]",
+							"name": "traitsToRender",
+							"type": "tuple[]"
+						},
+						{
+							"internalType": "uint256",
+							"name": "traitsToRenderLength",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numTattoos",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numJewelry",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bool",
+							"name": "masculine",
+							"type": "bool"
+						},
+						{
+							"internalType": "bool",
+							"name": "isAngel",
+							"type": "bool"
+						},
+						{
+							"internalType": "enum E_1_Type",
+							"name": "bodyType",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_Mouth",
+							"name": "mouth",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_10_Headwear",
+							"name": "headwear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3_Clothes",
+							"name": "clothes",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3b_Clothes",
+							"name": "clothes2",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_6b_Eye_Wear",
+							"name": "eyeWear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_5_Hair",
+							"name": "hair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_9_Facial_Hair",
+							"name": "facialHair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tattooId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "jewelryId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "clothesId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "specialId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenIdSeed",
+							"type": "uint256"
+						}
+					],
+					"internalType": "struct TraitsContext",
+					"name": "traitsContext",
+					"type": "tuple"
+				}
+			],
+			"name": "getHairProbabilities",
+			"outputs": [
+				{
+					"internalType": "uint32[]",
+					"name": "",
+					"type": "uint32[]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "enum E_Background",
+							"name": "background",
+							"type": "uint8"
+						},
+						{
+							"components": [
+								{
+									"internalType": "enum E_TraitsGroup",
+									"name": "traitGroup",
+									"type": "uint8"
+								},
+								{
+									"internalType": "uint8",
+									"name": "traitIndex",
+									"type": "uint8"
+								},
+								{
+									"internalType": "int8",
+									"name": "traitId",
+									"type": "int8"
+								},
+								{
+									"internalType": "bool",
+									"name": "hasFiller",
+									"type": "bool"
+								},
+								{
+									"internalType": "bool",
+									"name": "fillerRenderedAtTheEnd",
+									"type": "bool"
+								},
+								{
+									"components": [
+										{
+											"internalType": "enum E_TraitsGroup",
+											"name": "traitGroup",
+											"type": "uint8"
+										},
+										{
+											"internalType": "uint8",
+											"name": "traitIndex",
+											"type": "uint8"
+										}
+									],
+									"internalType": "struct FillerTrait",
+									"name": "filler",
+									"type": "tuple"
+								}
+							],
+							"internalType": "struct TraitToRender[]",
+							"name": "traitsToRender",
+							"type": "tuple[]"
+						},
+						{
+							"internalType": "uint256",
+							"name": "traitsToRenderLength",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numTattoos",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numJewelry",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bool",
+							"name": "masculine",
+							"type": "bool"
+						},
+						{
+							"internalType": "bool",
+							"name": "isAngel",
+							"type": "bool"
+						},
+						{
+							"internalType": "enum E_1_Type",
+							"name": "bodyType",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_Mouth",
+							"name": "mouth",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_10_Headwear",
+							"name": "headwear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3_Clothes",
+							"name": "clothes",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3b_Clothes",
+							"name": "clothes2",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_6b_Eye_Wear",
+							"name": "eyeWear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_5_Hair",
+							"name": "hair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_9_Facial_Hair",
+							"name": "facialHair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tattooId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "jewelryId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "clothesId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "specialId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenIdSeed",
+							"type": "uint256"
+						}
+					],
+					"internalType": "struct TraitsContext",
+					"name": "traitsContext",
+					"type": "tuple"
+				}
+			],
+			"name": "getHatHairProbabilities",
+			"outputs": [
+				{
+					"internalType": "uint32[49]",
+					"name": "",
+					"type": "uint32[49]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "enum E_Background",
+							"name": "background",
+							"type": "uint8"
+						},
+						{
+							"components": [
+								{
+									"internalType": "enum E_TraitsGroup",
+									"name": "traitGroup",
+									"type": "uint8"
+								},
+								{
+									"internalType": "uint8",
+									"name": "traitIndex",
+									"type": "uint8"
+								},
+								{
+									"internalType": "int8",
+									"name": "traitId",
+									"type": "int8"
+								},
+								{
+									"internalType": "bool",
+									"name": "hasFiller",
+									"type": "bool"
+								},
+								{
+									"internalType": "bool",
+									"name": "fillerRenderedAtTheEnd",
+									"type": "bool"
+								},
+								{
+									"components": [
+										{
+											"internalType": "enum E_TraitsGroup",
+											"name": "traitGroup",
+											"type": "uint8"
+										},
+										{
+											"internalType": "uint8",
+											"name": "traitIndex",
+											"type": "uint8"
+										}
+									],
+									"internalType": "struct FillerTrait",
+									"name": "filler",
+									"type": "tuple"
+								}
+							],
+							"internalType": "struct TraitToRender[]",
+							"name": "traitsToRender",
+							"type": "tuple[]"
+						},
+						{
+							"internalType": "uint256",
+							"name": "traitsToRenderLength",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numTattoos",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numJewelry",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bool",
+							"name": "masculine",
+							"type": "bool"
+						},
+						{
+							"internalType": "bool",
+							"name": "isAngel",
+							"type": "bool"
+						},
+						{
+							"internalType": "enum E_1_Type",
+							"name": "bodyType",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_Mouth",
+							"name": "mouth",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_10_Headwear",
+							"name": "headwear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3_Clothes",
+							"name": "clothes",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3b_Clothes",
+							"name": "clothes2",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_6b_Eye_Wear",
+							"name": "eyeWear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_5_Hair",
+							"name": "hair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_9_Facial_Hair",
+							"name": "facialHair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tattooId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "jewelryId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "clothesId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "specialId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenIdSeed",
+							"type": "uint256"
+						}
+					],
+					"internalType": "struct TraitsContext",
+					"name": "traitsContext",
+					"type": "tuple"
+				}
+			],
+			"name": "getHeadwearProbabilities",
+			"outputs": [
+				{
+					"internalType": "uint32[]",
+					"name": "",
+					"type": "uint32[]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "enum E_Background",
+							"name": "background",
+							"type": "uint8"
+						},
+						{
+							"components": [
+								{
+									"internalType": "enum E_TraitsGroup",
+									"name": "traitGroup",
+									"type": "uint8"
+								},
+								{
+									"internalType": "uint8",
+									"name": "traitIndex",
+									"type": "uint8"
+								},
+								{
+									"internalType": "int8",
+									"name": "traitId",
+									"type": "int8"
+								},
+								{
+									"internalType": "bool",
+									"name": "hasFiller",
+									"type": "bool"
+								},
+								{
+									"internalType": "bool",
+									"name": "fillerRenderedAtTheEnd",
+									"type": "bool"
+								},
+								{
+									"components": [
+										{
+											"internalType": "enum E_TraitsGroup",
+											"name": "traitGroup",
+											"type": "uint8"
+										},
+										{
+											"internalType": "uint8",
+											"name": "traitIndex",
+											"type": "uint8"
+										}
+									],
+									"internalType": "struct FillerTrait",
+									"name": "filler",
+									"type": "tuple"
+								}
+							],
+							"internalType": "struct TraitToRender[]",
+							"name": "traitsToRender",
+							"type": "tuple[]"
+						},
+						{
+							"internalType": "uint256",
+							"name": "traitsToRenderLength",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numTattoos",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numJewelry",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bool",
+							"name": "masculine",
+							"type": "bool"
+						},
+						{
+							"internalType": "bool",
+							"name": "isAngel",
+							"type": "bool"
+						},
+						{
+							"internalType": "enum E_1_Type",
+							"name": "bodyType",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_Mouth",
+							"name": "mouth",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_10_Headwear",
+							"name": "headwear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3_Clothes",
+							"name": "clothes",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3b_Clothes",
+							"name": "clothes2",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_6b_Eye_Wear",
+							"name": "eyeWear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_5_Hair",
+							"name": "hair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_9_Facial_Hair",
+							"name": "facialHair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tattooId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "jewelryId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "clothesId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "specialId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenIdSeed",
+							"type": "uint256"
+						}
+					],
+					"internalType": "struct TraitsContext",
+					"name": "traitsContext",
+					"type": "tuple"
+				}
+			],
+			"name": "getLipGlossProbabilities",
+			"outputs": [
+				{
+					"internalType": "uint32[4]",
+					"name": "",
+					"type": "uint32[4]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "getMaleClothesProbabilities",
+			"outputs": [
+				{
+					"internalType": "uint32[26]",
+					"name": "",
+					"type": "uint32[26]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "enum E_Background",
+							"name": "background",
+							"type": "uint8"
+						},
+						{
+							"components": [
+								{
+									"internalType": "enum E_TraitsGroup",
+									"name": "traitGroup",
+									"type": "uint8"
+								},
+								{
+									"internalType": "uint8",
+									"name": "traitIndex",
+									"type": "uint8"
+								},
+								{
+									"internalType": "int8",
+									"name": "traitId",
+									"type": "int8"
+								},
+								{
+									"internalType": "bool",
+									"name": "hasFiller",
+									"type": "bool"
+								},
+								{
+									"internalType": "bool",
+									"name": "fillerRenderedAtTheEnd",
+									"type": "bool"
+								},
+								{
+									"components": [
+										{
+											"internalType": "enum E_TraitsGroup",
+											"name": "traitGroup",
+											"type": "uint8"
+										},
+										{
+											"internalType": "uint8",
+											"name": "traitIndex",
+											"type": "uint8"
+										}
+									],
+									"internalType": "struct FillerTrait",
+									"name": "filler",
+									"type": "tuple"
+								}
+							],
+							"internalType": "struct TraitToRender[]",
+							"name": "traitsToRender",
+							"type": "tuple[]"
+						},
+						{
+							"internalType": "uint256",
+							"name": "traitsToRenderLength",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numTattoos",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numJewelry",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bool",
+							"name": "masculine",
+							"type": "bool"
+						},
+						{
+							"internalType": "bool",
+							"name": "isAngel",
+							"type": "bool"
+						},
+						{
+							"internalType": "enum E_1_Type",
+							"name": "bodyType",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_Mouth",
+							"name": "mouth",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_10_Headwear",
+							"name": "headwear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3_Clothes",
+							"name": "clothes",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3b_Clothes",
+							"name": "clothes2",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_6b_Eye_Wear",
+							"name": "eyeWear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_5_Hair",
+							"name": "hair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_9_Facial_Hair",
+							"name": "facialHair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tattooId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "jewelryId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "clothesId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "specialId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenIdSeed",
+							"type": "uint256"
+						}
+					],
+					"internalType": "struct TraitsContext",
+					"name": "traitsContext",
+					"type": "tuple"
+				}
+			],
+			"name": "getSkeletonTeethProbabilities",
+			"outputs": [
+				{
+					"internalType": "uint32[16]",
+					"name": "",
+					"type": "uint32[16]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "enum E_Background",
+							"name": "background",
+							"type": "uint8"
+						},
+						{
+							"components": [
+								{
+									"internalType": "enum E_TraitsGroup",
+									"name": "traitGroup",
+									"type": "uint8"
+								},
+								{
+									"internalType": "uint8",
+									"name": "traitIndex",
+									"type": "uint8"
+								},
+								{
+									"internalType": "int8",
+									"name": "traitId",
+									"type": "int8"
+								},
+								{
+									"internalType": "bool",
+									"name": "hasFiller",
+									"type": "bool"
+								},
+								{
+									"internalType": "bool",
+									"name": "fillerRenderedAtTheEnd",
+									"type": "bool"
+								},
+								{
+									"components": [
+										{
+											"internalType": "enum E_TraitsGroup",
+											"name": "traitGroup",
+											"type": "uint8"
+										},
+										{
+											"internalType": "uint8",
+											"name": "traitIndex",
+											"type": "uint8"
+										}
+									],
+									"internalType": "struct FillerTrait",
+									"name": "filler",
+									"type": "tuple"
+								}
+							],
+							"internalType": "struct TraitToRender[]",
+							"name": "traitsToRender",
+							"type": "tuple[]"
+						},
+						{
+							"internalType": "uint256",
+							"name": "traitsToRenderLength",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numTattoos",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numJewelry",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bool",
+							"name": "masculine",
+							"type": "bool"
+						},
+						{
+							"internalType": "bool",
+							"name": "isAngel",
+							"type": "bool"
+						},
+						{
+							"internalType": "enum E_1_Type",
+							"name": "bodyType",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_Mouth",
+							"name": "mouth",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_10_Headwear",
+							"name": "headwear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3_Clothes",
+							"name": "clothes",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_3b_Clothes",
+							"name": "clothes2",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_6b_Eye_Wear",
+							"name": "eyeWear",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_5_Hair",
+							"name": "hair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "enum E_9_Facial_Hair",
+							"name": "facialHair",
+							"type": "uint8"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tattooId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "jewelryId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "clothesId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "specialId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "tokenIdSeed",
+							"type": "uint256"
+						}
+					],
+					"internalType": "struct TraitsContext",
+					"name": "traitsContext",
+					"type": "tuple"
+				}
+			],
+			"name": "getTeethProbabilities",
+			"outputs": [
+				{
+					"internalType": "uint32[16]",
+					"name": "",
+					"type": "uint32[16]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		}
+	]
+}

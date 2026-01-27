@@ -1,0 +1,93 @@
+{
+	"deploy": {
+		"VM:-": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"main:1": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"ropsten:3": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"rinkeby:4": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"kovan:42": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"goerli:5": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"Custom": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		}
+	},
+	"data": {
+		"bytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"linkReferences": {},
+			"object": "6055604b600b8282823980515f1a607314603f577f4e487b71000000000000000000000000000000000000000000000000000000005f525f60045260245ffd5b305f52607381538281f3fe730000000000000000000000000000000000000000301460806040525f5ffdfea2646970667358221220081678661375fafa610989c4160828cc59c982bf6dcb1736f21228f838beed7064736f6c634300081e0033",
+			"opcodes": "PUSH1 0x55 PUSH1 0x4B PUSH1 0xB DUP3 DUP3 DUP3 CODECOPY DUP1 MLOAD PUSH0 BYTE PUSH1 0x73 EQ PUSH1 0x3F JUMPI PUSH32 0x4E487B7100000000000000000000000000000000000000000000000000000000 PUSH0 MSTORE PUSH0 PUSH1 0x4 MSTORE PUSH1 0x24 PUSH0 REVERT JUMPDEST ADDRESS PUSH0 MSTORE PUSH1 0x73 DUP2 MSTORE8 DUP3 DUP2 RETURN INVALID PUSH20 0x0 ADDRESS EQ PUSH1 0x80 PUSH1 0x40 MSTORE PUSH0 PUSH0 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 ADDMOD AND PUSH25 0x661375FAFA610989C4160828CC59C982BF6DCB1736F21228F8 CODESIZE 0xBE 0xED PUSH17 0x64736F6C634300081E0033000000000000 ",
+			"sourceMap": "287:11656:2:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;"
+		},
+		"deployedBytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"immutableReferences": {},
+			"linkReferences": {},
+			"object": "730000000000000000000000000000000000000000301460806040525f5ffdfea2646970667358221220081678661375fafa610989c4160828cc59c982bf6dcb1736f21228f838beed7064736f6c634300081e0033",
+			"opcodes": "PUSH20 0x0 ADDRESS EQ PUSH1 0x80 PUSH1 0x40 MSTORE PUSH0 PUSH0 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 ADDMOD AND PUSH25 0x661375FAFA610989C4160828CC59C982BF6DCB1736F21228F8 CODESIZE 0xBE 0xED PUSH17 0x64736F6C634300081E0033000000000000 ",
+			"sourceMap": "287:11656:2:-:0;;;;;;;;"
+		},
+		"gasEstimates": {
+			"creation": {
+				"codeDepositCost": "17000",
+				"executionCost": "92",
+				"totalCost": "17092"
+			},
+			"internal": {
+				"createProbabilityArray(uint256,uint32)": "infinite",
+				"hasBareChest(struct TraitsContext memory)": "infinite",
+				"hasBeard(struct TraitsContext memory)": "infinite",
+				"hasBigBeard(struct TraitsContext memory)": "infinite",
+				"hasBritPopHair(struct TraitsContext memory)": "infinite",
+				"hasCropTop(struct TraitsContext memory)": "infinite",
+				"hasEpicBeard(struct TraitsContext memory)": "infinite",
+				"hasEyeMask(struct TraitsContext memory)": "infinite",
+				"hasEyePatchOrNone(enum E_6b_Eye_Wear)": "infinite",
+				"hasHeadwear(struct TraitsContext memory)": "infinite",
+				"hasHoodie(struct TraitsContext memory)": "infinite",
+				"hasJacket(struct TraitsContext memory)": "infinite",
+				"hasLongSleeves(struct TraitsContext memory)": "infinite",
+				"hasSherpaHat(struct TraitsContext memory)": "infinite",
+				"hasTightBeard(struct TraitsContext memory)": "infinite",
+				"hasTightWhite(struct TraitsContext memory)": "infinite",
+				"hasTshirt(struct TraitsContext memory)": "infinite",
+				"hasVR(struct TraitsContext memory)": "infinite",
+				"hasVest(struct TraitsContext memory)": "infinite",
+				"hasWavyHair(struct TraitsContext memory)": "infinite",
+				"isAlien(struct TraitsContext memory)": "infinite",
+				"isApe(struct TraitsContext memory)": "infinite",
+				"isDemonic(struct TraitsContext memory)": "infinite",
+				"isHuman(struct TraitsContext memory)": "infinite",
+				"isHuman6(struct TraitsContext memory)": "infinite",
+				"isRadioactive(struct TraitsContext memory)": "infinite",
+				"isSkeleton(struct TraitsContext memory)": "infinite",
+				"isZombie(struct TraitsContext memory)": "infinite",
+				"putOnFrontOrOverride(int8[] memory,int8)": "infinite",
+				"removeFromArray(int8[] memory,int8)": "infinite",
+				"shortenArray(int8[] memory,uint256)": "infinite"
+			}
+		},
+		"methodIdentifiers": {}
+	},
+	"abi": []
+}

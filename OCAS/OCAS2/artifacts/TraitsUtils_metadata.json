@@ -1,0 +1,128 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"author": "EtoVass",
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"src/TraitsUtils.sol": "TraitsUtils"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": [
+			":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+			":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+			":ERC721A-Upgradeable/=lib/ERC721A-Upgradeable/contracts/",
+			":ERC721A/=lib/ERC721A/contracts/",
+			":create2-helpers/=lib/create2-helpers/",
+			":create2-scripts/=lib/create2-helpers/script/",
+			":ds-test/=lib/ds-test/src/",
+			":erc4626-tests/=lib/openzeppelin-contracts-upgradeable/lib/erc4626-tests/",
+			":forge-std/=lib/forge-std/src/",
+			":halmos-cheatcodes/=lib/openzeppelin-contracts-upgradeable/lib/halmos-cheatcodes/src/",
+			":lib/ERC721A/=lib/ERC721A/",
+			":lib/openzeppelin-contracts/=lib/openzeppelin-contracts/",
+			":lib/solmate/=lib/solmate/",
+			":lib/utility-contracts/=lib/utility-contracts/",
+			":murky/=lib/murky/src/",
+			":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+			":openzeppelin-contracts/=lib/openzeppelin-contracts/contracts/",
+			":operator-filter-registry/=lib/operator-filter-registry/src/",
+			":seadrop/=src/",
+			":solmate/=lib/solmate/src/",
+			":src/FisherYatesShuffler.sol=src/FisherYatesShuffler.sol",
+			":src/IProbabilities.sol=src/IProbabilities.sol",
+			":src/ISVGRenderer.sol=src/ISVGRenderer.sol",
+			":src/ITraits.sol=src/ITraits.sol",
+			":src/NFTManager.sol=src/NFTManager.sol",
+			":src/TraitContextGenerated.sol=src/TraitContextGenerated.sol",
+			":src/Traits.sol=src/Traits.sol",
+			":src/TraitsContextStructs.sol=src/TraitsContextStructs.sol",
+			":src/TraitsUtils.sol=src/TraitsUtils.sol",
+			":src/common/=src/common/",
+			":src/seadrop/=src/seadrop/",
+			":src/sstore2/=src/sstore2/",
+			":utility-contracts/=lib/utility-contracts/src/"
+		]
+	},
+	"sources": {
+		"src/TraitContextGenerated.sol": {
+			"keccak256": "0x9a06795ae717392dae06aca27634ff1fb3aa14318777169eab3e009f571d6ac5",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://2c111b29cda3a4fea4aa66158eb29fc1e01aa0c54f528954a933d207463ec0e4",
+				"dweb:/ipfs/QmSDXtCCdfQHuQsvoLXcnqoXB6tedXjoYRzctjYzoY12Lc"
+			]
+		},
+		"src/TraitsContextStructs.sol": {
+			"keccak256": "0xb168c6470f454cf5e40547eaf3f99c96ba1c753df160ca49ec9342a5313b216b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e4a0ef3c420dd6cfe407d02e8c7e05778f9cb65f9639b3dd579c80d7a2387659",
+				"dweb:/ipfs/QmUMd68DeaL3WFYFDZkpFmmCN517TSaDvkbceiKtfGm3Zq"
+			]
+		},
+		"src/TraitsUtils.sol": {
+			"keccak256": "0x1ae11ccfc86c5abcc82546ceb35accd514985a21092bce5ebe8795067dec37f7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://40fb1441fd90941924ff3fab0c2cc4393f00f65e579c625d75cd1966174d5e6f",
+				"dweb:/ipfs/QmeyTLvSXs66izND8oLYTgjbGyhxtxfoKbqeohCSFMR2K5"
+			]
+		},
+		"src/common/DynamicBuffer.sol": {
+			"keccak256": "0xd43056c37285fdc186f76fe80b28aaaaacd4d8df1c74fc6c4ae4b2c83a673c80",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://82d9c9f1e966fa2b1be3c8f68e05d8213bacf8b7827303efa2fa705e488adcb9",
+				"dweb:/ipfs/QmQujqHP45T5xQi7kySZFTBpV1ns8thi7a4DTm6YKfHQkj"
+			]
+		},
+		"src/common/Random.sol": {
+			"keccak256": "0x1bd8986808c02d9dd790151c7100be8653adca9a26fc973657d13fe8e337ec5f",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://811cea59ed0f175c43a5f034a95a982578264d0f9fe31aafb5962273598493ce",
+				"dweb:/ipfs/QmQxbCxgG44cgL3rfgSfD1nRrVZ6cfQKgBtzYKzQxZ4Swo"
+			]
+		},
+		"src/common/Utils.sol": {
+			"keccak256": "0x2a30607bf29c5c3dc9c80a5fa9f97bf1bbdc9864eebbd9bb9c1e3cf39484441a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d04bfad670b20193c4a0229ae2fe88398e0cb7115c8d98769571ed750a6a329f",
+				"dweb:/ipfs/QmZ2HBW7HMaBUVeAfNj5iZDV7Q1DD13DThDAKfG1USbmJX"
+			]
+		},
+		"src/sstore2/IAssetsSSTORE2.sol": {
+			"keccak256": "0xed90678201e462aa0addc31f9f08d6b0a124a2a63f978d2abd7536a30ea0c404",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://9f561729e15f1b3f808fb7df39a7546db0ec2659e790c5a554dd01d4579351cc",
+				"dweb:/ipfs/QmS6XeyLcBWgcvjvQJuU5fVhHfNm8pvrmsY88p4yXS4aJs"
+			]
+		}
+	},
+	"version": 1
+}
