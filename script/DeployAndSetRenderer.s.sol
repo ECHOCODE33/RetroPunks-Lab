@@ -11,9 +11,9 @@ import { RetroPunks } from "../src/RetroPunks.sol";
 
 contract DeployAndSetRenderer is Script {
 
-    address constant ASSETS = 0x4FF1f57Eb6aEf73fA402b4Cc0D2Ccb76bA4A7da2;
-    address constant TRAITS = 0x21C8b15c5f74E3104FD1204C5E18d55e9b24C8C7;
-    address constant RETROPUNKS = 0xcbB15f83A48e98767dD0C1C9459EEA26469079c4;
+    address constant ASSETS = 0xCdE4E9bd6B1CA111A475BFC4Cf45CB9e7ACC44Cb;
+    address constant TRAITS = 0xb43B2e7e8C606856E3b91fd8c6062E8fd8f652AB;
+    address constant RETROPUNKS = 0x7A7741eBfAD78ce204395ba1dd0B516b40e79102;
 
     function run() external {
 

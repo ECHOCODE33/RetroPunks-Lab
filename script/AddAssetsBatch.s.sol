@@ -8,7 +8,7 @@ import {Assets} from "../src/Assets.sol";
 
 contract AddAssetsBatch is Script {
 
-    address constant assetsAddress = 0x4FF1f57Eb6aEf73fA402b4Cc0D2Ccb76bA4A7da2;
+    address constant assetsAddress = 0xCdE4E9bd6B1CA111A475BFC4Cf45CB9e7ACC44Cb;
 
     uint constant batchLimit = 10;
 
