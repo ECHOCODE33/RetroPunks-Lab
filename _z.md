@@ -118,6 +118,28 @@ forge verify-contract 0x50351EE22258b3E6B5C193F65F60dEf3bfB155b4 \
 
 
 
+forge script script/Deploy.s.sol \
+ --rpc-url http://localhost:3001/api/rpc \
+ --broadcast \
+ --sender 0x6A5ebe005B8Ef3d8ACdA293EFE5CD956a46b2457 \
+ --unlocked \
+ --verify \ 
+ --etherscan-api-key $ETHERSCAN_API_KEY \
+ -v
+
+
+
+
+forge script script/Deploy.s.sol \
+ --rpc-url http://localhost:3001/api/rpc \
+ --broadcast \
+ --sender 0x6A5ebe005B8Ef3d8ACdA293EFE5CD956a46b2457 \
+ --unlocked \
+ --verify \
+ --verifier-url 'https://api.etherscan.io/v2/api?chainid=8453' \
+ --etherscan-api-key $ETHERSCAN_API_KEY \
+ --timeout 300 \
+ -v
 
 
 

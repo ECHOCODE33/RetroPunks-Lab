@@ -2,10 +2,11 @@
 pragma solidity ^0.8.32;
 
 import { ISVGRenderer } from "./interfaces/ISVGRenderer.sol";
+// NUM_SPECIAL_1S = 16, NUM_BACKGROUND = 19
 import { NUM_SPECIAL_1S, NUM_BACKGROUND, E_Background } from "./common/Enums.sol";
 import { LibPRNG } from "./libraries/LibPRNG.sol";
 import { Utils } from "./libraries/Utils.sol";
-import { ERC721SeaDropPausable } from "./seadrop/extensions/ERC721SeaDropPausable.sol";
+import { ERC721SeaDropPausableAndQueryable } from "./seadrop/extensions/ERC721SeaDropPausableAndQueryable.sol";
 import { ERC721ContractMetadata } from "./seadrop/ERC721ContractMetadata.sol";
 import { ISeaDropTokenContractMetadata } from "./seadrop/interfaces/ISeaDropTokenContractMetadata.sol";
 
@@ -20,7 +21,7 @@ struct TokenMetadata {
 /**
  * @author ECHO
  */
-contract RetroPunks is ERC721SeaDropPausable {
+contract RetroPunks is ERC721SeaDropPausableAndQueryable {
     using LibPRNG for LibPRNG.LazyShuffler;
 
     ISVGRenderer public renderer;
@@ -126,7 +127,7 @@ contract RetroPunks is ERC721SeaDropPausable {
         bytes32 _committedShufflerSeedHashParam, 
         uint _maxSupplyParam, 
         address[] memory allowedSeaDropParam
-    ) ERC721SeaDropPausable("RetroPunks", "RPNKS", allowedSeaDropParam) {
+    ) ERC721SeaDropPausableAndQueryable("RetroPunks", "RPNKS", allowedSeaDropParam) {
         COMMITTED_GLOBAL_SEED_HASH = _committedGlobalSeedHashParam;
         COMMITTED_SHUFFLER_SEED_HASH = _committedShufflerSeedHashParam;
         renderer = _rendererParam;

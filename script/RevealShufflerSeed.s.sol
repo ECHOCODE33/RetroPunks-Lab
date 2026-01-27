@@ -8,7 +8,7 @@ import {RetroPunks} from "../src/RetroPunks.sol";
 
 contract RevealShufflerSeed is Script {
 
-    address constant retroPunksAddress = 0xcbB15f83A48e98767dD0C1C9459EEA26469079c4;
+    address constant retroPunksAddress = 0x7A7741eBfAD78ce204395ba1dd0B516b40e79102;
 
     uint256 constant SHUFFLER_SEED_PART1 = 7393514293;
     uint256 constant SHUFFLER_SEED_PART2 = 3904021486;
