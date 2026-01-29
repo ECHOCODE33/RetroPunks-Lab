@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import { LibBytes } from "./LibBytes.sol";
+import {LibBytes} from "./LibBytes.sol";
 
 /// @notice Library for converting numbers into strings and other string operations.
 /// @author Solady (https://github.com/vectorized/solady/blob/main/src/utils/LibString.sol)
@@ -114,11 +114,7 @@ library LibString {
     }
 
     /// @dev Helper to cast `$` to a `BytesStorage`.
-    function bytesStorage(StringStorage storage $)
-        internal
-        pure
-        returns (LibBytes.BytesStorage storage casted)
-    {
+    function bytesStorage(StringStorage storage $) internal pure returns (LibBytes.BytesStorage storage casted) {
         /// @solidity memory-safe-assembly
         assembly {
             casted.slot := $.slot
@@ -185,11 +181,7 @@ library LibString {
     /// The output is prefixed with "0x" encoded using 2 hexadecimal digits per byte,
     /// giving a total length of `byteCount * 2 + 2` bytes.
     /// Reverts if `byteCount` is too small for the output to contain all the digits.
-    function toHexString(uint256 value, uint256 byteCount)
-        internal
-        pure
-        returns (string memory result)
-    {
+    function toHexString(uint256 value, uint256 byteCount) internal pure returns (string memory result) {
         result = toHexStringNoPrefix(value, byteCount);
         /// @solidity memory-safe-assembly
         assembly {
@@ -205,11 +197,7 @@ library LibString {
     /// The output is not prefixed with "0x" and is encoded using 2 hexadecimal digits per byte,
     /// giving a total length of `byteCount * 2` bytes.
     /// Reverts if `byteCount` is too small for the output to contain all the digits.
-    function toHexStringNoPrefix(uint256 value, uint256 byteCount)
-        internal
-        pure
-        returns (string memory result)
-    {
+    function toHexStringNoPrefix(uint256 value, uint256 byteCount) internal pure returns (string memory result) {
         /// @solidity memory-safe-assembly
         assembly {
             // We need 0x20 bytes for the trailing zeros padding, `byteCount * 2` bytes
@@ -280,11 +268,7 @@ library LibString {
     /// @dev Returns the hexadecimal representation of `value`.
     /// The output excludes leading "0" from the `toHexStringNoPrefix` output.
     /// `0x00: "0", 0x01: "1", 0x12: "12", 0x123: "123"`.
-    function toMinimalHexStringNoPrefix(uint256 value)
-        internal
-        pure
-        returns (string memory result)
-    {
+    function toMinimalHexStringNoPrefix(uint256 value) internal pure returns (string memory result) {
         result = toHexStringNoPrefix(value);
         /// @solidity memory-safe-assembly
         assembly {
@@ -528,22 +512,14 @@ library LibString {
     // can lead to undefined behavior.
 
     /// @dev Returns `subject` all occurrences of `needle` replaced with `replacement`.
-    function replace(string memory subject, string memory needle, string memory replacement)
-        internal
-        pure
-        returns (string memory)
-    {
+    function replace(string memory subject, string memory needle, string memory replacement) internal pure returns (string memory) {
         return string(LibBytes.replace(bytes(subject), bytes(needle), bytes(replacement)));
     }
 
     /// @dev Returns the byte index of the first location of `needle` in `subject`,
     /// needleing from left to right, starting from `from`.
     /// Returns `NOT_FOUND` (i.e. `type(uint256).max`) if the `needle` is not found.
-    function indexOf(string memory subject, string memory needle, uint256 from)
-        internal
-        pure
-        returns (uint256)
-    {
+    function indexOf(string memory subject, string memory needle, uint256 from) internal pure returns (uint256) {
         return LibBytes.indexOf(bytes(subject), bytes(needle), from);
     }
 
@@ -557,22 +533,14 @@ library LibString {
     /// @dev Returns the byte index of the first location of `needle` in `subject`,
     /// needleing from right to left, starting from `from`.
     /// Returns `NOT_FOUND` (i.e. `type(uint256).max`) if the `needle` is not found.
-    function lastIndexOf(string memory subject, string memory needle, uint256 from)
-        internal
-        pure
-        returns (uint256)
-    {
+    function lastIndexOf(string memory subject, string memory needle, uint256 from) internal pure returns (uint256) {
         return LibBytes.lastIndexOf(bytes(subject), bytes(needle), from);
     }
 
     /// @dev Returns the byte index of the first location of `needle` in `subject`,
     /// needleing from right to left.
     /// Returns `NOT_FOUND` (i.e. `type(uint256).max`) if the `needle` is not found.
-    function lastIndexOf(string memory subject, string memory needle)
-        internal
-        pure
-        returns (uint256)
-    {
+    function lastIndexOf(string memory subject, string memory needle) internal pure returns (uint256) {
         return LibBytes.lastIndexOf(bytes(subject), bytes(needle), type(uint256).max);
     }
 
@@ -598,11 +566,7 @@ library LibString {
 
     /// @dev Returns a copy of `subject` sliced from `start` to `end` (exclusive).
     /// `start` and `end` are byte offsets.
-    function slice(string memory subject, uint256 start, uint256 end)
-        internal
-        pure
-        returns (string memory)
-    {
+    function slice(string memory subject, uint256 start, uint256 end) internal pure returns (string memory) {
         return string(LibBytes.slice(bytes(subject), start, end));
     }
 
@@ -614,20 +578,12 @@ library LibString {
 
     /// @dev Returns all the indices of `needle` in `subject`.
     /// The indices are byte offsets.
-    function indicesOf(string memory subject, string memory needle)
-        internal
-        pure
-        returns (uint256[] memory)
-    {
+    function indicesOf(string memory subject, string memory needle) internal pure returns (uint256[] memory) {
         return LibBytes.indicesOf(bytes(subject), bytes(needle));
     }
 
     /// @dev Returns an arrays of strings based on the `delimiter` inside of the `subject` string.
-    function split(string memory subject, string memory delimiter)
-        internal
-        pure
-        returns (string[] memory result)
-    {
+    function split(string memory subject, string memory delimiter) internal pure returns (string[] memory result) {
         bytes[] memory a = LibBytes.split(bytes(subject), bytes(delimiter));
         /// @solidity memory-safe-assembly
         assembly {
@@ -643,11 +599,7 @@ library LibString {
 
     /// @dev Returns a copy of the string in either lowercase or UPPERCASE.
     /// WARNING! This function is only compatible with 7-bit ASCII strings.
-    function toCase(string memory subject, bool toUpper)
-        internal
-        pure
-        returns (string memory result)
-    {
+    function toCase(string memory subject, bool toUpper) internal pure returns (string memory result) {
         /// @solidity memory-safe-assembly
         assembly {
             let n := mload(subject)
@@ -676,7 +628,8 @@ library LibString {
         assembly {
             result := mload(0x40)
             let n := 0
-            for {} byte(n, s) { n := add(n, 1) } {} // Scan for '\0'.
+            for {} // Scan for '\0'.
+             byte(n, s) { n := add(n, 1) } {}
             mstore(result, n) // Store the length.
             let o := add(result, 0x20)
             mstore(o, s) // Store the bytes of the string.
@@ -689,7 +642,8 @@ library LibString {
     function normalizeSmallString(bytes32 s) internal pure returns (bytes32 result) {
         /// @solidity memory-safe-assembly
         assembly {
-            for {} byte(result, s) { result := add(result, 1) } {} // Scan for '\0'.
+            for {} // Scan for '\0'.
+             byte(result, s) { result := add(result, 1) } {}
             mstore(0x00, s)
             mstore(result, 0x00)
             result := mload(0x00)
@@ -755,11 +709,7 @@ library LibString {
 
     /// @dev Escapes the string to be used within double-quotes in a JSON.
     /// If `addDoubleQuotes` is true, the result will be enclosed in double-quotes.
-    function escapeJSON(string memory s, bool addDoubleQuotes)
-        internal
-        pure
-        returns (string memory result)
-    {
+    function escapeJSON(string memory s, bool addDoubleQuotes) internal pure returns (string memory result) {
         /// @solidity memory-safe-assembly
         assembly {
             result := mload(0x40)
@@ -889,14 +839,13 @@ library LibString {
         assembly {
             // We don't need to zero right pad the string,
             // since this is our own custom non-standard packing scheme.
-            result :=
-                mul(
-                    // Load the length and the bytes.
-                    mload(add(a, 0x1f)),
-                    // `length != 0 && length < 32`. Abuses underflow.
-                    // Assumes that the length is valid and within the block gas limit.
-                    lt(sub(mload(a), 1), 0x1f)
-                )
+            result := mul(
+                // Load the length and the bytes.
+                mload(add(a, 0x1f)),
+                // `length != 0 && length < 32`. Abuses underflow.
+                // Assumes that the length is valid and within the block gas limit.
+                lt(sub(mload(a), 1), 0x1f)
+            )
         }
     }
 
@@ -922,25 +871,22 @@ library LibString {
             let aLen := mload(a)
             // We don't need to zero right pad the strings,
             // since this is our own custom non-standard packing scheme.
-            result :=
-                mul(
-                    or( // Load the length and the bytes of `a` and `b`.
-                    shl(shl(3, sub(0x1f, aLen)), mload(add(a, aLen))), mload(sub(add(b, 0x1e), aLen))),
-                    // `totalLen != 0 && totalLen < 31`. Abuses underflow.
-                    // Assumes that the lengths are valid and within the block gas limit.
-                    lt(sub(add(aLen, mload(b)), 1), 0x1e)
-                )
+            result := mul(
+                or( // Load the length and the bytes of `a` and `b`.
+                    shl(shl(3, sub(0x1f, aLen)), mload(add(a, aLen))),
+                    mload(sub(add(b, 0x1e), aLen))
+                ),
+                // `totalLen != 0 && totalLen < 31`. Abuses underflow.
+                // Assumes that the lengths are valid and within the block gas limit.
+                lt(sub(add(aLen, mload(b)), 1), 0x1e)
+            )
         }
     }
 
     /// @dev Unpacks strings packed using {packTwo}.
     /// Returns the empty strings if `packed` is `bytes32(0)`.
     /// If `packed` is not an output of {packTwo}, the output behavior is undefined.
-    function unpackTwo(bytes32 packed)
-        internal
-        pure
-        returns (string memory resultA, string memory resultB)
-    {
+    function unpackTwo(bytes32 packed) internal pure returns (string memory resultA, string memory resultB) {
         /// @solidity memory-safe-assembly
         assembly {
             resultA := mload(0x40) // Grab the free memory pointer.

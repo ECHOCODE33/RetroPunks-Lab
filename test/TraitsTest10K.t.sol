@@ -4,10 +4,10 @@ pragma solidity ^0.8.30;
 import "forge-std/Test.sol";
 import "forge-std/console.sol";
 
-import { Traits } from "../src/Traits.sol";
-import { Probs } from "../src/Probs.sol";
-import { TraitsContext } from "../src/common/Structs.sol";
-import { E_Sex } from "../src/common/Enums.sol";
+import {Traits} from "../src/Traits.sol";
+import {Probs} from "../src/Probs.sol";
+import {TraitsContext} from "../src/common/Structs.sol";
+import {E_Sex} from "../src/common/Enums.sol";
 
 contract CumulativeStats {
     mapping(string => mapping(uint256 => uint256)) public counts;
@@ -23,7 +23,8 @@ contract CumulativeStats {
 
     function incrementSuccess(bool isMale) public {
         successfulRuns++;
-        if (isMale) maleTotal++; else femaleTotal++;
+        if (isMale) maleTotal++;
+        else femaleTotal++;
     }
 }
 
@@ -32,7 +33,7 @@ contract TraitsSimulationTest is Test {
     CumulativeStats public stats;
 
     function setUp() public {
-        traitsContract = new Traits(/* new Probs() */);
+        traitsContract = new Traits( /* new Probs() */ );
         stats = new CumulativeStats();
     }
 
@@ -43,41 +44,39 @@ contract TraitsSimulationTest is Test {
             uint16 tokenIdSeed = uint16(i);
             uint256 globalSeed = 987654321;
 
-            try traitsContract.generateTraitsContext(tokenIdSeed, 0, globalSeed)
-                returns (TraitsContext memory ctx)
-            {
+            try traitsContract.generateTraitsContext(tokenIdSeed, 0, globalSeed) returns (TraitsContext memory ctx) {
                 bool isMale = (ctx.sex == E_Sex.Male);
                 stats.incrementSuccess(isMale);
 
-                stats.record("sex", uint(ctx.sex));
+                stats.record("sex", uint256(ctx.sex));
                 stats.record("length", ctx.traitsToRenderLength);
-                stats.record("mouth", uint(ctx.mouth));
+                stats.record("mouth", uint256(ctx.mouth));
 
                 if (isMale) {
-                    stats.record("m_skin", uint(ctx.maleSkin));
-                    stats.record("m_eyes", uint(ctx.maleEyes));
-                    stats.record("m_face", uint(ctx.maleFace));
-                    stats.record("m_chain", uint(ctx.maleChain));
-                    stats.record("m_earring", uint(ctx.maleEarring));
-                    stats.record("m_scarf", uint(ctx.maleScarf));
-                    stats.record("m_facialHair", uint(ctx.maleFacialHair));
-                    stats.record("m_mask", uint(ctx.maleMask));
-                    stats.record("m_hair", uint(ctx.maleHair));
-                    stats.record("m_hatHair", uint(ctx.maleHatHair));
-                    stats.record("m_headwear", uint(ctx.maleHeadwear));
-                    stats.record("m_eyeWear", uint(ctx.maleEyeWear));
+                    stats.record("m_skin", uint256(ctx.maleSkin));
+                    stats.record("m_eyes", uint256(ctx.maleEyes));
+                    stats.record("m_face", uint256(ctx.maleFace));
+                    stats.record("m_chain", uint256(ctx.maleChain));
+                    stats.record("m_earring", uint256(ctx.maleEarring));
+                    stats.record("m_scarf", uint256(ctx.maleScarf));
+                    stats.record("m_facialHair", uint256(ctx.maleFacialHair));
+                    stats.record("m_mask", uint256(ctx.maleMask));
+                    stats.record("m_hair", uint256(ctx.maleHair));
+                    stats.record("m_hatHair", uint256(ctx.maleHatHair));
+                    stats.record("m_headwear", uint256(ctx.maleHeadwear));
+                    stats.record("m_eyeWear", uint256(ctx.maleEyeWear));
                 } else {
-                    stats.record("f_skin", uint(ctx.femaleSkin));
-                    stats.record("f_eyes", uint(ctx.femaleEyes));
-                    stats.record("f_face", uint(ctx.femaleFace));
-                    stats.record("f_chain", uint(ctx.femaleChain));
-                    stats.record("f_earring", uint(ctx.femaleEarring));
-                    stats.record("f_scarf", uint(ctx.femaleScarf));
-                    stats.record("f_mask", uint(ctx.femaleMask));
-                    stats.record("f_hair", uint(ctx.femaleHair));
-                    stats.record("f_hatHair", uint(ctx.femaleHatHair));
-                    stats.record("f_headwear", uint(ctx.femaleHeadwear));
-                    stats.record("f_eyeWear", uint(ctx.femaleEyeWear));
+                    stats.record("f_skin", uint256(ctx.femaleSkin));
+                    stats.record("f_eyes", uint256(ctx.femaleEyes));
+                    stats.record("f_face", uint256(ctx.femaleFace));
+                    stats.record("f_chain", uint256(ctx.femaleChain));
+                    stats.record("f_earring", uint256(ctx.femaleEarring));
+                    stats.record("f_scarf", uint256(ctx.femaleScarf));
+                    stats.record("f_mask", uint256(ctx.femaleMask));
+                    stats.record("f_hair", uint256(ctx.femaleHair));
+                    stats.record("f_hatHair", uint256(ctx.femaleHatHair));
+                    stats.record("f_headwear", uint256(ctx.femaleHeadwear));
+                    stats.record("f_eyeWear", uint256(ctx.femaleEyeWear));
                 }
             } catch {}
         }
@@ -99,7 +98,7 @@ contract TraitsSimulationTest is Test {
 
         _logGroup("sex", "SEX", total);
         _logGroup("length", "RENDER LENGTHS", total);
-        
+
         console.log("");
         console.log(">>> MALE GROUP RARITIES");
         _logGroup("m_skin", "Skin", mTotal);
@@ -140,14 +139,14 @@ contract TraitsSimulationTest is Test {
         uint256 max = stats.maxIndex(key);
         console.log("");
         console.log("-- ", label);
-        for (uint i = 0; i <= max; i++) {
+        for (uint256 i = 0; i <= max; i++) {
             uint256 count = stats.counts(key, i);
             uint256 p = (count * 1000) / divisor;
             string memory dStr = (p % 100) < 10 ? string.concat("0", vm.toString(p % 100)) : vm.toString(p % 100);
 
             string memory name = _getName(key, i);
             // Format: "  <Name> [<Idx>]: <count> (<pct>%)"
-            console.log(string.concat("  ", name, " [", vm.toString(i), "]: ", vm.toString(count), " (", vm.toString(p/100), ".", dStr, "%)"));
+            console.log(string.concat("  ", name, " [", vm.toString(i), "]: ", vm.toString(count), " (", vm.toString(p / 100), ".", dStr, "%)"));
         }
     }
 
@@ -156,12 +155,12 @@ contract TraitsSimulationTest is Test {
     // - length returns "Len X"
     // - mouth returns "Mouth X"
     // - all others return "Option X" by default (you can change to real names)
-    function _getName(string memory key, uint i) internal pure returns (string memory) {
+    function _getName(string memory key, uint256 i) internal pure returns (string memory) {
         bytes32 k = keccak256(abi.encodePacked(key));
 
         if (k == keccak256(abi.encodePacked("sex"))) {
-            if (i == uint(E_Sex.Male)) return "Male";
-            if (i == uint(E_Sex.Female)) return "Female";
+            if (i == uint256(E_Sex.Male)) return "Male";
+            if (i == uint256(E_Sex.Female)) return "Female";
             return string.concat("Sex_", vm.toString(i));
         }
 
@@ -177,33 +176,27 @@ contract TraitsSimulationTest is Test {
         // Default per-group naming — replace these with your actual names for better output.
         // Example: if you know m_skin index 0 is "Light" and 1 is "Dark", replace Option names below.
         //
-        if (k == keccak256(abi.encodePacked("m_skin")) ||
-            k == keccak256(abi.encodePacked("f_skin"))) {
+        if (k == keccak256(abi.encodePacked("m_skin")) || k == keccak256(abi.encodePacked("f_skin"))) {
             return string.concat("Skin Option ", vm.toString(i));
         }
 
-        if (k == keccak256(abi.encodePacked("m_eyes")) ||
-            k == keccak256(abi.encodePacked("f_eyes"))) {
+        if (k == keccak256(abi.encodePacked("m_eyes")) || k == keccak256(abi.encodePacked("f_eyes"))) {
             return string.concat("Eyes Option ", vm.toString(i));
         }
 
-        if (k == keccak256(abi.encodePacked("m_face")) ||
-            k == keccak256(abi.encodePacked("f_face"))) {
+        if (k == keccak256(abi.encodePacked("m_face")) || k == keccak256(abi.encodePacked("f_face"))) {
             return string.concat("Face Option ", vm.toString(i));
         }
 
-        if (k == keccak256(abi.encodePacked("m_chain")) ||
-            k == keccak256(abi.encodePacked("f_chain"))) {
+        if (k == keccak256(abi.encodePacked("m_chain")) || k == keccak256(abi.encodePacked("f_chain"))) {
             return string.concat("Chain Option ", vm.toString(i));
         }
 
-        if (k == keccak256(abi.encodePacked("m_earring")) ||
-            k == keccak256(abi.encodePacked("f_earring"))) {
+        if (k == keccak256(abi.encodePacked("m_earring")) || k == keccak256(abi.encodePacked("f_earring"))) {
             return string.concat("Earring Option ", vm.toString(i));
         }
 
-        if (k == keccak256(abi.encodePacked("m_scarf")) ||
-            k == keccak256(abi.encodePacked("f_scarf"))) {
+        if (k == keccak256(abi.encodePacked("m_scarf")) || k == keccak256(abi.encodePacked("f_scarf"))) {
             return string.concat("Scarf Option ", vm.toString(i));
         }
 
@@ -211,28 +204,23 @@ contract TraitsSimulationTest is Test {
             return string.concat("FacialHair Option ", vm.toString(i));
         }
 
-        if (k == keccak256(abi.encodePacked("m_mask")) ||
-            k == keccak256(abi.encodePacked("f_mask"))) {
+        if (k == keccak256(abi.encodePacked("m_mask")) || k == keccak256(abi.encodePacked("f_mask"))) {
             return string.concat("Mask Option ", vm.toString(i));
         }
 
-        if (k == keccak256(abi.encodePacked("m_hair")) ||
-            k == keccak256(abi.encodePacked("f_hair"))) {
+        if (k == keccak256(abi.encodePacked("m_hair")) || k == keccak256(abi.encodePacked("f_hair"))) {
             return string.concat("Hair Option ", vm.toString(i));
         }
 
-        if (k == keccak256(abi.encodePacked("m_hatHair")) ||
-            k == keccak256(abi.encodePacked("f_hatHair"))) {
+        if (k == keccak256(abi.encodePacked("m_hatHair")) || k == keccak256(abi.encodePacked("f_hatHair"))) {
             return string.concat("HatHair Option ", vm.toString(i));
         }
 
-        if (k == keccak256(abi.encodePacked("m_headwear")) ||
-            k == keccak256(abi.encodePacked("f_headwear"))) {
+        if (k == keccak256(abi.encodePacked("m_headwear")) || k == keccak256(abi.encodePacked("f_headwear"))) {
             return string.concat("Headwear Option ", vm.toString(i));
         }
 
-        if (k == keccak256(abi.encodePacked("m_eyeWear")) ||
-            k == keccak256(abi.encodePacked("f_eyeWear"))) {
+        if (k == keccak256(abi.encodePacked("m_eyeWear")) || k == keccak256(abi.encodePacked("f_eyeWear"))) {
             return string.concat("EyeWear Option ", vm.toString(i));
         }
 

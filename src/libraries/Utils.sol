@@ -1,15 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.32;
 
-import { DynamicBuffer } from './DynamicBuffer.sol';
+import {DynamicBuffer} from "./DynamicBuffer.sol";
 
 library Utils {
-
     function toString(bytes32 _bytes32) internal pure returns (string memory) {
         return string(toByteArray(_bytes32));
     }
 
-    function toString(uint value) internal pure returns (string memory str) {
+    function toString(uint256 value) internal pure returns (string memory str) {
         /// @solidity memory-safe-assembly
         assembly {
             // The maximum value of a uint contains 78 digits (1 byte per digit), but
@@ -48,10 +47,10 @@ library Utils {
 
     function toString(int256 value) internal pure returns (string memory str) {
         if (value >= 0) {
-            return toString(uint(value));
+            return toString(uint256(value));
         }
         unchecked {
-            str = toString(uint(-value));
+            str = toString(uint256(-value));
         }
         /// @solidity memory-safe-assembly
         assembly {
@@ -66,7 +65,7 @@ library Utils {
 
     function toByteArray(bytes32 _bytes32) internal pure returns (bytes memory) {
         uint8 i = 0;
-        while(i < 32 && _bytes32[i] != 0) {
+        while (i < 32 && _bytes32[i] != 0) {
             i++;
         }
         bytes memory bytesArray = new bytes(i);
@@ -79,7 +78,7 @@ library Utils {
     function concat(bytes memory buffer, bytes memory c1) internal pure {
         DynamicBuffer.appendSafe(buffer, c1);
     }
-    
+
     function concatBase64(bytes memory buffer, bytes memory c1) internal pure {
         DynamicBuffer.appendSafeBase64(buffer, c1, false, false);
     }

@@ -13,8 +13,8 @@ contract TokenURIBatchTest is Script {
 
     function run() external {
         vm.pauseGasMetering();
-        
-        for (uint tokenId = 1; tokenId <= 10; tokenId++) {
+
+        for (uint256 tokenId = 1; tokenId <= 10; tokenId++) {
             bytes memory data = abi.encodeWithSignature("tokenURI(uint256)", tokenId);
             (bool success, bytes memory returnedData) = retroPunksAddress.staticcall(data);
 

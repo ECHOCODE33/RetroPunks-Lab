@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import { Script, console2 } from "forge-std/Script.sol";
+import {Script, console2} from "forge-std/Script.sol";
 
 interface IRetroPunks {
     // UPDATED: Changed from setName to setTokenName
@@ -10,15 +10,14 @@ interface IRetroPunks {
 }
 
 contract RenamePunkScript is Script {
-    
     address constant CONTRACT_ADDRESS = 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707;
     uint256 constant TOKEN_ID = 4;
 
     function run() external {
         string memory newName = "Super Punk";
 
-        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-        
+        uint256 deployerPrivateKey = vm.envUint("PK");
+
         vm.startBroadcast(deployerPrivateKey);
 
         IRetroPunks punkContract = IRetroPunks(CONTRACT_ADDRESS);

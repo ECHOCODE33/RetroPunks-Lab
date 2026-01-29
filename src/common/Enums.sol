@@ -14,23 +14,14 @@ enum E_Background_Type {
 
     S_Vertical,
     P_Vertical,
-    S_Vertical_Inverse,
-    P_Vertical_Inverse,
 
     S_Horizontal,
     P_Horizontal,
-    S_Horizontal_Inverse,
-    P_Horizontal_Inverse,
 
-    S_Diagonal,
-    P_Diagonal,
-    S_Diagonal_Inverse,
-    P_Diagonal_Inverse,
-
-    S_Reverse_Diagonal,
-    P_Reverse_Diagonal,
-    S_Reverse_Diagonal_Inverse,
-    P_Reverse_Diagonal_Inverse,
+    S_Down,
+    P_Down,
+    S_Up,
+    P_Up,
 
     Radial
 }

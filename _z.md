@@ -45,6 +45,40 @@ forge script script/RenamePunk.s.sol:RenamePunkScript --rpc-url $RPC_URL --broad
 
 
 
+## Anvil
+
+forge script script/Deploy.s.sol --rpc-url $RPC_URL --private-key $PK --broadcast -v
+
+forge script script/AddAssetsBatch.s.sol:AddAssetsBatch --rpc-url $RPC_URL --private-key $PK --broadcast -v
+
+forge script script/VerifyAssets.s.sol:VerifyAssets --rpc-url $RPC_URL --private-key $PK --broadcast -v
+
+forge script script/RevealShufflerSeed.s.sol:RevealShufflerSeed --rpc-url $RPC_URL --private-key $PK --broadcast -v
+
+forge script script/Mint.s.sol:Mint --rpc-url $RPC_URL --private-key $PK --broadcast -v
+
+forge script script/ViewTokenURI.s.sol:ViewTokenURI --rpc-url $RPC_URL -v
+
+forge script script/TokenURIBatchTest.s.sol:TokenURIBatchTest --rpc-url $RPC_URL -v
+
+forge script script/DeployAndSetRenderer.s.sol:DeployAndSetRenderer --rpc-url $RPC_URL --private-key $PK -broadcast -vv
+
+forge script script/RenamePunk.s.sol:RenamePunkScript --rpc-url $RPC_URL --broadcast -vv
+
+
+cast call 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707 "tokenURI(uint256)(string)" 5 --rpc-url $RPC_URL --gas-limit 100000000
+
+
+## == Anvil Logs ==
+  Assets:: 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512
+  Traits: 0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
+  PreRevealSVGRenderer: 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+  SVGRenderer: 0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9
+  RetroPunks: 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707
+
+
+
+
 
 forge script script/Deploy.s.sol \
  --rpc-url $SEPOLIA_RPC_URL \
@@ -96,6 +130,17 @@ forge script script/ViewTokenURI.s.sol:ViewTokenURI \
 forge script script/TokenURIBatchTest.s.sol:TokenURIBatchTest \
  --rpc-url $SEPOLIA_RPC_URL \
  -v
+
+
+
+## == Logs ==
+  Assets:: 0x1846489d864a104e0AAE6979A77852D05b052AE2
+  Traits: 0x6B8B7B5AE320cDfa2cA27b7dd7ddF8bdf5cd4373
+  PreRevealSVGRenderer: 0x58BC4bbC9D0ADf6f2308C0588A77Be4Dc9Fbc4a8
+  SVGRenderer: 0x6871bbE4A8DcFe8F7F8846910fd6646058e3439C
+  RetroPunks: 0x206540a2344349D422A7A872Bb607139321c0b53
+
+
 
 
 

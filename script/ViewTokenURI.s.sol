@@ -6,16 +6,14 @@ import {console} from "forge-std/console.sol";
 
 import {RetroPunks} from "../src/RetroPunks.sol";
 
-
 contract ViewTokenURI is Script {
- 
     // ====================== CONFIGURATION ======================
 
     // Your deployed RetroPunks contract address
-    address constant retroPunksAddress = 0x7A7741eBfAD78ce204395ba1dd0B516b40e79102;
+    address constant retroPunksAddress = 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707;
 
     // CHANGE THIS: Token ID you want to view
-    uint256 constant TOKEN_ID = 75;
+    uint256 constant TOKEN_ID = 2;
 
     // ====================== SCRIPT LOGIC ======================
 

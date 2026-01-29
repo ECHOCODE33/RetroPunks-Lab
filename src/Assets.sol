@@ -1,20 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.32;
 
-import { IAssets } from "./interfaces/IAssets.sol";
-import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
-import { SSTORE2 } from "./libraries/SSTORE2.sol";
-import { LibZip } from "./libraries/LibZip.sol";
+import {IAssets} from "./interfaces/IAssets.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {SSTORE2} from "./libraries/SSTORE2.sol";
+import {LibZip} from "./libraries/LibZip.sol";
 
 /**
  * @author ECHO
  */
 contract Assets is Ownable, IAssets {
-
     error EmptyAssetInBatch();
     error AssetKeyLengthMismatch();
     error AssetDoesNotExist();
-    
+
     mapping(uint256 => address) private _assetsMap;
 
     constructor() Ownable(msg.sender) {}
@@ -22,21 +21,25 @@ contract Assets is Ownable, IAssets {
     function addAssetsBatch(uint256[] calldata keys, bytes[] calldata assets) external onlyOwner {
         uint256 length = keys.length;
         if (length != assets.length) revert AssetKeyLengthMismatch();
-        
-        for (uint256 i = 0; i < length; ) {
+
+        for (uint256 i = 0; i < length;) {
             if (assets[i].length == 0) revert EmptyAssetInBatch();
-            
+
             _assetsMap[keys[i]] = SSTORE2.write(assets[i]);
-            
-            unchecked { ++i; }
+
+            unchecked {
+                ++i;
+            }
         }
     }
 
     function removeAssetsBatch(uint256[] calldata keys) external onlyOwner {
         uint256 length = keys.length;
-        for (uint256 i = 0; i < length; ) {
+        for (uint256 i = 0; i < length;) {
             delete _assetsMap[keys[i]];
-            unchecked { ++i; }
+            unchecked {
+                ++i;
+            }
         }
     }
 

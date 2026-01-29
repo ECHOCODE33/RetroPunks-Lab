@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.32;
 
-import { ISVGRenderer } from './interfaces/ISVGRenderer.sol';
-import { IAssets} from './interfaces/IAssets.sol';
-import { TraitGroup } from './common/Structs.sol';
-import { Utils } from './libraries/Utils.sol';
-import { DynamicBuffer } from './libraries/DynamicBuffer.sol';
+import {ISVGRenderer} from "./interfaces/ISVGRenderer.sol";
+import {IAssets} from "./interfaces/IAssets.sol";
+import {TraitGroup} from "./common/Structs.sol";
+import {Utils} from "./libraries/Utils.sol";
+import {DynamicBuffer} from "./libraries/DynamicBuffer.sol";
 
 /**
  * @author ECHO
@@ -18,26 +18,19 @@ contract PreRevealSVGRenderer is ISVGRenderer {
 
     constructor(IAssets assetsContract) {
         _ASSETS_CONTRACT = assetsContract;
-    } 
+    }
 
     function renderSVG(uint16 tokenIdSeed, uint8 backgroundIndex, uint256 globalSeed) public view returns (string memory svg, string memory attributes) {
-        
-        attributes = string.concat(
-            '"attributes":[{"trait_type":"Type","value":"Pre-Reveal"},{"trait_type":"Token ID Seed","value":"', 
-            Utils.toString(tokenIdSeed), 
-            '"},{"trait_type":"Background Index","value":"', 
-            Utils.toString(backgroundIndex), 
-            '"}]'
-        );
+        attributes = string.concat('"attributes":[{"trait_type":"Type","value":"Pre-Reveal"},{"trait_type":"Token ID Seed","value":"', Utils.toString(tokenIdSeed), '"},{"trait_type":"Background Index","value":"', Utils.toString(backgroundIndex), '"}]');
 
         bytes memory gifContent = _ASSETS_CONTRACT.loadAsset(333, false);
-        
+
         uint256 estimatedSize = (gifContent.length * 4 / 3) + SVG_HEADER.length + SVG_FOOTER.length + 32;
-        
+
         bytes memory buffer = DynamicBuffer.allocate(estimatedSize);
 
         Utils.concat(buffer, SVG_HEADER);
-        Utils.concatBase64(buffer, gifContent); 
+        Utils.concatBase64(buffer, gifContent);
         Utils.concat(buffer, SVG_FOOTER);
 
         svg = string(buffer);

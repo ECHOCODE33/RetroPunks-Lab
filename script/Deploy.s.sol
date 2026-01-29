@@ -19,34 +19,18 @@ contract Deploy is Script {
 
         Traits traits = new Traits();
 
-        PreRevealSVGRenderer prerenderer = new PreRevealSVGRenderer(
-            Assets(address(assets))
-        );
+        PreRevealSVGRenderer prerenderer = new PreRevealSVGRenderer(Assets(address(assets)));
 
-        SVGRenderer renderer = new SVGRenderer(
-            Assets(address(assets)),
-            Traits(address(traits))
-        );
+        SVGRenderer renderer = new SVGRenderer(Assets(address(assets)), Traits(address(traits)));
 
+        bytes32 committedGlobalSeedHash = keccak256(abi.encodePacked(uint256(9836428957), uint256(2829003893)));
+        bytes32 committedShufflerSeedHash = keccak256(abi.encodePacked(uint256(7393514293), uint256(3904021486)));
 
-        bytes32 committedGlobalSeedHash = keccak256(
-            abi.encodePacked(uint256(9836428957), uint256(2829003893))
-        );
-        bytes32 committedShufflerSeedHash = keccak256(
-            abi.encodePacked(uint256(7393514293), uint256(3904021486))
-        );
-
-        uint maxSupply = 10000;
+        uint256 maxSupply = 10000;
         address[] memory allowedSeaDrop = new address[](1);
         allowedSeaDrop[0] = 0x00005EA00Ac477B1030CE78506496e8C2dE24bf5;
 
-        RetroPunks retroPunks = new RetroPunks(
-            PreRevealSVGRenderer(address(prerenderer)),
-            committedGlobalSeedHash,
-            committedShufflerSeedHash,
-            maxSupply,
-            allowedSeaDrop
-        );
+        RetroPunks retroPunks = new RetroPunks(PreRevealSVGRenderer(address(prerenderer)), committedGlobalSeedHash, committedShufflerSeedHash, maxSupply, allowedSeaDrop);
 
         console.log("Assets::", address(assets));
         console.log("Traits:", address(traits));
