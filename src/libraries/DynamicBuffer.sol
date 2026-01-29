@@ -19,9 +19,7 @@ library DynamicBuffer {
     /// @dev Allocates `capacity_ + 0x60` bytes of space
     ///      The buffer array starts at the first container data position,
     ///      (i.e. `buffer = container + 0x20`)
-    function allocate(
-        uint256 capacity_
-    ) internal pure returns (bytes memory buffer) {
+    function allocate(uint256 capacity_) internal pure returns (bytes memory buffer) {
         assembly {
             // Get next-free memory address
             let container := mload(0x40)
@@ -67,10 +65,7 @@ library DynamicBuffer {
     /// @param data the data to append
     /// @dev Does not perform out-of-bound checks (container capacity)
     ///      for efficiency.
-    function appendUnchecked(
-        bytes memory buffer,
-        bytes memory data
-    ) internal pure {
+    function appendUnchecked(bytes memory buffer, bytes memory data) internal pure {
         assembly {
             let length := mload(data)
             for {
@@ -101,12 +96,7 @@ library DynamicBuffer {
     /// @param end the end index of the data to append
     /// @dev Does not perform out-of-bound checks (container capacity)
     ///      for efficiency.
-    function appendUnchecked(
-        bytes memory buffer,
-        bytes memory data,
-        uint256 start,
-        uint256 end
-    ) internal pure {
+    function appendUnchecked(bytes memory buffer, bytes memory data, uint256 start, uint256 end) internal pure {
         assembly {
             let length := sub(end, start)
             length := add(length, 1)
@@ -151,12 +141,7 @@ library DynamicBuffer {
     /// Author: Modified from Solady (https://github.com/vectorized/solady/blob/main/src/utils/Base64.sol)
     /// Author: Modified from Solmate (https://github.com/transmissions11/solmate/blob/main/src/utils/Base64.sol)
     /// Author: Modified from (https://github.com/Brechtpd/base64/blob/main/base64.sol) by Brecht Devos.
-    function appendSafeBase64(
-        bytes memory buffer,
-        bytes memory data,
-        bool fileSafe,
-        bool noPadding
-    ) internal pure {
+    function appendSafeBase64(bytes memory buffer, bytes memory data, bool fileSafe, bool noPadding) internal pure {
         uint256 dataLength = data.length;
 
         if (data.length == 0) {
@@ -176,10 +161,7 @@ library DynamicBuffer {
                 // if r == 0 => no modification
                 // if r == 1 => encodedLength -= 2
                 // if r == 2 => encodedLength -= 1
-                encodedLength := sub(
-                    encodedLength,
-                    add(iszero(iszero(r)), eq(r, 1))
-                )
+                encodedLength := sub(encodedLength, add(iszero(iszero(r)), eq(r, 1)))
             }
         }
 
@@ -210,19 +192,19 @@ library DynamicBuffer {
             // prettier-ignore
             // solhint-disable-next-line no-empty-blocks
             for {} 1 {} {
-                    data := add(data, 3) // Advance 3 bytes.
-                    let input := mload(data)
+                data := add(data, 3) // Advance 3 bytes.
+                let input := mload(data)
 
-                    // Write 4 bytes. Optimized for fewer stack operations.
-                    mstore8(    ptr    , mload(and(shr(18, input), 0x3F)))
-                    mstore8(add(ptr, 1), mload(and(shr(12, input), 0x3F)))
-                    mstore8(add(ptr, 2), mload(and(shr( 6, input), 0x3F)))
-                    mstore8(add(ptr, 3), mload(and(        input , 0x3F)))
-                    
-                    ptr := add(ptr, 4) // Advance 4 bytes.
-                    // prettier-ignore
-                    if iszero(lt(data, end)) { break }
-                }
+                // Write 4 bytes. Optimized for fewer stack operations.
+                mstore8(ptr, mload(and(shr(18, input), 0x3F)))
+                mstore8(add(ptr, 1), mload(and(shr(12, input), 0x3F)))
+                mstore8(add(ptr, 2), mload(and(shr(6, input), 0x3F)))
+                mstore8(add(ptr, 3), mload(and(input, 0x3F)))
+
+                ptr := add(ptr, 4) // Advance 4 bytes.
+                // prettier-ignore
+                if iszero(lt(data, end)) { break }
+            }
 
             if iszero(noPadding) {
                 // Offset `ptr` and pad with '='. We can simply write over the end.
@@ -246,10 +228,7 @@ library DynamicBuffer {
 
     /// @notice Reverts if the buffer will overflow after appending a given
     /// number of bytes.
-    function checkOverflow(
-        bytes memory buffer,
-        uint256 addedLength
-    ) internal pure {
+    function checkOverflow(bytes memory buffer, uint256 addedLength) internal pure {
         uint256 cap = capacity(buffer);
         uint256 newLength = buffer.length + addedLength;
         if (cap < newLength) {

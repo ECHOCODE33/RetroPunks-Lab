@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import { ERC721SeaDropPausable } from "./ERC721SeaDropPausable.sol";
+import {ERC721SeaDropPausable} from "./ERC721SeaDropPausable.sol";
+
 /**
  * @title  ERC721SeaDropPausableAndQueryable
  * @notice A token contract that extends ERC721SeaDropPausable to be able to
  *         pause token transfers and query the ownership of tokens.
- * 
+ *
  *         Extends ERC721SeaDropPausable to be able to pause token transfers.
  *         Get implementation from ERC721AQueryable to be able to query the ownership of tokens and be compatible with ERC721A
  */
@@ -16,8 +17,7 @@ contract ERC721SeaDropPausableAndQueryable is ERC721SeaDropPausable {
      */
     error InvalidQueryRange();
 
-    constructor(string memory name, string memory symbol, address[] memory allowedSeaDrop) ERC721SeaDropPausable(name, symbol, allowedSeaDrop) {
-    }
+    constructor(string memory name, string memory symbol, address[] memory allowedSeaDrop) ERC721SeaDropPausable(name, symbol, allowedSeaDrop) {}
 
     /**
      * @dev Returns the `TokenOwnership` struct at `tokenId` without reverting.
@@ -43,12 +43,7 @@ contract ERC721SeaDropPausableAndQueryable is ERC721SeaDropPausable {
      * - `burned = false`
      * - `extraData = <Extra data at start of ownership>`
      */
-    function explicitOwnershipOf(uint256 tokenId)
-        public
-        view
-        virtual
-        returns (TokenOwnership memory ownership)
-    {
+    function explicitOwnershipOf(uint256 tokenId) public view virtual returns (TokenOwnership memory ownership) {
         unchecked {
             if (tokenId >= _startTokenId()) {
                 if (tokenId > _sequentialUpTo()) return _ownershipAt(tokenId);
@@ -67,12 +62,7 @@ contract ERC721SeaDropPausableAndQueryable is ERC721SeaDropPausable {
      * @dev Returns an array of `TokenOwnership` structs at `tokenIds` in order.
      * See {ERC721AQueryable-explicitOwnershipOf}
      */
-    function explicitOwnershipsOf(uint256[] calldata tokenIds)
-        external
-        view
-        virtual
-        returns (TokenOwnership[] memory)
-    {
+    function explicitOwnershipsOf(uint256[] calldata tokenIds) external view virtual returns (TokenOwnership[] memory) {
         TokenOwnership[] memory ownerships;
         uint256 i = tokenIds.length;
         assembly {
@@ -112,11 +102,7 @@ contract ERC721SeaDropPausableAndQueryable is ERC721SeaDropPausable {
      *
      * - `start < stop`
      */
-    function tokensOfOwnerIn(
-        address owner,
-        uint256 start,
-        uint256 stop
-    ) external view virtual returns (uint256[] memory) {
+    function tokensOfOwnerIn(address owner, uint256 start, uint256 stop) external view virtual returns (uint256[] memory) {
         return _tokensOfOwnerIn(owner, start, stop);
     }
 
@@ -146,11 +132,7 @@ contract ERC721SeaDropPausableAndQueryable is ERC721SeaDropPausable {
      * Note that this function is optimized for smaller bytecode size over runtime gas,
      * since it is meant to be called off-chain.
      */
-    function _tokensOfOwnerIn(
-        address owner,
-        uint256 start,
-        uint256 stop
-    ) private view returns (uint256[] memory tokenIds) {
+    function _tokensOfOwnerIn(address owner, uint256 start, uint256 stop) private view returns (uint256[] memory tokenIds) {
         unchecked {
             if (start >= stop) revert InvalidQueryRange();
             // Set `start = max(start, _startTokenId())`.

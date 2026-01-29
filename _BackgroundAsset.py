@@ -12,7 +12,7 @@ GROUP_NAME = "Background"
 # Background types matching your Solidity E_Background_Type enum
 BG_TYPE_NONE = 0
 BG_TYPE_IMAGE = 1
-BG_TYPE_SOLID = 2
+BG_TYPE_SOLID = 2 
 
 BG_TYPE_S_VERTICAL = 3
 BG_TYPE_P_VERTICAL = 4

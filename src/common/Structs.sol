@@ -1,25 +1,26 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import { E_Sex, E_Background, E_Male_Skin, E_Male_Eyes, E_Male_Face, E_Male_Chain, E_Male_Earring, E_Male_Scarf, E_Male_Facial_Hair, E_Male_Mask, E_Male_Hair, E_Male_Hat_Hair, E_Male_Headwear, E_Male_Eye_Wear, E_Female_Skin, E_Female_Eyes, E_Female_Face, E_Female_Chain, E_Female_Earring, E_Female_Scarf, E_Female_Mask, E_Female_Hair, E_Female_Hat_Hair, E_Female_Headwear, E_Female_Eye_Wear, E_Mouth, E_TraitsGroup } from "./Enums.sol";
+import {E_Sex, E_Background, E_Male_Skin, E_Male_Eyes, E_Male_Face, E_Male_Chain, E_Male_Earring, E_Male_Scarf, E_Male_Facial_Hair, E_Male_Mask, E_Male_Hair, E_Male_Hat_Hair, E_Male_Headwear, E_Male_Eye_Wear, E_Female_Skin, E_Female_Eyes, E_Female_Face, E_Female_Chain, E_Female_Earring, E_Female_Scarf, E_Female_Mask, E_Female_Hair, E_Female_Hat_Hair, E_Female_Headwear, E_Female_Eye_Wear, E_Mouth, E_TraitsGroup} from "./Enums.sol";
 
 /**
  * @author ECHO
  */
 
 struct TraitsContext {
-    
+
+
     TraitToRender[] traitsToRender;
     uint8 traitsToRenderLength;
 
     uint16 tokenIdSeed;
-    
+
     uint16 specialId;
 
     uint32 birthday;
 
     E_Sex sex;
-    
+
     E_Background background;
 
     E_Male_Skin maleSkin;
@@ -69,7 +70,7 @@ struct CachedTraitGroups {
 }
 
 struct TraitGroup {
-    uint traitGroupIndex;
+    uint256 traitGroupIndex;
     bytes traitGroupName;
     uint32[] paletteRgba;
 

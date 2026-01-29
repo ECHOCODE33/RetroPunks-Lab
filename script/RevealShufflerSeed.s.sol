@@ -5,10 +5,8 @@ import {Script} from "forge-std/Script.sol";
 import {console} from "forge-std/console.sol";
 import {RetroPunks} from "../src/RetroPunks.sol";
 
-
 contract RevealShufflerSeed is Script {
-
-    address constant retroPunksAddress = 0x7A7741eBfAD78ce204395ba1dd0B516b40e79102;
+    address constant retroPunksAddress = 0x206540a2344349D422A7A872Bb607139321c0b53;
 
     uint256 constant SHUFFLER_SEED_PART1 = 7393514293;
     uint256 constant SHUFFLER_SEED_PART2 = 3904021486;
@@ -24,9 +22,7 @@ contract RevealShufflerSeed is Script {
         console.log("Seed Part 2: %s", uint256(SHUFFLER_SEED_PART2));
         console.log("----------------------------------------");
 
-        bytes32 expectedHash = keccak256(
-            abi.encodePacked(uint256(SHUFFLER_SEED_PART1), uint256(SHUFFLER_SEED_PART2))
-        );
+        bytes32 expectedHash = keccak256(abi.encodePacked(uint256(SHUFFLER_SEED_PART1), uint256(SHUFFLER_SEED_PART2)));
 
         bytes32 committedHash = retroPunks.COMMITTED_SHUFFLER_SEED_HASH();
 

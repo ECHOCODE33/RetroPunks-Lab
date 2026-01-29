@@ -1,16 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import {
-    AllowListData,
-    MintParams,
-    PublicDrop,
-    TokenGatedDropStage,
-    TokenGatedMintParams,
-    SignedMintValidationParams
-} from "../lib/SeaDropStructs.sol";
+import {AllowListData, MintParams, PublicDrop, TokenGatedDropStage, TokenGatedMintParams, SignedMintValidationParams} from "../lib/SeaDropStructs.sol";
 
-import { SeaDropErrorsAndEvents } from "../lib/SeaDropErrorsAndEvents.sol";
+import {SeaDropErrorsAndEvents} from "../lib/SeaDropErrorsAndEvents.sol";
 
 interface ISeaDrop is SeaDropErrorsAndEvents {
     /**
@@ -21,12 +14,7 @@ interface ISeaDrop is SeaDropErrorsAndEvents {
      * @param minterIfNotPayer The mint recipient if different than the payer.
      * @param quantity         The number of tokens to mint.
      */
-    function mintPublic(
-        address nftContract,
-        address feeRecipient,
-        address minterIfNotPayer,
-        uint256 quantity
-    ) external payable;
+    function mintPublic(address nftContract, address feeRecipient, address minterIfNotPayer, uint256 quantity) external payable;
 
     /**
      * @notice Mint from an allow list.
@@ -38,14 +26,7 @@ interface ISeaDrop is SeaDropErrorsAndEvents {
      * @param mintParams       The mint parameters.
      * @param proof            The proof for the leaf of the allow list.
      */
-    function mintAllowList(
-        address nftContract,
-        address feeRecipient,
-        address minterIfNotPayer,
-        uint256 quantity,
-        MintParams calldata mintParams,
-        bytes32[] calldata proof
-    ) external payable;
+    function mintAllowList(address nftContract, address feeRecipient, address minterIfNotPayer, uint256 quantity, MintParams calldata mintParams, bytes32[] calldata proof) external payable;
 
     /**
      * @notice Mint with a server-side signature.
@@ -60,15 +41,7 @@ interface ISeaDrop is SeaDropErrorsAndEvents {
      * @param signature        The server-side signature, must be an allowed
      *                         signer.
      */
-    function mintSigned(
-        address nftContract,
-        address feeRecipient,
-        address minterIfNotPayer,
-        uint256 quantity,
-        MintParams calldata mintParams,
-        uint256 salt,
-        bytes calldata signature
-    ) external payable;
+    function mintSigned(address nftContract, address feeRecipient, address minterIfNotPayer, uint256 quantity, MintParams calldata mintParams, uint256 salt, bytes calldata signature) external payable;
 
     /**
      * @notice Mint as an allowed token holder.
@@ -80,12 +53,7 @@ interface ISeaDrop is SeaDropErrorsAndEvents {
      * @param minterIfNotPayer The mint recipient if different than the payer.
      * @param mintParams       The token gated mint params.
      */
-    function mintAllowedTokenHolder(
-        address nftContract,
-        address feeRecipient,
-        address minterIfNotPayer,
-        TokenGatedMintParams calldata mintParams
-    ) external payable;
+    function mintAllowedTokenHolder(address nftContract, address feeRecipient, address minterIfNotPayer, TokenGatedMintParams calldata mintParams) external payable;
 
     /**
      * @notice Emits an event to notify update of the drop URI.
@@ -148,10 +116,7 @@ interface ISeaDrop is SeaDropErrorsAndEvents {
      * @param allowedNftToken The token gated nft token.
      * @param dropStage       The token gated drop stage data.
      */
-    function updateTokenGatedDrop(
-        address allowedNftToken,
-        TokenGatedDropStage calldata dropStage
-    ) external;
+    function updateTokenGatedDrop(address allowedNftToken, TokenGatedDropStage calldata dropStage) external;
 
     /**
      * @notice Updates the creator payout address and emits an event.
@@ -178,8 +143,7 @@ interface ISeaDrop is SeaDropErrorsAndEvents {
      * @param feeRecipient The fee recipient.
      * @param allowed      If the fee recipient is allowed.
      */
-    function updateAllowedFeeRecipient(address feeRecipient, bool allowed)
-        external;
+    function updateAllowedFeeRecipient(address feeRecipient, bool allowed) external;
 
     /**
      * @notice Updates the allowed server-side signers and emits an event.
@@ -194,10 +158,7 @@ interface ISeaDrop is SeaDropErrorsAndEvents {
      * @param signedMintValidationParams Minimum and maximum parameters
      *                                   to enforce for signed mints.
      */
-    function updateSignedMintValidationParams(
-        address signer,
-        SignedMintValidationParams calldata signedMintValidationParams
-    ) external;
+    function updateSignedMintValidationParams(address signer, SignedMintValidationParams calldata signedMintValidationParams) external;
 
     /**
      * @notice Updates the allowed payer and emits an event.
@@ -218,30 +179,21 @@ interface ISeaDrop is SeaDropErrorsAndEvents {
      *
      * @param nftContract The nft contract.
      */
-    function getPublicDrop(address nftContract)
-        external
-        view
-        returns (PublicDrop memory);
+    function getPublicDrop(address nftContract) external view returns (PublicDrop memory);
 
     /**
      * @notice Returns the creator payout address for the nft contract.
      *
      * @param nftContract The nft contract.
      */
-    function getCreatorPayoutAddress(address nftContract)
-        external
-        view
-        returns (address);
+    function getCreatorPayoutAddress(address nftContract) external view returns (address);
 
     /**
      * @notice Returns the allow list merkle root for the nft contract.
      *
      * @param nftContract The nft contract.
      */
-    function getAllowListMerkleRoot(address nftContract)
-        external
-        view
-        returns (bytes32);
+    function getAllowListMerkleRoot(address nftContract) external view returns (bytes32);
 
     /**
      * @notice Returns if the specified fee recipient is allowed
@@ -250,10 +202,7 @@ interface ISeaDrop is SeaDropErrorsAndEvents {
      * @param nftContract  The nft contract.
      * @param feeRecipient The fee recipient.
      */
-    function getFeeRecipientIsAllowed(address nftContract, address feeRecipient)
-        external
-        view
-        returns (bool);
+    function getFeeRecipientIsAllowed(address nftContract, address feeRecipient) external view returns (bool);
 
     /**
      * @notice Returns an enumeration of allowed fee recipients for an
@@ -261,20 +210,14 @@ interface ISeaDrop is SeaDropErrorsAndEvents {
      *
      * @param nftContract The nft contract.
      */
-    function getAllowedFeeRecipients(address nftContract)
-        external
-        view
-        returns (address[] memory);
+    function getAllowedFeeRecipients(address nftContract) external view returns (address[] memory);
 
     /**
      * @notice Returns the server-side signers for the nft contract.
      *
      * @param nftContract The nft contract.
      */
-    function getSigners(address nftContract)
-        external
-        view
-        returns (address[] memory);
+    function getSigners(address nftContract) external view returns (address[] memory);
 
     /**
      * @notice Returns the struct of SignedMintValidationParams for a signer.
@@ -282,20 +225,14 @@ interface ISeaDrop is SeaDropErrorsAndEvents {
      * @param nftContract The nft contract.
      * @param signer      The signer.
      */
-    function getSignedMintValidationParams(address nftContract, address signer)
-        external
-        view
-        returns (SignedMintValidationParams memory);
+    function getSignedMintValidationParams(address nftContract, address signer) external view returns (SignedMintValidationParams memory);
 
     /**
      * @notice Returns the payers for the nft contract.
      *
      * @param nftContract The nft contract.
      */
-    function getPayers(address nftContract)
-        external
-        view
-        returns (address[] memory);
+    function getPayers(address nftContract) external view returns (address[] memory);
 
     /**
      * @notice Returns if the specified payer is allowed
@@ -304,20 +241,14 @@ interface ISeaDrop is SeaDropErrorsAndEvents {
      * @param nftContract The nft contract.
      * @param payer       The payer.
      */
-    function getPayerIsAllowed(address nftContract, address payer)
-        external
-        view
-        returns (bool);
+    function getPayerIsAllowed(address nftContract, address payer) external view returns (bool);
 
     /**
      * @notice Returns the allowed token gated drop tokens for the nft contract.
      *
      * @param nftContract The nft contract.
      */
-    function getTokenGatedAllowedTokens(address nftContract)
-        external
-        view
-        returns (address[] memory);
+    function getTokenGatedAllowedTokens(address nftContract) external view returns (address[] memory);
 
     /**
      * @notice Returns the token gated drop data for the nft contract
@@ -326,10 +257,7 @@ interface ISeaDrop is SeaDropErrorsAndEvents {
      * @param nftContract     The nft contract.
      * @param allowedNftToken The token gated nft token.
      */
-    function getTokenGatedDrop(address nftContract, address allowedNftToken)
-        external
-        view
-        returns (TokenGatedDropStage memory);
+    function getTokenGatedDrop(address nftContract, address allowedNftToken) external view returns (TokenGatedDropStage memory);
 
     /**
      * @notice Returns whether the token id for a token gated drop has been
@@ -339,9 +267,5 @@ interface ISeaDrop is SeaDropErrorsAndEvents {
      * @param allowedNftToken   The token gated nft token.
      * @param allowedNftTokenId The token gated nft token id to check.
      */
-    function getAllowedNftTokenIdIsRedeemed(
-        address nftContract,
-        address allowedNftToken,
-        uint256 allowedNftTokenId
-    ) external view returns (bool);
+    function getAllowedNftTokenIdIsRedeemed(address nftContract, address allowedNftToken, uint256 allowedNftTokenId) external view returns (bool);
 }

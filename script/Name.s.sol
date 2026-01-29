@@ -19,7 +19,7 @@ contract Name is Script {
         console.log("Fetching names for tokens 1 to 350...");
         console.log("-------------------------------------");
 
-        for (uint tokenId = 1; tokenId <= 350; tokenId++) {
+        for (uint256 tokenId = 1; tokenId <= 350; tokenId++) {
             // We use try/catch so the script continues even if a specific token doesn't exist
             try retroPunks.globalTokenMetadata(tokenId) returns (uint16, uint8, string memory name) {
                 console.log("Token #%s: %s", tokenId, name);

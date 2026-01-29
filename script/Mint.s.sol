@@ -6,14 +6,12 @@ import {console} from "forge-std/console.sol";
 
 import {RetroPunks} from "../src/RetroPunks.sol";
 
-
 contract Mint is Script {
-
     // ====================== CONFIGURATION ======================
 
-    address constant retroPunksAddress = 0x7A7741eBfAD78ce204395ba1dd0B516b40e79102;
+    address constant retroPunksAddress = 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707;
 
-    address constant recipient = 0x6A5ebe005B8Ef3d8ACdA293EFE5CD956a46b2457;
+    address constant recipient = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
 
     uint256 constant QUANTITY = 30;
 

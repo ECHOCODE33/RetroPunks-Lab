@@ -1,53 +1,53 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.32;
 
-import { Utils } from './Utils.sol';
+import {Utils} from "./Utils.sol";
 
 struct BitMap {
-    uint32[48][48] pixels;  // 0xRRGGBBAA 
+    uint32[48][48] pixels; // 0xRRGGBBAA
 }
 
 library PNG48x48 {
     uint32 constant MAGIC_TRANSPARENT = 0x5f5d6eFF;
-    
-    function renderPixelToBitMap(BitMap memory bitMap, uint x, uint y, uint32 src) internal pure {
+
+    function renderPixelToBitMap(BitMap memory bitMap, uint256 x, uint256 y, uint32 src) internal pure {
         uint32 srcA = src & 0xFF;
         if (srcA == 0) return;
-        
+
         uint32 srcR = (src >> 24) & 0xFF;
         uint32 srcG = (src >> 16) & 0xFF;
         uint32 srcB = (src >> 8) & 0xFF;
-        
+
         uint32 dst = bitMap.pixels[x][y];
         uint32 dstA = dst & 0xFF;
-        
+
         if (dstA == 0) {
             bitMap.pixels[x][y] = src;
             return;
         }
-        
+
         if (srcA == 255) {
             bitMap.pixels[x][y] = src;
             return;
         }
-        
+
         uint32 dstR = (dst >> 24) & 0xFF;
         uint32 dstG = (dst >> 16) & 0xFF;
         uint32 dstB = (dst >> 8) & 0xFF;
-        
+
         uint32 blended;
         assembly {
             let invA := sub(255, srcA)
             let outA := add(srcA, div(add(mul(dstA, invA), 127), 255))
             if iszero(outA) { outA := 1 }
-            
+
             let outR := div(add(mul(srcR, srcA), div(mul(mul(dstR, dstA), invA), 255)), outA)
             let outG := div(add(mul(srcG, srcA), div(mul(mul(dstG, dstA), invA), 255)), outA)
             let outB := div(add(mul(srcB, srcA), div(mul(mul(dstB, dstA), invA), 255)), outA)
-            
+
             blended := or(or(or(shl(24, outR), shl(16, outG)), shl(8, outB)), outA)
         }
-        
+
         bitMap.pixels[x][y] = blended;
     }
 
@@ -70,14 +70,9 @@ library PNG48x48 {
     }
 
     bytes constant _PNG_SIG = hex"89504E470D0A1A0A";
-    bytes constant _IHDR =
-        hex"0000000D" hex"49484452"
-        hex"00000030" hex"00000030"
-        hex"08" hex"06" hex"00" hex"00" hex"00"
-        hex"5702F987";
+    bytes constant _IHDR = hex"0000000D" hex"49484452" hex"00000030" hex"00000030" hex"08" hex"06" hex"00" hex"00" hex"00" hex"5702F987";
 
-    bytes constant _IEND =
-        hex"00000000" hex"49454E44" hex"AE426082";
+    bytes constant _IEND = hex"00000000" hex"49454E44" hex"AE426082";
 
     function toPNG(BitMap memory bmp) internal pure returns (bytes memory) {
         bytes memory raw = _packScanLines(bmp);
@@ -90,18 +85,18 @@ library PNG48x48 {
     function _packScanLines(BitMap memory bmp) private pure returns (bytes memory raw) {
         raw = new bytes(48 * (1 + 48 * 4));
         uint256 k;
-        
+
         unchecked {
             for (uint256 y; y < 48; ++y) {
                 raw[k++] = 0x00;
-                
+
                 for (uint256 x; x < 48; ++x) {
                     uint32 p = bmp.pixels[x][y];
-                    
+
                     raw[k++] = bytes1(uint8(p >> 24)); // R
                     raw[k++] = bytes1(uint8(p >> 16)); // G
-                    raw[k++] = bytes1(uint8(p >> 8));  // B
-                    raw[k++] = bytes1(uint8(p));       // A
+                    raw[k++] = bytes1(uint8(p >> 8)); // B
+                    raw[k++] = bytes1(uint8(p)); // A
                 }
             }
         }
@@ -109,14 +104,9 @@ library PNG48x48 {
 
     function _makeZlibStored(bytes memory raw) private pure returns (bytes memory z) {
         uint256 len = raw.length;
-        
-        bytes memory hdr = abi.encodePacked(
-            bytes2(0x7801),
-            bytes1(0x01),
-            _u16le(uint16(len)),
-            _u16le(~uint16(len))
-        );
-        
+
+        bytes memory hdr = abi.encodePacked(bytes2(0x7801), bytes1(0x01), _u16le(uint16(len)), _u16le(~uint16(len)));
+
         uint32 adler = _adler32(raw);
         z = bytes.concat(hdr, raw, _u32be(adler));
     }
@@ -129,7 +119,7 @@ library PNG48x48 {
     function _adler32(bytes memory buf) private pure returns (uint32) {
         uint256 a = 1;
         uint256 b = 0;
-        
+
         unchecked {
             for (uint256 i; i < buf.length; ++i) {
                 a += uint8(buf[i]);
@@ -138,13 +128,13 @@ library PNG48x48 {
                 if (b >= 65521) b -= 65521;
             }
         }
-        
+
         return uint32((b << 16) | a);
     }
 
     function _crc32(bytes memory data) private pure returns (uint32) {
         uint32 crc = 0xFFFFFFFF;
-        
+
         unchecked {
             for (uint256 i; i < data.length; ++i) {
                 crc ^= uint8(data[i]);
@@ -153,23 +143,15 @@ library PNG48x48 {
                 }
             }
         }
-        
+
         return ~crc;
     }
 
     function _u32be(uint32 v) private pure returns (bytes4) {
-        return bytes4(abi.encodePacked(
-            bytes1(uint8(v >> 24)),
-            bytes1(uint8(v >> 16)),
-            bytes1(uint8(v >> 8)),
-            bytes1(uint8(v))
-        ));
+        return bytes4(abi.encodePacked(bytes1(uint8(v >> 24)), bytes1(uint8(v >> 16)), bytes1(uint8(v >> 8)), bytes1(uint8(v))));
     }
 
     function _u16le(uint16 v) private pure returns (bytes2) {
-        return bytes2(abi.encodePacked(
-            bytes1(uint8(v)),
-            bytes1(uint8(v >> 8))
-        ));
+        return bytes2(abi.encodePacked(bytes1(uint8(v)), bytes1(uint8(v >> 8))));
     }
 }

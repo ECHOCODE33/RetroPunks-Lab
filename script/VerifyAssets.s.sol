@@ -24,7 +24,7 @@ import {Assets} from "../src/Assets.sol";
  * 4. Run with `forge script` (no --broadcast needed – view only).
  */
 contract VerifyAssets is Script {
-    address constant assetsAddress = 0xE2576C57056F7D3d661aD0C7B1cF1187A72D8B93;
+    address constant assetsAddress = 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512;
 
     bool constant FULL_VERIFICATION = false;
 
@@ -87,32 +87,28 @@ contract VerifyAssets is Script {
         console.log("Starting verification of Assets contract:");
         console.logAddress(assetsAddress);
         console.log("Total assets to verify: %s", EXPECTED_ASSETS.length);
-        console.log(
-            "Full verification (decompress): %s",
-            FULL_VERIFICATION ? "YES" : "NO"
-        );
+        console.log("Full verification (decompress): %s", FULL_VERIFICATION ? "YES" : "NO");
         console.log("----------------------------------------");
 
-        uint successCount = 0;
-        uint failureCount = 0;
+        uint256 successCount = 0;
+        uint256 failureCount = 0;
 
-        for (uint i = 0; i < EXPECTED_ASSETS.length; i++) {
+        for (uint256 i = 0; i < EXPECTED_ASSETS.length; i++) {
             ExpectedAsset memory expected = EXPECTED_ASSETS[i];
             uint256 key = expected.key;
 
             // First: check if the asset exists at all (using a view call that reverts if missing)
             bool exists = true;
-            try assets.loadAsset(key, false) returns (bytes memory) {
-                // If we reach here, the key exists
-            } catch {
+            try assets.loadAsset(key, false) returns (
+                bytes memory
+            ) {
+            // If we reach here, the key exists
+            }
+            catch {
                 exists = false;
             }
             if (!exists) {
-                console.log(
-                    "[FAIL] Key %s (%s): MISSING (no asset stored)",
-                    key,
-                    expected.name
-                );
+                console.log("[FAIL] Key %s (%s): MISSING (no asset stored)", key, expected.name);
                 failureCount++;
                 continue;
             }
@@ -124,30 +120,15 @@ contract VerifyAssets is Script {
             }
 
             // Full verification: try to load and decompress
-            try assets.loadAsset(key, true) returns (
-                bytes memory decompressed
-            ) {
+            try assets.loadAsset(key, true) returns (bytes memory decompressed) {
                 if (bytes(expected.name).length > 0) {
-                    console.log(
-                        "[OK] Key %s (%s): VERIFIED (decompressed size: %s bytes)",
-                        key,
-                        expected.name,
-                        decompressed.length
-                    );
+                    console.log("[OK] Key %s (%s): VERIFIED (decompressed size: %s bytes)", key, expected.name, decompressed.length);
                 } else {
-                    console.log(
-                        "[OK] Key %s: VERIFIED (decompressed size: %s bytes)",
-                        key,
-                        decompressed.length
-                    );
+                    console.log("[OK] Key %s: VERIFIED (decompressed size: %s bytes)", key, decompressed.length);
                 }
                 successCount++;
             } catch {
-                console.log(
-                    "[FAIL] Key %s (%s): FAILED TO DECOMPRESS",
-                    key,
-                    expected.name
-                );
+                console.log("[FAIL] Key %s (%s): FAILED TO DECOMPRESS", key, expected.name);
                 failureCount++;
             }
         }
@@ -156,11 +137,7 @@ contract VerifyAssets is Script {
         if (failureCount == 0) {
             console.log("ALL %s ASSETS VERIFIED SUCCESSFULLY!", successCount);
         } else {
-            console.log(
-                "VERIFICATION COMPLETE: %s SUCCESS | %s FAILED",
-                successCount,
-                failureCount
-            );
+            console.log("VERIFICATION COMPLETE: %s SUCCESS | %s FAILED", successCount, failureCount);
         }
     }
 }

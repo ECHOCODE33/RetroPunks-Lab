@@ -82,10 +82,7 @@ library SSTORE2 {
 
     /// @dev Writes `data` into the bytecode of a storage contract with `salt`
     /// and returns its deterministic address.
-    function writeDeterministic(bytes memory data, bytes32 salt)
-        internal
-        returns (address pointer)
-    {
+    function writeDeterministic(bytes memory data, bytes32 salt) internal returns (address pointer) {
         assembly {
             let originalDataLength := mload(data)
             let dataSize := add(originalDataLength, DATA_OFFSET)
@@ -137,11 +134,7 @@ library SSTORE2 {
     /// @dev Returns the address of the storage contract for `data`
     /// deployed with `salt` by `deployer`.
     /// Note: The returned result has dirty upper 96 bits. Please clean if used in assembly.
-    function predictDeterministicAddress(bytes memory data, bytes32 salt, address deployer)
-        internal
-        pure
-        returns (address predicted)
-    {
+    function predictDeterministicAddress(bytes memory data, bytes32 salt, address deployer) internal pure returns (address predicted) {
         bytes32 hash = initCodeHash(data);
         assembly {
             // Compute and store the bytecode hash.
@@ -220,11 +213,7 @@ library SSTORE2 {
 
     /// @dev Returns the `data` from the bytecode of the storage contract at `pointer`,
     /// from the byte at `start`, to the byte at `end` (exclusive) of the data stored.
-    function read(address pointer, uint256 start, uint256 end)
-        internal
-        view
-        returns (bytes memory data)
-    {
+    function read(address pointer, uint256 start, uint256 end) internal view returns (bytes memory data) {
         assembly {
             let pointerCodesize := extcodesize(pointer)
             if iszero(pointerCodesize) {

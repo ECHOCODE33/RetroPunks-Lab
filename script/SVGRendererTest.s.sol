@@ -12,7 +12,7 @@ contract SVGRendererTest is Script {
     address constant ASSETS_ADDRESS = 0x82e01223d51Eb87e16A03E24687EDF0F294da6f1; // Replace with real Assets
     address constant TRAITS_ADDRESS = 0x5081a39b8A5f0E35a8D959395a630b68B74Dd30f; // Replace with real Traits
     address constant RENDERER_ADDRESS = 0x2E2Ed0Cfd3AD2f1d34481277b3204d807Ca2F8c2; // Replace with real Renderer (if deployed)
-    
+
     // -----------------------------------------------------------
     // PARAMS TO TEST
     // -----------------------------------------------------------
@@ -29,10 +29,7 @@ contract SVGRendererTest is Script {
         if (RENDERER_ADDRESS == address(0)) {
             // If not deployed yet, the script will deploy a local instance for testing
             vm.startBroadcast();
-            renderer = new SVGRenderer(
-                IAssets(ASSETS_ADDRESS), 
-                ITraits(TRAITS_ADDRESS)
-            );
+            renderer = new SVGRenderer(IAssets(ASSETS_ADDRESS), ITraits(TRAITS_ADDRESS));
             vm.stopBroadcast();
         } else {
             renderer = SVGRenderer(RENDERER_ADDRESS);
@@ -41,16 +38,12 @@ contract SVGRendererTest is Script {
         console.log("Starting Render Test...");
 
         // Execute Render
-        (string memory svg, string memory attributes) = renderer.renderSVG(
-            TOKEN_ID_SEED, 
-            BG_INDEX, 
-            GLOBAL_SEED
-        );
+        (string memory svg, string memory attributes) = renderer.renderSVG(TOKEN_ID_SEED, BG_INDEX, GLOBAL_SEED);
 
         // Output to terminal
         console.log("--- SVG CONTENT ---");
         console.log(svg);
-        
+
         console.log("--- METADATA ATTRIBUTES ---");
         console.log(attributes);
 

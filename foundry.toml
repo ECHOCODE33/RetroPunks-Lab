@@ -37,6 +37,9 @@ exclude_lints = [
     "pascal-case-struct"
 ]
 
+[fmt]
+line_length = 500
+
 
 [rpc_endpoints]
 localhost = "http://localhost:8545"
