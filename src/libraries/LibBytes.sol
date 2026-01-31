@@ -32,7 +32,7 @@ library LibBytes {
         assembly {
             let n := mload(s)
             let packed := or(0xff, shl(8, n))
-            for { let i := 0 } 1 {} {
+            for { let i := 0 } 1 { } {
                 if iszero(gt(n, 0xfe)) {
                     i := 0x1f
                     packed := or(n, shl(8, mload(add(s, i))))
@@ -40,7 +40,7 @@ library LibBytes {
                 }
                 let o := add(s, 0x20)
                 mstore(0x00, $.slot)
-                for { let p := keccak256(0x00, 0x20) } 1 {} {
+                for { let p := keccak256(0x00, 0x20) } 1 { } {
                     sstore(add(p, shr(5, i)), mload(add(o, i)))
                     i := add(i, 0x20)
                     if iszero(lt(i, n)) { break }
@@ -56,14 +56,14 @@ library LibBytes {
         /// @solidity memory-safe-assembly
         assembly {
             let packed := or(0xff, shl(8, s.length))
-            for { let i := 0 } 1 {} {
+            for { let i := 0 } 1 { } {
                 if iszero(gt(s.length, 0xfe)) {
                     i := 0x1f
                     packed := or(s.length, shl(8, shr(8, calldataload(s.offset))))
                     if iszero(gt(s.length, i)) { break }
                 }
                 mstore(0x00, $.slot)
-                for { let p := keccak256(0x00, 0x20) } 1 {} {
+                for { let p := keccak256(0x00, 0x20) } 1 { } {
                     sstore(add(p, shr(5, i)), calldataload(add(s.offset, i)))
                     i := add(i, 0x20)
                     if iszero(lt(i, s.length)) { break }
@@ -102,7 +102,7 @@ library LibBytes {
             let o := add(result, 0x20)
             let packed := sload($.slot)
             let n := shr(8, packed)
-            for { let i := 0 } 1 {} {
+            for { let i := 0 } 1 { } {
                 if iszero(eq(or(packed, 0xff), packed)) {
                     mstore(o, packed)
                     n := and(0xff, packed)
@@ -110,7 +110,7 @@ library LibBytes {
                     if iszero(gt(n, i)) { break }
                 }
                 mstore(0x00, $.slot)
-                for { let p := keccak256(0x00, 0x20) } 1 {} {
+                for { let p := keccak256(0x00, 0x20) } 1 { } {
                     mstore(add(o, i), sload(add(p, shr(5, i))))
                     i := add(i, 0x20)
                     if iszero(lt(i, n)) { break }
@@ -127,7 +127,7 @@ library LibBytes {
     function uint8At(BytesStorage storage $, uint256 i) internal view returns (uint8 result) {
         /// @solidity memory-safe-assembly
         assembly {
-            for { let packed := sload($.slot) } 1 {} {
+            for { let packed := sload($.slot) } 1 { } {
                 if iszero(eq(or(packed, 0xff), packed)) {
                     if iszero(gt(i, 0x1e)) {
                         result := byte(i, packed)
@@ -168,7 +168,7 @@ library LibBytes {
                 let h := 0 // The hash of `needle`.
                 if iszero(lt(needleLen, 0x20)) { h := keccak256(add(needle, 0x20), needleLen) }
                 let s := mload(add(needle, 0x20))
-                for { let m := shl(3, sub(0x20, and(needleLen, 0x1f))) } 1 {} {
+                for { let m := shl(3, sub(0x20, and(needleLen, 0x1f))) } 1 { } {
                     let t := mload(i)
                     // Whether the first `needleLen % 32` bytes of `subject` and `needle` matches.
                     if iszero(shr(m, xor(t, s))) {
@@ -181,7 +181,7 @@ library LibBytes {
                             }
                         }
                         // Copy the `replacement` one word at a time.
-                        for { let j := 0 } 1 {} {
+                        for { let j := 0 } 1 { } {
                             mstore(add(add(i, d), j), mload(add(add(replacement, 0x20), j)))
                             j := add(j, 0x20)
                             if iszero(lt(j, replacementLen)) { break }
@@ -201,7 +201,7 @@ library LibBytes {
             let end := mload(0x00)
             let n := add(sub(d, add(result, 0x20)), end)
             // Copy the rest of the bytes one word at a time.
-            for {} lt(i, end) { i := add(i, 0x20) } { mstore(add(i, d), mload(i)) }
+            for { } lt(i, end) { i := add(i, 0x20) } { mstore(add(i, d), mload(i)) }
             let o := add(i, d)
             mstore(o, 0) // Zeroize the slot after the bytes.
             mstore(0x40, add(o, 0x20)) // Allocate memory.
@@ -216,7 +216,7 @@ library LibBytes {
         /// @solidity memory-safe-assembly
         assembly {
             result := not(0) // Initialize to `NOT_FOUND`.
-            for { let subjectLen := mload(subject) } 1 {} {
+            for { let subjectLen := mload(subject) } 1 { } {
                 if iszero(mload(needle)) {
                     result := from
                     if iszero(gt(from, subjectLen)) { break }
@@ -234,7 +234,7 @@ library LibBytes {
                 if iszero(and(lt(subject, end), lt(from, subjectLen))) { break }
 
                 if iszero(lt(needleLen, 0x20)) {
-                    for { let h := keccak256(add(needle, 0x20), needleLen) } 1 {} {
+                    for { let h := keccak256(add(needle, 0x20), needleLen) } 1 { } {
                         if iszero(shr(m, xor(mload(subject), s))) {
                             if eq(keccak256(subject, needleLen), h) {
                                 result := sub(subject, subjectStart)
@@ -246,7 +246,7 @@ library LibBytes {
                     }
                     break
                 }
-                for {} 1 {} {
+                for { } 1 { } {
                     if iszero(shr(m, xor(mload(subject), s))) {
                         result := sub(subject, subjectStart)
                         break
@@ -272,7 +272,7 @@ library LibBytes {
                 let m := div(not(0), 255) // `0x0101 ... `.
                 let h := mul(byte(0, needle), m) // Replicating needle mask.
                 m := not(shl(7, m)) // `0x7f7f ... `.
-                for { let i := add(start, from) } 1 {} {
+                for { let i := add(start, from) } 1 { } {
                     let c := xor(mload(i), h) // Load 32-byte chunk and xor with mask.
                     c := not(or(or(add(and(c, m), m), c), m)) // Each needle byte will be `0x80`.
                     if c {
@@ -314,7 +314,7 @@ library LibBytes {
     function lastIndexOf(bytes memory subject, bytes memory needle, uint256 from) internal pure returns (uint256 result) {
         /// @solidity memory-safe-assembly
         assembly {
-            for {} 1 {} {
+            for { } 1 { } {
                 result := not(0) // Initialize to `NOT_FOUND`.
                 let needleLen := mload(needle)
                 if gt(needleLen, mload(subject)) { break }
@@ -328,7 +328,7 @@ library LibBytes {
                 if iszero(gt(subject, end)) { break }
                 // As this function is not too often used,
                 // we shall simply use keccak256 for smaller bytecode size.
-                for { let h := keccak256(add(needle, 0x20), needleLen) } 1 {} {
+                for { let h := keccak256(add(needle, 0x20), needleLen) } 1 { } {
                     if eq(keccak256(subject, needleLen), h) {
                         result := sub(subject, add(end, 1))
                         break
@@ -386,9 +386,9 @@ library LibBytes {
                 result := mload(0x40)
                 subject := add(subject, 0x20)
                 let o := add(result, 0x20)
-                for {} 1 {} {
+                for { } 1 { } {
                     // Copy the `subject` one word at a time.
-                    for { let j := 0 } 1 {} {
+                    for { let j := 0 } 1 { } {
                         mstore(add(o, j), mload(add(subject, j)))
                         j := add(j, 0x20)
                         if iszero(lt(j, l)) { break }
@@ -418,7 +418,7 @@ library LibBytes {
                 let i := add(subject, start)
                 let w := not(0x1f)
                 // Copy the `subject` one word at a time, backwards.
-                for { let j := and(add(n, 0x1f), w) } 1 {} {
+                for { let j := and(add(n, 0x1f), w) } 1 { } {
                     mstore(add(result, j), mload(add(i, j)))
                     j := add(j, w) // `sub(j, 0x20)`.
                     if iszero(j) { break }
@@ -494,7 +494,7 @@ library LibBytes {
                 let h := 0 // The hash of `needle`.
                 if iszero(lt(searchLen, 0x20)) { h := keccak256(add(needle, 0x20), searchLen) }
                 let s := mload(add(needle, 0x20))
-                for { let m := shl(3, sub(0x20, and(searchLen, 0x1f))) } 1 {} {
+                for { let m := shl(3, sub(0x20, and(searchLen, 0x1f))) } 1 { } {
                     let t := mload(i)
                     // Whether the first `searchLen % 32` bytes of `subject` and `needle` matches.
                     if iszero(shr(m, xor(t, s))) {
@@ -534,7 +534,7 @@ library LibBytes {
             let indicesEnd := add(indexPtr, shl(5, add(mload(indices), 1)))
             mstore(add(indicesEnd, w), mload(subject))
             mstore(indices, add(mload(indices), 1))
-            for { let prevIndex := 0 } 1 {} {
+            for { let prevIndex := 0 } 1 { } {
                 let index := mload(indexPtr)
                 mstore(indexPtr, 0x60)
                 if iszero(eq(index, prevIndex)) {
@@ -542,7 +542,7 @@ library LibBytes {
                     let l := sub(index, prevIndex)
                     mstore(element, l) // Store the length of the element.
                     // Copy the `subject` one word at a time, backwards.
-                    for { let o := and(add(l, 0x1f), w) } 1 {} {
+                    for { let o := and(add(l, 0x1f), w) } 1 { } {
                         mstore(add(element, o), mload(add(add(subject, prevIndex), o)))
                         o := add(o, w) // `sub(o, 0x20)`.
                         if iszero(o) { break }
@@ -573,7 +573,7 @@ library LibBytes {
             let w := not(0x1f)
             let aLen := mload(a)
             // Copy `a` one word at a time, backwards.
-            for { let o := and(add(aLen, 0x20), w) } 1 {} {
+            for { let o := and(add(aLen, 0x20), w) } 1 { } {
                 mstore(add(result, o), mload(add(a, o)))
                 o := add(o, w) // `sub(o, 0x20)`.
                 if iszero(o) { break }
@@ -581,7 +581,7 @@ library LibBytes {
             let bLen := mload(b)
             let output := add(result, aLen)
             // Copy `b` one word at a time, backwards.
-            for { let o := and(add(bLen, 0x20), w) } 1 {} {
+            for { let o := and(add(bLen, 0x20), w) } 1 { } {
                 mstore(add(output, o), mload(add(b, o)))
                 o := add(o, w) // `sub(o, 0x20)`.
                 if iszero(o) { break }
@@ -629,7 +629,7 @@ library LibBytes {
             let bLen := mload(b)
             let n := and(xor(aLen, mul(xor(aLen, bLen), lt(bLen, aLen))), not(0x1f))
             if n {
-                for { let i := 0x20 } 1 {} {
+                for { let i := 0x20 } 1 { } {
                     let x := mload(add(a, i))
                     let y := mload(add(b, i))
                     if iszero(or(xor(x, y), eq(i, n))) {
@@ -685,7 +685,7 @@ library LibBytes {
                 if iszero(lt(lt(s, o), or(iszero(r), iszero(shl(shl(3, r), mload(add(s, z))))))) {
                     let m := mload(0x40)
                     mstore(m, l) // Copy `a[i].length`.
-                    for {} 1 {} {
+                    for { } 1 { } {
                         mstore(add(m, z), mload(add(s, z))) // Copy `a[i]`, backwards.
                         z := add(z, w) // `sub(z, 0x20)`.
                         if iszero(z) { break }
@@ -762,7 +762,9 @@ library LibBytes {
     function checkInCalldata(bytes calldata x, bytes calldata a) internal pure {
         /// @solidity memory-safe-assembly
         assembly {
-            if or(or(lt(x.offset, a.offset), gt(add(x.offset, x.length), add(a.length, a.offset))), shr(64, or(x.length, x.offset))) { revert(0x00, 0x00) }
+            if or(or(lt(x.offset, a.offset), gt(add(x.offset, x.length), add(a.length, a.offset))), shr(64, or(x.length, x.offset))) {
+                revert(0x00, 0x00)
+            }
         }
     }
 

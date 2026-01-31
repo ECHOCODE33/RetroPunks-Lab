@@ -1,19 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import {Script} from "forge-std/Script.sol";
-import {console} from "forge-std/console.sol";
+import { Script } from "forge-std/Script.sol";
+import { console } from "forge-std/console.sol";
 
-import {RetroPunks} from "../src/RetroPunks.sol";
+import { RetroPunks } from "../src/RetroPunks.sol";
 
 contract Mint is Script {
     // ====================== CONFIGURATION ======================
 
-    address constant retroPunksAddress = 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707;
+    address retroPunksAddress = vm.envAddress("RETROPUNKS");
 
-    address constant recipient = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
+    address recipient = vm.envAddress("OWNER");
 
-    uint256 constant QUANTITY = 30;
+    uint256 constant QUANTITY = 25;
 
     // ====================== SCRIPT LOGIC ======================
 

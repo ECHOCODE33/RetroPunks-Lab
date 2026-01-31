@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import {LibBytes} from "./LibBytes.sol";
+import { LibBytes } from "./LibBytes.sol";
 
 /// @notice Library for converting numbers into strings and other string operations.
 /// @author Solady (https://github.com/vectorized/solady/blob/main/src/utils/LibString.sol)
@@ -141,7 +141,7 @@ library LibString {
             let w := not(0) // Tsk.
             // We write the string from rightmost digit to leftmost digit.
             // The following is essentially a do-while loop that also handles the zero case.
-            for { let temp := value } 1 {} {
+            for { let temp := value } 1 { } {
                 result := add(result, w) // `sub(result, 1)`.
                 // Store the character to the pointer.
                 // The ASCII index of the '0' character is 48.
@@ -217,7 +217,7 @@ library LibString {
             let temp := value
             // We write the string from rightmost digit to leftmost digit.
             // The following is essentially a do-while loop that also handles the zero case.
-            for {} 1 {} {
+            for { } 1 { } {
                 result := add(result, w) // `sub(result, 2)`.
                 mstore8(add(result, 1), mload(and(temp, 15)))
                 mstore8(result, mload(and(shr(4, temp), 15)))
@@ -299,7 +299,7 @@ library LibString {
             let w := not(1) // Tsk.
             // We write the string from rightmost digit to leftmost digit.
             // The following is essentially a do-while loop that also handles the zero case.
-            for { let temp := value } 1 {} {
+            for { let temp := value } 1 { } {
                 result := add(result, w) // `sub(result, 2)`.
                 mstore8(add(result, 1), mload(and(temp, 15)))
                 mstore8(result, mload(and(shr(4, temp), 15)))
@@ -324,7 +324,7 @@ library LibString {
             let o := add(result, 0x22)
             let hashed := and(keccak256(o, 40), mul(34, mask)) // `0b10001000 ... `
             let t := shl(240, 136) // `0b10001000 << 240`
-            for { let i := 0 } 1 {} {
+            for { let i := 0 } 1 { } {
                 mstore(add(i, i), mul(t, byte(i, hashed)))
                 i := add(i, 1)
                 if eq(i, 20) { break }
@@ -368,7 +368,7 @@ library LibString {
             value := shl(96, value)
             // We write the string from rightmost digit to leftmost digit.
             // The following is essentially a do-while loop that also handles the zero case.
-            for { let i := 0 } 1 {} {
+            for { let i := 0 } 1 { } {
                 let p := add(o, add(i, i))
                 let temp := byte(i, value)
                 mstore8(add(p, 1), mload(and(temp, 15)))
@@ -404,7 +404,7 @@ library LibString {
             mstore(0x0f, 0x30313233343536373839616263646566) // Store the "0123456789abcdef" lookup.
             let o := add(result, 0x20)
             let end := add(raw, n)
-            for {} iszero(eq(raw, end)) {} {
+            for { } iszero(eq(raw, end)) { } {
                 raw := add(raw, 1)
                 mstore8(add(o, 1), mload(and(mload(raw), 15)))
                 mstore8(o, mload(and(shr(4, mload(raw)), 15)))
@@ -449,7 +449,7 @@ library LibString {
                 let end := add(o, n)
                 let last := mload(end)
                 mstore(end, 0)
-                for {} 1 {} {
+                for { } 1 { } {
                     if and(mask, mload(o)) {
                         result := 0
                         break
@@ -472,7 +472,7 @@ library LibString {
             if mload(s) {
                 let allowed_ := shr(128, shl(128, allowed))
                 let o := add(s, 0x20)
-                for { let end := add(o, mload(s)) } 1 {} {
+                for { let end := add(o, mload(s)) } 1 { } {
                     result := and(result, shr(byte(0, mload(o)), allowed_))
                     o := add(o, 1)
                     if iszero(and(result, lt(o, end))) { break }
@@ -489,7 +489,7 @@ library LibString {
         assembly {
             if mload(s) {
                 let o := add(s, 0x20)
-                for { let end := add(o, mload(s)) } 1 {} {
+                for { let end := add(o, mload(s)) } 1 { } {
                     result := or(result, shl(byte(0, mload(o)), 1))
                     o := add(o, 1)
                     if iszero(lt(o, end)) { break }
@@ -608,7 +608,7 @@ library LibString {
                 let o := add(result, 0x20)
                 let d := sub(subject, result)
                 let flags := shl(add(70, shl(5, toUpper)), 0x3ffffff)
-                for { let end := add(o, n) } 1 {} {
+                for { let end := add(o, n) } 1 { } {
                     let b := byte(0, mload(add(d, o)))
                     mstore8(o, xor(and(shr(b, flags), 0x20), b))
                     o := add(o, 1)
@@ -628,8 +628,8 @@ library LibString {
         assembly {
             result := mload(0x40)
             let n := 0
-            for {} // Scan for '\0'.
-             byte(n, s) { n := add(n, 1) } {}
+            for { } // Scan for '\0'.
+             byte(n, s) { n := add(n, 1) } { }
             mstore(result, n) // Store the length.
             let o := add(result, 0x20)
             mstore(o, s) // Store the bytes of the string.
@@ -642,8 +642,8 @@ library LibString {
     function normalizeSmallString(bytes32 s) internal pure returns (bytes32 result) {
         /// @solidity memory-safe-assembly
         assembly {
-            for {} // Scan for '\0'.
-             byte(result, s) { result := add(result, 1) } {}
+            for { } // Scan for '\0'.
+             byte(result, s) { result := add(result, 1) } { }
             mstore(0x00, s)
             mstore(result, 0x00)
             result := mload(0x00)
@@ -688,7 +688,7 @@ library LibString {
             mstore(0x08, 0xc0000000a6ab)
             // Store "&quot;&amp;&#39;&lt;&gt;" into the scratch space.
             mstore(0x00, shl(64, 0x2671756f743b26616d703b262333393b266c743b2667743b))
-            for {} iszero(eq(s, end)) {} {
+            for { } iszero(eq(s, end)) { } {
                 s := add(s, 1)
                 let c := and(mload(s), 0xff)
                 // Not in `["\"","'","&","<",">"]`.
@@ -725,7 +725,7 @@ library LibString {
             mstore(0x15, 0x5c75303030303031323334353637383961626364656662746e006672)
             // Bitmask for detecting `["\"","\\"]`.
             let e := or(shl(0x22, 1), shl(0x5c, 1))
-            for { let end := add(s, mload(s)) } iszero(eq(s, end)) {} {
+            for { let end := add(s, mload(s)) } iszero(eq(s, end)) { } {
                 s := add(s, 1)
                 let c := and(mload(s), 0xff)
                 if iszero(lt(c, 0x20)) {
@@ -780,7 +780,7 @@ library LibString {
             // Uppercased to be consistent with JavaScript's implementation.
             mstore(0x0f, 0x30313233343536373839414243444546)
             let o := add(result, 0x20)
-            for { let end := add(s, mload(s)) } iszero(eq(s, end)) {} {
+            for { let end := add(s, mload(s)) } iszero(eq(s, end)) { } {
                 s := add(s, 1)
                 let c := and(mload(s), 0xff)
                 // If not in `[0-9A-Z-a-z-_.!~*'()]`.

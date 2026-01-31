@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import {PublicDrop, TokenGatedDropStage, SignedMintValidationParams} from "./SeaDropStructs.sol";
+import { PublicDrop, SignedMintValidationParams, TokenGatedDropStage } from "./SeaDropStructs.sol";
 
 interface SeaDropErrorsAndEvents {
     /**
@@ -213,7 +213,16 @@ interface SeaDropErrorsAndEvents {
      *                       through mintPublic() have
      *                       dropStageIndex of 0.
      */
-    event SeaDropMint(address indexed nftContract, address indexed minter, address indexed feeRecipient, address payer, uint256 quantityMinted, uint256 unitMintPrice, uint256 feeBps, uint256 dropStageIndex);
+    event SeaDropMint(
+        address indexed nftContract,
+        address indexed minter,
+        address indexed feeRecipient,
+        address payer,
+        uint256 quantityMinted,
+        uint256 unitMintPrice,
+        uint256 feeBps,
+        uint256 dropStageIndex
+    );
 
     /**
      * @dev An event with updated public drop data for an nft contract.
@@ -237,7 +246,9 @@ interface SeaDropErrorsAndEvents {
      *                           Empty if unencrypted.
      * @param allowListURI       The URI for the allow list.
      */
-    event AllowListUpdated(address indexed nftContract, bytes32 indexed previousMerkleRoot, bytes32 indexed newMerkleRoot, string[] publicKeyURI, string allowListURI);
+    event AllowListUpdated(
+        address indexed nftContract, bytes32 indexed previousMerkleRoot, bytes32 indexed newMerkleRoot, string[] publicKeyURI, string allowListURI
+    );
 
     /**
      * @dev An event with updated drop URI for an nft contract.
@@ -260,7 +271,9 @@ interface SeaDropErrorsAndEvents {
      * @dev An event with the updated validation parameters for server-side
      *      signers.
      */
-    event SignedMintValidationParamsUpdated(address indexed nftContract, address indexed signer, SignedMintValidationParams signedMintValidationParams);
+    event SignedMintValidationParamsUpdated(
+        address indexed nftContract, address indexed signer, SignedMintValidationParams signedMintValidationParams
+    );
 
     /**
      * @dev An event with the updated payer for an nft contract.

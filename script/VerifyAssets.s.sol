@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import {Script} from "forge-std/Script.sol";
-import {console} from "forge-std/console.sol";
+import { Script } from "forge-std/Script.sol";
+import { console } from "forge-std/console.sol";
 
-import {Assets} from "../src/Assets.sol";
+import { Assets } from "../src/Assets.sol";
 
 /**
  * @title VerifyAssetsScript
@@ -24,7 +24,7 @@ import {Assets} from "../src/Assets.sol";
  * 4. Run with `forge script` (no --broadcast needed – view only).
  */
 contract VerifyAssets is Script {
-    address constant assetsAddress = 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512;
+    address assetsAddress = vm.envAddress("ASSETS");
 
     bool constant FULL_VERIFICATION = false;
 
@@ -134,10 +134,7 @@ contract VerifyAssets is Script {
         }
 
         console.log("==========================================");
-        if (failureCount == 0) {
-            console.log("ALL %s ASSETS VERIFIED SUCCESSFULLY!", successCount);
-        } else {
-            console.log("VERIFICATION COMPLETE: %s SUCCESS | %s FAILED", successCount, failureCount);
-        }
+        if (failureCount == 0) console.log("ALL %s ASSETS VERIFIED SUCCESSFULLY!", successCount);
+        else console.log("VERIFICATION COMPLETE: %s SUCCESS | %s FAILED", successCount, failureCount);
     }
 }

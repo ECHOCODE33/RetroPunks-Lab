@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.32;
 
-import {TraitInfo, TraitGroup, CachedTraitGroups, TraitsContext} from "../common/Structs.sol";
-import {E_TraitsGroup, E_Background_Type} from "../common/Enums.sol";
-import {IAssets} from "../interfaces/IAssets.sol";
-import {Utils} from "./Utils.sol";
-import {BitMap, PNG48x48} from "./PNG48x48.sol";
-import {Division} from "./Division.sol";
+import { E_Background_Type, E_TraitsGroup } from "../common/Enums.sol";
+import { CachedTraitGroups, TraitGroup, TraitInfo, TraitsContext } from "../common/Structs.sol";
+import { IAssets } from "../interfaces/IAssets.sol";
+import { Division } from "./Division.sol";
+import { BitMap, PNG48x48 } from "./PNG48x48.sol";
+import { Utils } from "./Utils.sol";
 
 error TraitGroupNotLoaded(TraitGroup, bool traitGroupIsLoaded);
 error TraitIndexOutOfBounds(uint8 traitGroupIndex, uint8 traitIndex, uint256 maxIndex);
@@ -15,7 +15,10 @@ error PixelCoordinatesOutOfBounds(uint8 x, uint8 y);
 error NoPixelData(uint256 traitDataLength);
 
 library TraitsRenderer {
-    function renderGridToSvg(IAssets assetsContract, bytes memory buffer, CachedTraitGroups memory cachedTraitGroups, TraitsContext memory traits) internal view {
+    function renderGridToSvg(IAssets assetsContract, bytes memory buffer, CachedTraitGroups memory cachedTraitGroups, TraitsContext memory traits)
+        internal
+        view
+    {
         Utils.concat(buffer, '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">');
         Utils.concat(buffer, "<style> img {image-rendering: pixelated; shape-rendering: crispEdges; image-rendering: -moz-crisp-edges;} </style>");
 
@@ -31,7 +34,9 @@ library TraitsRenderer {
             _renderTraitGroup(bitMap, cachedTraitGroups, uint8(traits.traitsToRender[i].traitGroup), traits.traitsToRender[i].traitIndex);
 
             if (traits.traitsToRender[i].hasFiller) {
-                _renderTraitGroup(bitMap, cachedTraitGroups, uint8(traits.traitsToRender[i].filler.traitGroup), traits.traitsToRender[i].filler.traitIndex);
+                _renderTraitGroup(
+                    bitMap, cachedTraitGroups, uint8(traits.traitsToRender[i].filler.traitGroup), traits.traitsToRender[i].filler.traitIndex
+                );
             }
         }
 
@@ -42,7 +47,10 @@ library TraitsRenderer {
         Utils.concat(buffer, '" width="100%" height="100%"/></foreignObject></g></svg>');
     }
 
-    function _renderBackground(IAssets assetsContract, bytes memory buffer, CachedTraitGroups memory cachedTraitGroups, TraitsContext memory traits) private view {
+    function _renderBackground(IAssets assetsContract, bytes memory buffer, CachedTraitGroups memory cachedTraitGroups, TraitsContext memory traits)
+        private
+        view
+    {
         uint256 bgGroupIndex = uint8(E_TraitsGroup.Background_Group);
 
         TraitGroup memory bgTraitGroup = cachedTraitGroups.traitGroups[bgGroupIndex];
@@ -60,9 +68,7 @@ library TraitsRenderer {
         if (bg == E_Background_Type.Solid) {
             uint16 paletteIdx = _decodePaletteIndex(trait.traitData, 0, bgTraitGroup.paletteIndexByteSize);
 
-            if (paletteIdx >= bgTraitGroup.paletteRgba.length) {
-                revert PaletteIndexOutOfBounds(paletteIdx, bgTraitGroup.paletteRgba.length);
-            }
+            if (paletteIdx >= bgTraitGroup.paletteRgba.length) revert PaletteIndexOutOfBounds(paletteIdx, bgTraitGroup.paletteRgba.length);
 
             uint32 color = bgTraitGroup.paletteRgba[paletteIdx];
             Utils.concat(buffer, '<rect width="48" height="48" fill="');
@@ -86,7 +92,11 @@ library TraitsRenderer {
             Utils.concat(buffer, gradientIdx);
             Utils.concat(buffer, ')"/>');
             return;
-        } else if (bg == E_Background_Type.S_Vertical || bg == E_Background_Type.P_Vertical || bg == E_Background_Type.S_Horizontal || bg == E_Background_Type.P_Horizontal || bg == E_Background_Type.S_Down || bg == E_Background_Type.P_Down || bg == E_Background_Type.S_Up || bg == E_Background_Type.P_Up) {
+        } else if (
+            bg == E_Background_Type.S_Vertical || bg == E_Background_Type.P_Vertical || bg == E_Background_Type.S_Horizontal
+                || bg == E_Background_Type.P_Horizontal || bg == E_Background_Type.S_Down || bg == E_Background_Type.P_Down
+                || bg == E_Background_Type.S_Up || bg == E_Background_Type.P_Up
+        ) {
             bytes memory gradientIdx = bytes(Utils.toString(uint256(traits.background)));
             Utils.concat(buffer, '<defs><linearGradient id="bg-');
             Utils.concat(buffer, gradientIdx);
@@ -100,13 +110,11 @@ library TraitsRenderer {
             Utils.concat(buffer, bytes(Utils.toString(trait.y2)));
             Utils.concat(buffer, '">');
 
-            bool isPixelated = bg == E_Background_Type.P_Vertical || bg == E_Background_Type.P_Horizontal || bg == E_Background_Type.P_Down || bg == E_Background_Type.P_Up;
+            bool isPixelated = bg == E_Background_Type.P_Vertical || bg == E_Background_Type.P_Horizontal || bg == E_Background_Type.P_Down
+                || bg == E_Background_Type.P_Up;
 
-            if (isPixelated) {
-                _renderPixelGradientStops(buffer, cachedTraitGroups, bgGroupIndex, trait);
-            } else {
-                _renderSmoothGradientStops(buffer, cachedTraitGroups, bgGroupIndex, trait);
-            }
+            if (isPixelated) _renderPixelGradientStops(buffer, cachedTraitGroups, bgGroupIndex, trait);
+            else _renderSmoothGradientStops(buffer, cachedTraitGroups, bgGroupIndex, trait);
 
             Utils.concat(buffer, '</linearGradient></defs><rect width="48" height="48" fill="url(#bg-');
             Utils.concat(buffer, gradientIdx);
@@ -116,7 +124,10 @@ library TraitsRenderer {
         }
     }
 
-    function _renderTraitGroup(BitMap memory bitMap, CachedTraitGroups memory cachedTraitGroups, uint8 traitGroupIndex, uint8 traitIndex) internal pure {
+    function _renderTraitGroup(BitMap memory bitMap, CachedTraitGroups memory cachedTraitGroups, uint8 traitGroupIndex, uint8 traitIndex)
+        internal
+        pure
+    {
         TraitGroup memory group = cachedTraitGroups.traitGroups[traitGroupIndex];
 
         if (traitIndex >= group.traits.length) {
@@ -126,9 +137,7 @@ library TraitsRenderer {
         TraitInfo memory trait = group.traits[traitIndex];
 
         uint256 traitDataLength = trait.traitData.length;
-        if (traitDataLength == 0) {
-            revert NoPixelData(traitDataLength);
-        }
+        if (traitDataLength == 0) revert NoPixelData(traitDataLength);
 
         bytes memory data = trait.traitData;
         uint256 ptr = 0;
@@ -141,28 +150,19 @@ library TraitsRenderer {
             uint8 run = uint8(data[ptr++]);
             uint16 colorIdx;
 
-            if (group.paletteIndexByteSize == 1) {
-                colorIdx = uint16(uint8(data[ptr++]));
-            } else {
-                colorIdx = (uint16(uint8(data[ptr++])) << 8) | uint16(uint8(data[ptr++]));
-            }
+            if (group.paletteIndexByteSize == 1) colorIdx = uint16(uint8(data[ptr++]));
+            else colorIdx = (uint16(uint8(data[ptr++])) << 8) | uint16(uint8(data[ptr++]));
 
-            if (colorIdx >= group.paletteRgba.length) {
-                revert PaletteIndexOutOfBounds(colorIdx, group.paletteRgba.length);
-            }
+            if (colorIdx >= group.paletteRgba.length) revert PaletteIndexOutOfBounds(colorIdx, group.paletteRgba.length);
 
             uint32 rgba = group.paletteRgba[colorIdx];
 
             for (uint8 i = 0; i < run; i++) {
                 // Now safe — no wrap-around possible
-                if (currX >= 48 || currY >= 48) {
-                    revert PixelCoordinatesOutOfBounds(uint8(currX), uint8(currY));
-                }
+                if (currX >= 48 || currY >= 48) revert PixelCoordinatesOutOfBounds(uint8(currX), uint8(currY));
 
                 uint8 alpha = uint8(rgba); // or rgba & 0xFF
-                if (alpha > 0) {
-                    PNG48x48.renderPixelToBitMap(bitMap, uint8(currX), uint8(currY), rgba);
-                }
+                if (alpha > 0) PNG48x48.renderPixelToBitMap(bitMap, uint8(currX), uint8(currY), rgba);
 
                 currX++;
                 if (currX > trait.x2) {
@@ -173,7 +173,12 @@ library TraitsRenderer {
         }
     }
 
-    function _renderPixelGradientStops(bytes memory buffer, CachedTraitGroups memory cachedTraitGroups, uint256 traitGroupIndex, TraitInfo memory trait) private pure {
+    function _renderPixelGradientStops(
+        bytes memory buffer,
+        CachedTraitGroups memory cachedTraitGroups,
+        uint256 traitGroupIndex,
+        TraitInfo memory trait
+    ) private pure {
         TraitGroup memory traitGroup = cachedTraitGroups.traitGroups[traitGroupIndex];
         require(trait.traitData.length > 0, "TraitData is empty, couldn't fetch gradient stops");
 
@@ -185,9 +190,7 @@ library TraitsRenderer {
             uint16 idx = _decodePaletteIndex(trait.traitData, i * traitGroup.paletteIndexByteSize, traitGroup.paletteIndexByteSize);
 
             // BOUNDS CHECK: Validate palette index
-            if (idx >= traitGroup.paletteRgba.length) {
-                revert PaletteIndexOutOfBounds(idx, traitGroup.paletteRgba.length);
-            }
+            if (idx >= traitGroup.paletteRgba.length) revert PaletteIndexOutOfBounds(idx, traitGroup.paletteRgba.length);
 
             uint32 color = traitGroup.paletteRgba[idx];
 
@@ -206,7 +209,12 @@ library TraitsRenderer {
         }
     }
 
-    function _renderSmoothGradientStops(bytes memory buffer, CachedTraitGroups memory cachedTraitGroups, uint256 traitGroupIndex, TraitInfo memory trait) private pure {
+    function _renderSmoothGradientStops(
+        bytes memory buffer,
+        CachedTraitGroups memory cachedTraitGroups,
+        uint256 traitGroupIndex,
+        TraitInfo memory trait
+    ) private pure {
         TraitGroup memory traitGroup = cachedTraitGroups.traitGroups[traitGroupIndex];
         require(trait.traitData.length > 0, "TraitData is empty, couldn't fetch gradient stops");
 
@@ -218,9 +226,7 @@ library TraitsRenderer {
             uint16 idx = _decodePaletteIndex(trait.traitData, i * traitGroup.paletteIndexByteSize, traitGroup.paletteIndexByteSize);
 
             // Safety Check: Ensure index is not out of paletteRgba bounds
-            if (idx >= traitGroup.paletteRgba.length) {
-                revert PaletteIndexOutOfBounds(idx, traitGroup.paletteRgba.length);
-            }
+            if (idx >= traitGroup.paletteRgba.length) revert PaletteIndexOutOfBounds(idx, traitGroup.paletteRgba.length);
 
             uint32 color = traitGroup.paletteRgba[idx];
 
@@ -254,6 +260,8 @@ library TraitsRenderer {
         uint256 b = (rgba >> 8) & 0xFF;
 
         Utils.concat(buffer, "#");
-        Utils.concat(buffer, abi.encodePacked(hexChars[r >> 4], hexChars[r & 0xf], hexChars[g >> 4], hexChars[g & 0xf], hexChars[b >> 4], hexChars[b & 0xf]));
+        Utils.concat(
+            buffer, abi.encodePacked(hexChars[r >> 4], hexChars[r & 0xf], hexChars[g >> 4], hexChars[g & 0xf], hexChars[b >> 4], hexChars[b & 0xf])
+        );
     }
 }

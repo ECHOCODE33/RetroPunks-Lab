@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {ERC721SeaDropPausable} from "./ERC721SeaDropPausable.sol";
+import { ERC721SeaDropPausable } from "./ERC721SeaDropPausable.sol";
 
 /**
  * @title  ERC721SeaDropPausableAndQueryable
@@ -17,7 +17,7 @@ contract ERC721SeaDropPausableAndQueryable is ERC721SeaDropPausable {
      */
     error InvalidQueryRange();
 
-    constructor(string memory name, string memory symbol, address[] memory allowedSeaDrop) ERC721SeaDropPausable(name, symbol, allowedSeaDrop) {}
+    constructor(string memory name, string memory symbol, address[] memory allowedSeaDrop) ERC721SeaDropPausable(name, symbol, allowedSeaDrop) { }
 
     /**
      * @dev Returns the `TokenOwnership` struct at `tokenId` without reverting.

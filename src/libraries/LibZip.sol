@@ -75,10 +75,10 @@ library LibZip {
             let a := add(data, 0x20)
             let ipStart := a
             let ipLimit := sub(add(ipStart, mload(data)), 13)
-            for { let ip := add(2, a) } lt(ip, ipLimit) {} {
+            for { let ip := add(2, a) } lt(ip, ipLimit) { } {
                 let r := 0
                 let d := 0
-                for {} 1 {} {
+                for { } 1 { } {
                     let s := u24(ip)
                     let h := hash(s)
                     r := add(ipStart, getHash(h))
@@ -100,7 +100,7 @@ library LibZip {
             let end := sub(literals(sub(add(ipStart, mload(data)), a), a, op), 0x7fe0)
             let o := add(result, 0x20)
             mstore(result, sub(end, o)) // Store the length.
-            for {} iszero(gt(o, end)) { o := add(o, 0x20) } { mstore(o, mload(add(o, 0x7fe0))) }
+            for { } iszero(gt(o, end)) { o := add(o, 0x20) } { mstore(o, mload(add(o, 0x7fe0))) }
             mstore(end, 0) // Zeroize the slot after the string.
             mstore(0x40, add(end, 0x20)) // Allocate the memory.
         }
@@ -112,7 +112,7 @@ library LibZip {
             result := mload(0x40)
             let op := add(result, 0x20)
             let end := add(add(data, 0x20), mload(data))
-            for { data := add(data, 0x20) } lt(data, end) {} {
+            for { data := add(data, 0x20) } lt(data, end) { } {
                 let w := mload(data)
                 let c := byte(0, w)
                 let t := shr(5, c)
@@ -129,7 +129,7 @@ library LibZip {
                     let r := sub(op, s)
                     let f := xor(s, mul(gt(s, 0x20), xor(s, 0x20)))
                     let j := 0
-                } 1 {} {
+                } 1 { } {
                     mstore(add(op, j), mload(add(r, j)))
                     j := add(j, f)
                     if lt(j, l) { continue }
@@ -172,7 +172,7 @@ library LibZip {
             let o := add(result, 0x20)
             let z := 0 // Number of consecutive 0x00.
             let y := 0 // Number of consecutive 0xff.
-            for { let end := add(data, mload(data)) } iszero(eq(data, end)) {} {
+            for { let end := add(data, mload(data)) } iszero(eq(data, end)) { } {
                 data := add(data, 1)
                 let c := byte(31, mload(data))
                 if iszero(c) {
@@ -212,7 +212,7 @@ library LibZip {
                 let v := mload(s)
                 let end := add(data, mload(data))
                 mstore(s, not(v)) // Bitwise negate the first 4 bytes.
-                for {} lt(data, end) {} {
+                for { } lt(data, end) { } {
                     data := add(data, 1)
                     let c := byte(31, mload(data))
                     if iszero(c) {
@@ -247,7 +247,7 @@ library LibZip {
             if iszero(calldatasize()) { return(calldatasize(), calldatasize()) }
             let o := 0
             let f := not(3) // For negating the first 4 bytes.
-            for { let i := 0 } lt(i, calldatasize()) {} {
+            for { let i := 0 } lt(i, calldatasize()) { } {
                 let c := byte(0, xor(add(i, f), calldataload(i)))
                 i := add(i, 1)
                 if iszero(c) {

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import {ISeaDropTokenContractMetadata} from "./ISeaDropTokenContractMetadata.sol";
+import { ISeaDropTokenContractMetadata } from "./ISeaDropTokenContractMetadata.sol";
 
-import {AllowListData, PublicDrop, TokenGatedDropStage, SignedMintValidationParams} from "../lib/SeaDropStructs.sol";
+import { AllowListData, PublicDrop, SignedMintValidationParams, TokenGatedDropStage } from "../lib/SeaDropStructs.sol";
 
 interface INonFungibleSeaDropToken is ISeaDropTokenContractMetadata {
     /**
@@ -133,7 +133,8 @@ interface INonFungibleSeaDropToken is ISeaDropTokenContractMetadata {
      * @param signedMintValidationParams Minimum and maximum parameters
      *                                   to enforce for signed mints.
      */
-    function updateSignedMintValidationParams(address seaDropImpl, address signer, SignedMintValidationParams memory signedMintValidationParams) external;
+    function updateSignedMintValidationParams(address seaDropImpl, address signer, SignedMintValidationParams memory signedMintValidationParams)
+        external;
 
     /**
      * @notice Update the allowed payers for this nft contract on SeaDrop.

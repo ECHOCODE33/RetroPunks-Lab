@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.32;
 
 uint8 constant NUM_BACKGROUND = uint8(type(E_Background).max) + 1;
 
@@ -71,7 +71,7 @@ enum E_Special_1s {
     The_Portrait,
     Ancient_Mummy,
     CyberApe,
-    Old_Skeleton,
+    Ancient_Skeleton,
     Pig,
     Slenderman,
     The_Clown,

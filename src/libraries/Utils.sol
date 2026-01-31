@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.32;
 
-import {DynamicBuffer} from "./DynamicBuffer.sol";
+import { DynamicBuffer } from "./DynamicBuffer.sol";
 
 library Utils {
     function toString(bytes32 _bytes32) internal pure returns (string memory) {
@@ -27,7 +27,7 @@ library Utils {
             let w := not(0) // Tsk.
             // We write the string from rightmost digit to leftmost digit.
             // The following is essentially a do-while loop that also handles the zero case.
-            for { let temp := value } 1 {} {
+            for { let temp := value } 1 { } {
                 str := add(str, w) // `sub(str, 1)`.
                 // Write the character to the pointer.
                 // The ASCII index of the '0' character is 48.
@@ -46,9 +46,7 @@ library Utils {
     }
 
     function toString(int256 value) internal pure returns (string memory str) {
-        if (value >= 0) {
-            return toString(uint256(value));
-        }
+        if (value >= 0) return toString(uint256(value));
         unchecked {
             str = toString(uint256(-value));
         }
@@ -65,9 +63,7 @@ library Utils {
 
     function toByteArray(bytes32 _bytes32) internal pure returns (bytes memory) {
         uint8 i = 0;
-        while (i < 32 && _bytes32[i] != 0) {
-            i++;
-        }
+        while (i < 32 && _bytes32[i] != 0) i++;
         bytes memory bytesArray = new bytes(i);
         for (i = 0; i < 32 && _bytes32[i] != 0; i++) {
             bytesArray[i] = _bytes32[i];
@@ -113,7 +109,7 @@ library Utils {
                 let end := add(ptr, encodedLength)
 
                 // Run over the input, 3 bytes at a time.
-                for {} 1 {} {
+                for { } 1 { } {
                     data := add(data, 3) // Advance 3 bytes.
                     let input := mload(data)
 

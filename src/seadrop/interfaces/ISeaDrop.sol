@@ -1,9 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import {AllowListData, MintParams, PublicDrop, TokenGatedDropStage, TokenGatedMintParams, SignedMintValidationParams} from "../lib/SeaDropStructs.sol";
+import {
+    AllowListData,
+    MintParams,
+    PublicDrop,
+    SignedMintValidationParams,
+    TokenGatedDropStage,
+    TokenGatedMintParams
+} from "../lib/SeaDropStructs.sol";
 
-import {SeaDropErrorsAndEvents} from "../lib/SeaDropErrorsAndEvents.sol";
+import { SeaDropErrorsAndEvents } from "../lib/SeaDropErrorsAndEvents.sol";
 
 interface ISeaDrop is SeaDropErrorsAndEvents {
     /**
@@ -26,7 +33,14 @@ interface ISeaDrop is SeaDropErrorsAndEvents {
      * @param mintParams       The mint parameters.
      * @param proof            The proof for the leaf of the allow list.
      */
-    function mintAllowList(address nftContract, address feeRecipient, address minterIfNotPayer, uint256 quantity, MintParams calldata mintParams, bytes32[] calldata proof) external payable;
+    function mintAllowList(
+        address nftContract,
+        address feeRecipient,
+        address minterIfNotPayer,
+        uint256 quantity,
+        MintParams calldata mintParams,
+        bytes32[] calldata proof
+    ) external payable;
 
     /**
      * @notice Mint with a server-side signature.
@@ -41,7 +55,15 @@ interface ISeaDrop is SeaDropErrorsAndEvents {
      * @param signature        The server-side signature, must be an allowed
      *                         signer.
      */
-    function mintSigned(address nftContract, address feeRecipient, address minterIfNotPayer, uint256 quantity, MintParams calldata mintParams, uint256 salt, bytes calldata signature) external payable;
+    function mintSigned(
+        address nftContract,
+        address feeRecipient,
+        address minterIfNotPayer,
+        uint256 quantity,
+        MintParams calldata mintParams,
+        uint256 salt,
+        bytes calldata signature
+    ) external payable;
 
     /**
      * @notice Mint as an allowed token holder.
@@ -53,7 +75,9 @@ interface ISeaDrop is SeaDropErrorsAndEvents {
      * @param minterIfNotPayer The mint recipient if different than the payer.
      * @param mintParams       The token gated mint params.
      */
-    function mintAllowedTokenHolder(address nftContract, address feeRecipient, address minterIfNotPayer, TokenGatedMintParams calldata mintParams) external payable;
+    function mintAllowedTokenHolder(address nftContract, address feeRecipient, address minterIfNotPayer, TokenGatedMintParams calldata mintParams)
+        external
+        payable;
 
     /**
      * @notice Emits an event to notify update of the drop URI.
