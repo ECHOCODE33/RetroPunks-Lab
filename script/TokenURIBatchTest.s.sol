@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import {Script} from "forge-std/Script.sol";
-import {console} from "forge-std/console.sol";
+import { Script } from "forge-std/Script.sol";
+import { console } from "forge-std/console.sol";
 
 interface IRetroPunks {
     function tokenURI(uint256 tokenId) external view returns (string memory);
@@ -26,11 +26,8 @@ contract TokenURIBatchTest is Script {
             // Decode the bytes into a string to check actual content
             string memory uri = abi.decode(returnedData, (string));
 
-            if (bytes(uri).length > 0) {
-                console.log("Token #%s: [OK] (%s bytes)", tokenId, bytes(uri).length);
-            } else {
-                console.log("Token #%s: [EMPTY STRING]", tokenId);
-            }
+            if (bytes(uri).length > 0) console.log("Token #%s: [OK] (%s bytes)", tokenId, bytes(uri).length);
+            else console.log("Token #%s: [EMPTY STRING]", tokenId);
         }
     }
 }

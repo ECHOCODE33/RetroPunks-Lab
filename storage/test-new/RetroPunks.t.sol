@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import "forge-std/Test.sol";
 import "../src/RetroPunks.sol";
 import "../src/interfaces/ISVGRenderer.sol";
-import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import { IERC721Receiver } from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import { Test } from "forge-std/Test.sol";
 
 // --- Mock Renderer ---
 contract MockRenderer is ISVGRenderer {
@@ -59,14 +59,14 @@ contract RetroPunksTest is Test, IERC721Receiver {
 
     function testSetRenderer() public {
         MockRenderer newRenderer = new MockRenderer();
-        retroPunks.setRenderer(ISVGRenderer(address(newRenderer)));
+        retroPunks.setRenderer(ISVGRenderer(address(newRenderer)), true);
         assertEq(address(retroPunks.renderer()), address(newRenderer));
     }
 
     function testSetRendererRevertsIfNotOwner() public {
         vm.prank(user1);
         vm.expectRevert(abi.encodeWithSignature("OnlyOwner()"));
-        retroPunks.setRenderer(ISVGRenderer(address(renderer)));
+        retroPunks.setRenderer(ISVGRenderer(address(renderer)), true);
     }
 
     function testRevealShufflerSeed() public {

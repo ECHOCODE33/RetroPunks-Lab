@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import {Test} from "forge-std/Test.sol";
-import {console} from "forge-std/console.sol";
+import { Test } from "forge-std/Test.sol";
+import { console } from "forge-std/console.sol";
 
-import {Assets} from "../src/Assets.sol";
-import {Probs} from "../src/Probs.sol";
-import {Traits} from "../src/Traits.sol";
-import {SVGRenderer} from "../src/SVGRenderer.sol";
-import {RetroPunks} from "../src/RetroPunks.sol";
+import { Assets } from "../src/Assets.sol";
+import { Probs } from "../src/Probs.sol";
+import { RetroPunks } from "../src/RetroPunks.sol";
+import { SVGRenderer } from "../src/SVGRenderer.sol";
+import { Traits } from "../src/Traits.sol";
 
 contract RetroPunksTest is Test {
     Assets assets;

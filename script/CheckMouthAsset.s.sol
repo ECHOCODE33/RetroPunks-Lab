@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import {Script} from "forge-std/Script.sol";
-import {console} from "forge-std/console.sol";
-import {Assets} from "../src/Assets.sol"; // Adjust path to your Assets contract
+import { Assets } from "../src/Assets.sol"; // Adjust path to your Assets contract
+import { Script } from "forge-std/Script.sol";
+import { console } from "forge-std/console.sol";
 
 contract CheckMouthAsset is Script {
     function run() external view {
@@ -22,10 +22,7 @@ contract CheckMouthAsset is Script {
         console.logBytes(data);
 
         // If length == 0, it's the problem
-        if (data.length == 0) {
-            console.log("WARNING: Decompressed data is EMPTY, this causes TraitGroupNotLoaded");
-        } else {
-            console.log("SUCCESS: Data exists, check if it's valid RLE");
-        }
+        if (data.length == 0) console.log("WARNING: Decompressed data is EMPTY, this causes TraitGroupNotLoaded");
+        else console.log("SUCCESS: Data exists, check if it's valid RLE");
     }
 }

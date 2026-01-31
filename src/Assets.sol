@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.32;
 
-import {IAssets} from "./interfaces/IAssets.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {SSTORE2} from "./libraries/SSTORE2.sol";
-import {LibZip} from "./libraries/LibZip.sol";
+import { IAssets } from "./interfaces/IAssets.sol";
+import { LibZip } from "./libraries/LibZip.sol";
+import { SSTORE2 } from "./libraries/SSTORE2.sol";
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
+ * @title Assets
  * @author ECHO
  */
 contract Assets is Ownable, IAssets {
@@ -16,7 +17,7 @@ contract Assets is Ownable, IAssets {
 
     mapping(uint256 => address) private _assetsMap;
 
-    constructor() Ownable(msg.sender) {}
+    constructor() Ownable(msg.sender) { }
 
     function addAssetsBatch(uint256[] calldata keys, bytes[] calldata assets) external onlyOwner {
         uint256 length = keys.length;
@@ -50,9 +51,7 @@ contract Assets is Ownable, IAssets {
 
         bytes memory asset = SSTORE2.read(pointer);
 
-        if (decompress) {
-            asset = LibZip.flzDecompress(asset);
-        }
+        if (decompress) asset = LibZip.flzDecompress(asset);
 
         return asset;
     }

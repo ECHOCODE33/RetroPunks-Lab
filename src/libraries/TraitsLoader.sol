@@ -1,19 +1,21 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.32;
 
-import {IAssets} from "../interfaces/IAssets.sol";
-import {TraitGroup, TraitInfo, CachedTraitGroups} from "../common/Structs.sol";
-import {E_TraitsGroup} from "../common/Enums.sol";
+import { E_TraitsGroup } from "../common/Enums.sol";
+import { CachedTraitGroups, TraitGroup, TraitInfo } from "../common/Structs.sol";
+import { IAssets } from "../interfaces/IAssets.sol";
 
 library TraitsLoader {
     function initCachedTraitGroups(uint256 _traitGroupsLength) public pure returns (CachedTraitGroups memory) {
-        return CachedTraitGroups({traitGroups: new TraitGroup[](_traitGroupsLength), traitGroupsLoaded: new bool[](_traitGroupsLength)});
+        return CachedTraitGroups({ traitGroups: new TraitGroup[](_traitGroupsLength), traitGroupsLoaded: new bool[](_traitGroupsLength) });
     }
 
-    function loadAndCacheTraitGroup(IAssets _assetsContract, CachedTraitGroups memory _cachedTraitGroups, uint256 _traitGroupIndex) public view returns (TraitGroup memory) {
-        if (_cachedTraitGroups.traitGroupsLoaded[_traitGroupIndex]) {
-            return _cachedTraitGroups.traitGroups[_traitGroupIndex];
-        }
+    function loadAndCacheTraitGroup(IAssets _assetsContract, CachedTraitGroups memory _cachedTraitGroups, uint256 _traitGroupIndex)
+        public
+        view
+        returns (TraitGroup memory)
+    {
+        if (_cachedTraitGroups.traitGroupsLoaded[_traitGroupIndex]) return _cachedTraitGroups.traitGroups[_traitGroupIndex];
 
         TraitGroup memory traitGroup;
         traitGroup.traitGroupIndex = _traitGroupIndex;
@@ -85,9 +87,7 @@ library TraitsLoader {
                 uint256 dataLen = index - startOfData;
                 t.traitData = new bytes(dataLen);
 
-                if (dataLen > 0) {
-                    _memoryCopy(t.traitData, 0, traitGroupData, startOfData, dataLen);
-                }
+                if (dataLen > 0) _memoryCopy(t.traitData, 0, traitGroupData, startOfData, dataLen);
 
                 traitGroup.traits[i] = t;
             }
@@ -107,19 +107,22 @@ library TraitsLoader {
         return name;
     }
 
-    function _decodeTraitGroupPalette(bytes memory traitGroupData, uint256 startIndex) internal pure returns (uint32[] memory paletteRgba, uint256 nextIndex) {
+    function _decodeTraitGroupPalette(bytes memory traitGroupData, uint256 startIndex)
+        internal
+        pure
+        returns (uint32[] memory paletteRgba, uint256 nextIndex)
+    {
         uint16 paletteSize = uint16(uint8(traitGroupData[startIndex])) << 8 | uint16(uint8(traitGroupData[startIndex + 1]));
 
-        if (paletteSize == 0) {
-            return (new uint32[](0), startIndex + 2);
-        }
+        if (paletteSize == 0) return (new uint32[](0), startIndex + 2);
 
         paletteRgba = new uint32[](paletteSize);
         uint256 cursor = startIndex + 2;
 
         unchecked {
             for (uint256 i = 0; i < paletteSize; i++) {
-                uint32 color = uint32(uint8(traitGroupData[cursor])) << 24 | uint32(uint8(traitGroupData[cursor + 1])) << 16 | uint32(uint8(traitGroupData[cursor + 2])) << 8 | uint32(uint8(traitGroupData[cursor + 3]));
+                uint32 color = uint32(uint8(traitGroupData[cursor])) << 24 | uint32(uint8(traitGroupData[cursor + 1])) << 16
+                    | uint32(uint8(traitGroupData[cursor + 2])) << 8 | uint32(uint8(traitGroupData[cursor + 3]));
                 paletteRgba[i] = color;
                 cursor += 4;
             }

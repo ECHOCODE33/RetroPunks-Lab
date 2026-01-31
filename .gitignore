@@ -11,3 +11,4 @@ broadcast/
 *.log
 .DS_Store
 
+foundry.toml

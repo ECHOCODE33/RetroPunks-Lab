@@ -1,19 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import {Script} from "forge-std/Script.sol";
-import {console} from "forge-std/console.sol";
+import { Script } from "forge-std/Script.sol";
+import { console } from "forge-std/console.sol";
 
-import {RetroPunks} from "../src/RetroPunks.sol";
+import { RetroPunks } from "../src/RetroPunks.sol";
 
 contract ViewTokenURI is Script {
     // ====================== CONFIGURATION ======================
 
     // Your deployed RetroPunks contract address
-    address constant retroPunksAddress = 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707;
+    address retroPunksAddress = vm.envAddress("RETROPUNKS");
 
     // CHANGE THIS: Token ID you want to view
-    uint256 constant TOKEN_ID = 2;
+    uint256 constant TOKEN_ID = 20;
 
     // ====================== SCRIPT LOGIC ======================
 

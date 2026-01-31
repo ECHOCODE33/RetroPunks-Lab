@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import "forge-std/Test.sol";
-import "forge-std/console.sol";
+import { Test } from "forge-std/Test.sol";
+import { console } from "forge-std/console.sol";
 
-import {Traits} from "../src/Traits.sol";
-import {Probs} from "../src/Probs.sol";
-import {TraitsContext} from "../src/common/Structs.sol";
-import {E_Sex} from "../src/common/Enums.sol";
+import { Probs } from "../src/Probs.sol";
+import { Traits } from "../src/Traits.sol";
+import { E_Sex } from "../src/common/Enums.sol";
+import { TraitsContext } from "../src/common/Structs.sol";
 
 contract CumulativeStats {
     mapping(string => mapping(uint256 => uint256)) public counts;
@@ -78,7 +78,7 @@ contract TraitsSimulationTest is Test {
                     stats.record("f_headwear", uint256(ctx.femaleHeadwear));
                     stats.record("f_eyeWear", uint256(ctx.femaleEyeWear));
                 }
-            } catch {}
+            } catch { }
         }
 
         _printReport();
@@ -164,13 +164,9 @@ contract TraitsSimulationTest is Test {
             return string.concat("Sex_", vm.toString(i));
         }
 
-        if (k == keccak256(abi.encodePacked("length"))) {
-            return string.concat("Len ", vm.toString(i));
-        }
+        if (k == keccak256(abi.encodePacked("length"))) return string.concat("Len ", vm.toString(i));
 
-        if (k == keccak256(abi.encodePacked("mouth"))) {
-            return string.concat("Mouth ", vm.toString(i));
-        }
+        if (k == keccak256(abi.encodePacked("mouth"))) return string.concat("Mouth ", vm.toString(i));
 
         //
         // Default per-group naming — replace these with your actual names for better output.
@@ -200,9 +196,7 @@ contract TraitsSimulationTest is Test {
             return string.concat("Scarf Option ", vm.toString(i));
         }
 
-        if (k == keccak256(abi.encodePacked("m_facialHair"))) {
-            return string.concat("FacialHair Option ", vm.toString(i));
-        }
+        if (k == keccak256(abi.encodePacked("m_facialHair"))) return string.concat("FacialHair Option ", vm.toString(i));
 
         if (k == keccak256(abi.encodePacked("m_mask")) || k == keccak256(abi.encodePacked("f_mask"))) {
             return string.concat("Mask Option ", vm.toString(i));

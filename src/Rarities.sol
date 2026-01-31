@@ -2,53 +2,55 @@
 pragma solidity ^0.8.32;
 
 import {
-    E_Male_Skin,
-    E_Male_Eyes,
-    E_Male_Face,
+    E_Female_Chain,
+    E_Female_Chain,
+    E_Female_Earring,
+    E_Female_Earring,
+    E_Female_Eye_Wear,
+    E_Female_Eye_Wear,
+    E_Female_Eyes,
+    E_Female_Eyes,
+    E_Female_Face,
+    E_Female_Face,
+    E_Female_Hair,
+    E_Female_Hair,
+    E_Female_Hat_Hair,
+    E_Female_Hat_Hair,
+    E_Female_Headwear,
+    E_Female_Headwear,
+    E_Female_Mask,
+    E_Female_Mask,
+    E_Female_Scarf,
+    E_Female_Scarf,
+    E_Female_Skin,
+    E_Female_Skin,
     E_Male_Chain,
     E_Male_Earring,
-    E_Male_Scarf,
+    E_Male_Eye_Wear,
+    E_Male_Eyes,
+    E_Male_Face,
     E_Male_Facial_Hair,
-    E_Male_Mask,
     E_Male_Hair,
     E_Male_Hat_Hair,
     E_Male_Headwear,
-    E_Male_Eye_Wear,
-    E_Female_Skin,
-    E_Female_Eyes,
-    E_Female_Face,
-    E_Female_Chain,
-    E_Female_Earring,
-    E_Female_Scarf,
-    E_Female_Mask,
-    E_Female_Hair,
-    E_Female_Hat_Hair,
-    E_Female_Headwear,
-    E_Female_Eye_Wear,
-    E_Female_Skin,
-    E_Female_Eyes,
-    E_Female_Face,
-    E_Female_Chain,
-    E_Female_Earring,
-    E_Female_Scarf,
-    E_Female_Mask,
-    E_Female_Hair,
-    E_Female_Hat_Hair,
-    E_Female_Headwear,
-    E_Female_Eye_Wear,
+    E_Male_Mask,
+    E_Male_Scarf,
+    E_Male_Skin,
     E_Mouth
 } from "./common/Enums.sol";
-import {TraitsContext, MaleTraits, FemaleTraits} from "./common/Structs.sol";
-import {LibPRNG} from "./libraries/LibPRNG.sol";
-import {LibTraits} from "./libraries/LibTraits.sol";
+import { FemaleTraits, MaleTraits, TraitsContext } from "./common/Structs.sol";
+import { LibPRNG } from "./libraries/LibPRNG.sol";
+import { LibTraits } from "./libraries/LibTraits.sol";
 
 /**
+ * @title Rarities
  * @author ECHO
  */
-contract Probs {
-    // ---------- Male Probs ---------- //
+contract Rarities {
+    // ---------- Male Rarities ---------- //
 
-    bytes private constant M_SKIN = hex"0000002300AF000C002D0037000E02EE02EE02EE02EE02EE02EE02EE02EE02EE02EE02EE02EE000800160010003C0012001E000A0050012C0078";
+    bytes private constant M_SKIN =
+        hex"0000002300AF000C002D0037000E02EE02EE02EE02EE02EE02EE02EE02EE02EE02EE02EE02EE000800160010003C0012001E000A0050012C0078";
 
     bytes private constant M_EYES = hex"000000320064000B000B000B000B000B000B000B000B000B00FA00000000101D00190019101D007D01F401F4004C";
 
@@ -60,8 +62,10 @@ contract Probs {
 
     bytes private constant M_EARRING = hex"232800FA0019004B008C015E000A00320064";
 
-    bytes private constant M_FACIAL_HAIR_A = hex"13880000000000000000006000000000002A0000002A001900000000000000000000000000000000000000000000000000190000000000000000001B0000000000000000000000000000000000000000000000000000000000000000001E00000000000000000000000000000000001400000000000000000000000000000000000000000000000000000000000000000023000000000000000000190000000000000000000000000000000000140000";
-    bytes private constant M_FACIAL_HAIR_B = hex"1388005A0041002D00190060004B003C002A0032002A00190023006900500032001E009B00730050002800640055003C0019002D006B00570043001B002F00460032002300140028001E0014000A008C0069004600280078005F004B001E0032004B003C00230014005A004B003700140028005F004B003200190037002D0019000F002D00230019000F00820069005000230037005F004B003C0019002D003C002D001E00140041003700280014001E";
+    bytes private constant M_FACIAL_HAIR_A =
+        hex"13880000000000000000006000000000002A0000002A001900000000000000000000000000000000000000000000000000190000000000000000001B0000000000000000000000000000000000000000000000000000000000000000001E00000000000000000000000000000000001400000000000000000000000000000000000000000000000000000000000000000023000000000000000000190000000000000000000000000000000000140000";
+    bytes private constant M_FACIAL_HAIR_B =
+        hex"1388005A0041002D00190060004B003C002A0032002A00190023006900500032001E009B00730050002800640055003C0019002D006B00570043001B002F00460032002300140028001E0014000A008C0069004600280078005F004B001E0032004B003C00230014005A004B003700140028005F004B003200190037002D0019000F002D00230019000F00820069005000230037005F004B003C0019002D003C002D001E00140041003700280014001E";
 
     bytes private constant M_MASK = hex"253A001E001E001E001E001E002800190019001900190019001900190019000F000F000A000A000A000A000A";
 
@@ -70,7 +74,8 @@ contract Probs {
     bytes private constant M_HAIR =
         hex"000000C80078001900B4006400190019001900190019001900E1008C00C80064005500FA00C800AF00B900E100A500070007000700070007000700070012000E0002000A0007000200020002000200020002000200040004000300030003000300C80096001A00AF0075001A001A001A001A001A001A001A00230019001E0014000F000C0007000200090006000200020002000200020002000200460032003C0028001E003B00230007002D001E00070007000700070007000700070046001E003C0019000F00C80078001900B40064001900190019001900190019001900060003000200040002000200010001000100010002000200020002000200020096004B001900370023002D0019000F000400020002000300010002000100010001000100020002000200020002000204B000060004000100050002000100010001000100010001000104B00037002D00230019000F0014000C000300100008000300030003000300030003000300320028001E0014000A0010000C0003000E0009000300030003000300030003000300C80078001900B400640019001900190019001900190019";
 
-    bytes private constant M_HAT_HAIR = hex"000000E100C8008C0064005500C800AF00B900E100A500FA00C80096001A00AF0075001A001A001A001A001A001A001A000C00090002000700060002000200020002000200020002003B00230007002D001E000700070007000700070007000700C80078001900B4006400190019001900190019001900190096004B001904B000060004000100050002000100010001000100010001000104B00014000C00030010000800030003000300030003000300030032001E00280014000A00C800B40019007800640019001900190019001900190019";
+    bytes private constant M_HAT_HAIR =
+        hex"000000E100C8008C0064005500C800AF00B900E100A500FA00C80096001A00AF0075001A001A001A001A001A001A001A000C00090002000700060002000200020002000200020002003B00230007002D001E000700070007000700070007000700C80078001900B4006400190019001900190019001900190096004B001904B000060004000100050002000100010001000100010001000104B00014000C00030010000800030003000300030003000300030032001E00280014000A00C800B40019007800640019001900190019001900190019";
 
     bytes private constant M_HEADWEAR =
         hex"03BB007E007E007E007E007E003E003E003E003E003E003E003E003E003E004400440044004400440044004400440044003000300030006E0010001000100010001000100010008200820082008200820096000600060006000600060006000601270012001200120012001200120012001200120069000F00420042004200420042000F000F000F000F000F000F000F000F000F001E01450040004000400040004000410003000F000F000F000F002200220022006400290029002900290029002900290032004B002D0014006400640064004E004E004E004E004E004E004E004E004B004B004B004B004B004B004B004B004B004B00260026002600260026002600260026000E000E000E000E000E000E000E000E000E0037004E004E004E004E01220010001000100010001000100010004B004B004B004B004B004B004B004B00050005000500050005000500050005";
@@ -82,11 +87,12 @@ contract Probs {
     bytes private constant MOUTH_B = hex"1FDB007D001E00C800320096009600FA0032000F0014000000000000000000320064000A001900640064012C0014";
     bytes private constant MOUTH_C = hex"1FDB007D001E00C800320096009600FA0032000F0014000000000000000000320064000A001900000000012C0014";
 
-    // ---------- Female Probs ---------- //
+    // ---------- Female Rarities ---------- //
 
     bytes private constant F_SKIN = hex"0000001900E1000F002D0041001402EE02EE02EE02EE02EE02EE02EE02EE02EE02EE02EE02EE00080019005A0016000A012C0096";
 
-    bytes private constant F_EYES = hex"000000320064000B000B000B000B000B000B000B000B000B00FA001E001E001E001E001E001E001E001E00000000101D00190019101D007D01F401F4004B";
+    bytes private constant F_EYES =
+        hex"000000320064000B000B000B000B000B000B000B000B000B00FA001E001E001E001E001E001E001E001E00000000101D00190019101D007D01F401F4004B";
 
     bytes private constant F_FACE_A = hex"24A10010000C004B0010007D0023000A000A00080012000A0016000C00C8000C0014000E0008";
     bytes private constant F_FACE_B = hex"25C100000000004B001000000000000A000A0000000000000000000C00C8000C000000000000";
@@ -162,9 +168,7 @@ contract Probs {
     }
 
     function selectRandomTrait(LibPRNG.PRNG memory prng, bytes memory packedWeights, uint256 totalWeight) internal pure returns (uint256) {
-        if (totalWeight == 0) {
-            revert("totalWeight must be > 0");
-        }
+        if (totalWeight == 0) revert("totalWeight must be > 0");
         uint256 r = LibPRNG.uniform(prng, totalWeight);
 
         uint256 currentSum = 0;
@@ -180,9 +184,7 @@ contract Probs {
             }
 
             currentSum += weight;
-            if (r < currentSum) {
-                return i / 2;
-            }
+            if (r < currentSum) return i / 2;
         }
 
         revert("Selection failed");
@@ -213,7 +215,10 @@ contract Probs {
             // Ape weights (Only Mole, Bandage, War Paint, Bionics, Cybereyes)
             packed = M_FACE_B;
             totalWeight = 9750;
-        } else if (LibTraits.maleIsAlien(ctx) || LibTraits.maleIsDemon(ctx) || LibTraits.maleIsGhost(ctx) || LibTraits.maleIsGlitch(ctx) || LibTraits.maleIsGoblin(ctx) || LibTraits.maleIsPumpkin(ctx) || LibTraits.maleIsSkeleton(ctx) || LibTraits.maleIsVampire(ctx)) {
+        } else if (
+            LibTraits.maleIsAlien(ctx) || LibTraits.maleIsDemon(ctx) || LibTraits.maleIsGhost(ctx) || LibTraits.maleIsGlitch(ctx)
+                || LibTraits.maleIsGoblin(ctx) || LibTraits.maleIsPumpkin(ctx) || LibTraits.maleIsSkeleton(ctx) || LibTraits.maleIsVampire(ctx)
+        ) {
             // All other weights (Only Mole, Tattoos, Bandage)
             packed = M_FACE_C;
             totalWeight = 9795;
@@ -233,9 +238,7 @@ contract Probs {
     }
 
     function selectMaleFacialHair(TraitsContext memory ctx, LibPRNG.PRNG memory prng) internal pure returns (E_Male_Facial_Hair) {
-        if (!LibTraits.maleIsHuman(ctx) && !LibTraits.maleIsZombie(ctx) && !LibTraits.maleIsGhost(ctx)) {
-            return E_Male_Facial_Hair.None;
-        }
+        if (!LibTraits.maleIsHuman(ctx) && !LibTraits.maleIsZombie(ctx) && !LibTraits.maleIsGhost(ctx)) return E_Male_Facial_Hair.None;
 
         bytes memory packed;
         uint256 totalWeight;
@@ -264,19 +267,13 @@ contract Probs {
     function selectMaleHair(TraitsContext memory ctx, LibPRNG.PRNG memory prng) internal pure returns (E_Male_Hair) {
         uint256 noneWeight;
 
-        if (LibTraits.maleIsRobot(ctx) || LibTraits.maleIsMummy(ctx) || LibTraits.maleIsVampire(ctx)) {
-            return E_Male_Hair.None;
-        } else if (LibTraits.maleIsHuman(ctx) || LibTraits.maleIsZombie(ctx)) {
-            noneWeight = 400;
-        } else {
-            noneWeight = 1200;
-        }
+        if (LibTraits.maleIsRobot(ctx) || LibTraits.maleIsMummy(ctx) || LibTraits.maleIsVampire(ctx)) return E_Male_Hair.None;
+        else if (LibTraits.maleIsHuman(ctx) || LibTraits.maleIsZombie(ctx)) noneWeight = 400;
+        else noneWeight = 1200;
 
         uint256 total = 9579 + noneWeight;
 
-        if (1 + LibPRNG.uniform(prng, total) <= noneWeight) {
-            return E_Male_Hair.None;
-        }
+        if (1 + LibPRNG.uniform(prng, total) <= noneWeight) return E_Male_Hair.None;
 
         return E_Male_Hair(selectRandomTrait(prng, M_HAIR, 9579));
     }
@@ -284,19 +281,13 @@ contract Probs {
     function selectMaleHatHair(TraitsContext memory ctx, LibPRNG.PRNG memory prng) internal pure returns (E_Male_Hat_Hair) {
         uint256 noneWeight;
 
-        if (LibTraits.maleIsRobot(ctx) || LibTraits.maleIsMummy(ctx) || LibTraits.maleIsVampire(ctx)) {
-            return E_Male_Hat_Hair.None;
-        } else if (LibTraits.maleIsHuman(ctx) || LibTraits.maleIsZombie(ctx)) {
-            noneWeight = 400;
-        } else {
-            noneWeight = 800;
-        }
+        if (LibTraits.maleIsRobot(ctx) || LibTraits.maleIsMummy(ctx) || LibTraits.maleIsVampire(ctx)) return E_Male_Hat_Hair.None;
+        else if (LibTraits.maleIsHuman(ctx) || LibTraits.maleIsZombie(ctx)) noneWeight = 400;
+        else noneWeight = 800;
 
         uint256 total = 7580 + noneWeight;
 
-        if (1 + LibPRNG.uniform(prng, total) <= noneWeight) {
-            return E_Male_Hat_Hair.None;
-        }
+        if (1 + LibPRNG.uniform(prng, total) <= noneWeight) return E_Male_Hat_Hair.None;
 
         return E_Male_Hat_Hair(selectRandomTrait(prng, M_HAT_HAIR, 7580));
     }
@@ -314,9 +305,7 @@ contract Probs {
     }
 
     function selectFemaleEyes(TraitsContext memory ctx, LibPRNG.PRNG memory prng) internal pure returns (E_Female_Eyes) {
-        if (LibTraits.femaleIsGhost(ctx)) {
-            return LibPRNG.uniform(prng, 10000) < 5000 ? E_Female_Eyes.Ghost_Left : E_Female_Eyes.Ghost_Right;
-        }
+        if (LibTraits.femaleIsGhost(ctx)) return LibPRNG.uniform(prng, 10000) < 5000 ? E_Female_Eyes.Ghost_Left : E_Female_Eyes.Ghost_Right;
 
         return E_Female_Eyes(selectRandomTrait(prng, F_EYES, 10239));
     }
@@ -333,7 +322,10 @@ contract Probs {
             // Ape weights (Only Mole, Bandage, War Paint, Bionics, Cybereyes)
             packed = F_FACE_B;
             totalWeight = 10000;
-        } else if (LibTraits.femaleIsAlien(ctx) || LibTraits.femaleIsDemon(ctx) || LibTraits.femaleIsGhost(ctx) || LibTraits.femaleIsGlitch(ctx) || LibTraits.femaleIsGoblin(ctx) || LibTraits.femaleIsSkeleton(ctx) || LibTraits.femaleIsVampire(ctx)) {
+        } else if (
+            LibTraits.femaleIsAlien(ctx) || LibTraits.femaleIsDemon(ctx) || LibTraits.femaleIsGhost(ctx) || LibTraits.femaleIsGlitch(ctx)
+                || LibTraits.femaleIsGoblin(ctx) || LibTraits.femaleIsSkeleton(ctx) || LibTraits.femaleIsVampire(ctx)
+        ) {
             // All other weights (Only Mole, Tattoos, Bandage)
             packed = F_FACE_C;
             totalWeight = 10000;
@@ -363,19 +355,13 @@ contract Probs {
     function selectFemaleHair(TraitsContext memory ctx, LibPRNG.PRNG memory prng) internal pure returns (E_Female_Hair) {
         uint256 noneWeight;
 
-        if (LibTraits.femaleIsRobot(ctx) || LibTraits.femaleIsMummy(ctx) || LibTraits.femaleIsVampire(ctx)) {
-            return E_Female_Hair.None;
-        } else if (LibTraits.femaleIsHuman(ctx) || LibTraits.femaleIsZombie(ctx)) {
-            noneWeight = 400;
-        } else {
-            noneWeight = 1200;
-        }
+        if (LibTraits.femaleIsRobot(ctx) || LibTraits.femaleIsMummy(ctx) || LibTraits.femaleIsVampire(ctx)) return E_Female_Hair.None;
+        else if (LibTraits.femaleIsHuman(ctx) || LibTraits.femaleIsZombie(ctx)) noneWeight = 400;
+        else noneWeight = 1200;
 
         uint256 total = 9595 + noneWeight;
 
-        if (1 + LibPRNG.uniform(prng, total) <= noneWeight) {
-            return E_Female_Hair.None;
-        }
+        if (1 + LibPRNG.uniform(prng, total) <= noneWeight) return E_Female_Hair.None;
 
         return E_Female_Hair(selectRandomTrait(prng, F_HAIR, 9595));
     }
@@ -383,19 +369,13 @@ contract Probs {
     function selectFemaleHatHair(TraitsContext memory ctx, LibPRNG.PRNG memory prng) internal pure returns (E_Female_Hat_Hair) {
         uint256 noneWeight;
 
-        if (LibTraits.femaleIsRobot(ctx) || LibTraits.femaleIsMummy(ctx) || LibTraits.femaleIsVampire(ctx)) {
-            return E_Female_Hat_Hair.None;
-        } else if (LibTraits.femaleIsHuman(ctx) || LibTraits.femaleIsZombie(ctx)) {
-            noneWeight = 400;
-        } else {
-            noneWeight = 1200;
-        }
+        if (LibTraits.femaleIsRobot(ctx) || LibTraits.femaleIsMummy(ctx) || LibTraits.femaleIsVampire(ctx)) return E_Female_Hat_Hair.None;
+        else if (LibTraits.femaleIsHuman(ctx) || LibTraits.femaleIsZombie(ctx)) noneWeight = 400;
+        else noneWeight = 1200;
 
         uint256 total = 7000 + noneWeight;
 
-        if (1 + LibPRNG.uniform(prng, total) <= noneWeight) {
-            return E_Female_Hat_Hair.None;
-        }
+        if (1 + LibPRNG.uniform(prng, total) <= noneWeight) return E_Female_Hat_Hair.None;
 
         return E_Female_Hat_Hair(selectRandomTrait(prng, F_HAT_HAIR, 7000));
     }

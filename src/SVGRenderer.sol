@@ -1,17 +1,18 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.32;
 
-import {ISVGRenderer} from "./interfaces/ISVGRenderer.sol";
-import {ITraits} from "./interfaces/ITraits.sol";
-import {IAssets} from "./interfaces/IAssets.sol";
-import {NUM_TRAIT_GROUPS, E_TraitsGroup} from "./common/Enums.sol";
-import {TraitsContext, CachedTraitGroups, TraitGroup} from "./common/Structs.sol";
-import {TraitsRenderer} from "./libraries/TraitsRenderer.sol";
-import {TraitsLoader} from "./libraries/TraitsLoader.sol";
-import {Utils} from "./libraries/Utils.sol";
-import {DynamicBuffer} from "./libraries/DynamicBuffer.sol";
+import { E_TraitsGroup, NUM_TRAIT_GROUPS } from "./common/Enums.sol";
+import { CachedTraitGroups, TraitGroup, TraitsContext } from "./common/Structs.sol";
+import { IAssets } from "./interfaces/IAssets.sol";
+import { ISVGRenderer } from "./interfaces/ISVGRenderer.sol";
+import { ITraits } from "./interfaces/ITraits.sol";
+import { DynamicBuffer } from "./libraries/DynamicBuffer.sol";
+import { TraitsLoader } from "./libraries/TraitsLoader.sol";
+import { TraitsRenderer } from "./libraries/TraitsRenderer.sol";
+import { Utils } from "./libraries/Utils.sol";
 
 /**
+ * @title SVGRenderer
  * @author ECHO
  */
 contract SVGRenderer is ISVGRenderer {
@@ -20,7 +21,8 @@ contract SVGRenderer is ISVGRenderer {
 
     error BackgroundTraitsArrayIsEmpty();
 
-    bytes private constant SVG_HEADER = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><style>img{image-rendering:pixelated;shape-rendering:crispEdges;image-rendering:-moz-crisp-edges;}</style><g id="GeneratedImage"><foreignObject width="48" height="48"><img xmlns="http://www.w3.org/1999/xhtml" src="data:image/png;base64,';
+    bytes private constant SVG_HEADER =
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><style>img{image-rendering:pixelated;shape-rendering:crispEdges;image-rendering:-moz-crisp-edges;}</style><g id="GeneratedImage"><foreignObject width="48" height="48"><img xmlns="http://www.w3.org/1999/xhtml" src="data:image/png;base64,';
     bytes private constant SVG_FOOTER = '" width="100%" height="100%"/></foreignObject></g></svg>';
 
     constructor(IAssets assetsContract, ITraits traitsContract) {
@@ -28,7 +30,11 @@ contract SVGRenderer is ISVGRenderer {
         _TRAITS_CONTRACT = traitsContract;
     }
 
-    function renderSVG(uint16 tokenIdSeed, uint8 backgroundIndex, uint256 globalSeed) public view returns (string memory svg, string memory attributes) {
+    function renderSVG(uint16 tokenIdSeed, uint8 backgroundIndex, uint256 globalSeed)
+        public
+        view
+        returns (string memory svg, string memory attributes)
+    {
         bytes memory buffer = DynamicBuffer.allocate(20000);
 
         TraitsContext memory traits = _TRAITS_CONTRACT.generateTraitsContext(tokenIdSeed, backgroundIndex, globalSeed);
@@ -36,9 +42,7 @@ contract SVGRenderer is ISVGRenderer {
 
         _prepareCache(cachedTraitGroups, traits);
 
-        if (_isPreRenderedSpecial(traits.specialId)) {
-            return _renderPreRenderedSpecial(buffer, traits, cachedTraitGroups);
-        }
+        if (traits.specialId > 0 && traits.specialId <= 7) return _renderPreRenderedSpecial(buffer, traits, cachedTraitGroups);
 
         TraitsRenderer.renderGridToSvg(_ASSETS_CONTRACT, buffer, cachedTraitGroups, traits);
 
@@ -47,22 +51,27 @@ contract SVGRenderer is ISVGRenderer {
     }
 
     function _prepareCache(CachedTraitGroups memory cachedTraitGroups, TraitsContext memory traits) internal view {
-        cachedTraitGroups.traitGroups[uint256(E_TraitsGroup.Background_Group)] = TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, uint256(E_TraitsGroup.Background_Group));
+        cachedTraitGroups.traitGroups[uint256(E_TraitsGroup.Background_Group)] =
+            TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, uint256(E_TraitsGroup.Background_Group));
 
         if (traits.specialId > 0) {
-            cachedTraitGroups.traitGroups[uint256(E_TraitsGroup.Special_1s_Group)] = TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, uint256(E_TraitsGroup.Special_1s_Group));
+            // Rendered Special 1s
+            cachedTraitGroups.traitGroups[uint256(E_TraitsGroup.Special_1s_Group)] =
+                TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, uint256(E_TraitsGroup.Special_1s_Group));
         } else {
+            // Normal NFT traits
             uint256 len = traits.traitsToRenderLength;
             for (uint256 i = 0; i < len;) {
                 uint256 traitGroupIndex = uint8(traits.traitsToRender[i].traitGroup);
 
-                cachedTraitGroups.traitGroups[traitGroupIndex] = TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, traitGroupIndex);
+                cachedTraitGroups.traitGroups[traitGroupIndex] =
+                    TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, traitGroupIndex);
 
                 if (traits.traitsToRender[i].hasFiller) {
                     uint256 fillerGroupIdx = uint8(traits.traitsToRender[i].filler.traitGroup);
-                    cachedTraitGroups.traitGroups[fillerGroupIdx] = TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, fillerGroupIdx);
+                    cachedTraitGroups.traitGroups[fillerGroupIdx] =
+                        TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, fillerGroupIdx);
                 }
-
                 unchecked {
                     ++i;
                 }
@@ -70,11 +79,11 @@ contract SVGRenderer is ISVGRenderer {
         }
     }
 
-    function _isPreRenderedSpecial(uint16 specialId) internal pure returns (bool) {
-        return specialId > 0 && specialId <= 7;
-    }
-
-    function _renderPreRenderedSpecial(bytes memory buffer, TraitsContext memory traits, CachedTraitGroups memory cachedTraitGroups) internal view returns (string memory svg, string memory attributes) {
+    function _renderPreRenderedSpecial(bytes memory buffer, TraitsContext memory traits, CachedTraitGroups memory cachedTraitGroups)
+        internal
+        view
+        returns (string memory svg, string memory attributes)
+    {
         bytes memory rawPngBytes = _ASSETS_CONTRACT.loadAsset(traits.specialId + 100, false);
 
         Utils.concat(buffer, SVG_HEADER);
@@ -88,7 +97,7 @@ contract SVGRenderer is ISVGRenderer {
 
         bytes memory attributesBuffer = DynamicBuffer.allocate(500);
         Utils.concat(attributesBuffer, '"attributes":[');
-        Utils.concat(attributesBuffer, _stringTrait("Special 1s", specialName));
+        Utils.concat(attributesBuffer, _stringTrait("Special 1", specialName));
         Utils.concat(attributesBuffer, "]");
 
         attributes = string(attributesBuffer);
@@ -123,7 +132,6 @@ contract SVGRenderer is ISVGRenderer {
                     }
                     continue;
                 }
-
                 TraitGroup memory group = cachedTraitGroups.traitGroups[uint256(traits.traitsToRender[i].traitGroup)];
                 uint256 traitIdx = traits.traitsToRender[i].traitIndex;
 

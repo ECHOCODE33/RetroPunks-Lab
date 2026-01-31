@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import {ICreatorToken} from "../interfaces/ICreatorToken.sol";
+import { ICreatorToken } from "../interfaces/ICreatorToken.sol";
 
 /**
  * @title  ERC721TransferValidator
@@ -24,9 +24,7 @@ abstract contract ERC721TransferValidator is ICreatorToken {
     ///         The external method that uses this must include access control.
     function _setTransferValidator(address newValidator) internal {
         address oldValidator = _transferValidator;
-        if (oldValidator == newValidator) {
-            revert SameTransferValidator();
-        }
+        if (oldValidator == newValidator) revert SameTransferValidator();
         _transferValidator = newValidator;
         emit TransferValidatorUpdated(oldValidator, newValidator);
     }

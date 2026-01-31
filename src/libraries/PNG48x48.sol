@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.32;
 
-import {Utils} from "./Utils.sol";
+import { Utils } from "./Utils.sol";
 
 struct BitMap {
     uint32[48][48] pixels; // 0xRRGGBBAA
@@ -61,9 +61,7 @@ library PNG48x48 {
         unchecked {
             for (uint256 x = 0; x < 48; ++x) {
                 for (uint256 y = 0; y < 48; ++y) {
-                    if (bmp.pixels[x][y] == MAGIC_TRANSPARENT) {
-                        bmp.pixels[x][y] = 0x00000000;
-                    }
+                    if (bmp.pixels[x][y] == MAGIC_TRANSPARENT) bmp.pixels[x][y] = 0x00000000;
                 }
             }
         }

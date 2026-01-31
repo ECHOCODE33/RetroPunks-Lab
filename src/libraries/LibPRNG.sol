@@ -95,7 +95,7 @@ library LibPRNG {
     function uniform(PRNG memory prng, uint256 upper) internal pure returns (uint256 result) {
         /// @solidity memory-safe-assembly
         assembly {
-            for {} 1 {} {
+            for { } 1 { } {
                 result := keccak256(prng, 0x20)
                 mstore(prng, result)
                 if iszero(lt(result, mod(sub(0, upper), upper))) { break }
@@ -142,7 +142,7 @@ library LibPRNG {
             if iszero(gt(w, p)) {
                 let n := 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff43 // Prime.
                 let a := 0x100000000000000000000000000000051 // Prime and a primitive root of `n`.
-                for {} 1 {} {
+                for { } 1 { } {
                     r := mulmod(r, a, n)
                     if iszero(lt(shl(129, r), w)) {
                         r := mulmod(r, a, n)
@@ -172,7 +172,7 @@ library LibPRNG {
             let w := not(0)
             let mask := shr(128, w)
             if n {
-                for { a := add(a, 0x20) } 1 {} {
+                for { a := add(a, 0x20) } 1 { } {
                     // We can just directly use `keccak256`, cuz
                     // the other approaches don't save much.
                     let r := keccak256(prng, 0x20)
@@ -228,7 +228,7 @@ library LibPRNG {
             if k {
                 let mask := shr(128, not(0))
                 let b := 0
-                for { a := add(a, 0x20) } 1 {} {
+                for { a := add(a, 0x20) } 1 { } {
                     // We can just directly use `keccak256`, cuz
                     // the other approaches don't save much.
                     let r := keccak256(prng, 0x20)
@@ -283,7 +283,7 @@ library LibPRNG {
             let mask := shr(128, w)
             if n {
                 let b := add(a, 0x01)
-                for { a := add(a, 0x20) } 1 {} {
+                for { a := add(a, 0x20) } 1 { } {
                     // We can just directly use `keccak256`, cuz
                     // the other approaches don't save much.
                     let r := keccak256(prng, 0x20)

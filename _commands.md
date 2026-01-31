@@ -1,3 +1,5 @@
+# Info
+
 Anvil Address: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 
 Ethereum Address: 0x6A5ebe005B8Ef3d8ACdA293EFE5CD956a46b2457
@@ -21,31 +23,7 @@ forge test --match-path test/Deploy.t.sol --gas-report
 
 
 
-
-
-
-forge script script/Deploy.s.sol --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast -v
-
-forge script script/AddAssetsBatch.s.sol:AddAssetsBatch --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast -v
-
-forge script script/VerifyAssets.s.sol:VerifyAssets --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast -v
-
-forge script script/RevealShufflerSeed.s.sol:RevealShufflerSeed --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast -v
-
-forge script script/Mint.s.sol:Mint --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast -v
-
-forge script script/ViewTokenURI.s.sol:ViewTokenURI --rpc-url $RPC_URL -v
-
-forge script script/TokenURIBatchTest.s.sol:TokenURIBatchTest --rpc-url $RPC_URL -v
-
-forge script script/RenamePunk.s.sol:RenamePunkScript --rpc-url $RPC_URL --broadcast -vv
-
-
-
-
-
-
-## Anvil
+# Anvil Commands
 
 forge script script/Deploy.s.sol --rpc-url $RPC_URL --private-key $PK --broadcast -v
 
@@ -66,7 +44,7 @@ forge script script/DeployAndSetRenderer.s.sol:DeployAndSetRenderer --rpc-url $R
 forge script script/RenamePunk.s.sol:RenamePunkScript --rpc-url $RPC_URL --broadcast -vv
 
 
-cast call 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707 "tokenURI(uint256)(string)" 5 --rpc-url $RPC_URL --gas-limit 100000000
+cast call 0x206540a2344349D422A7A872Bb607139321c0b53 "tokenURI(uint256)(string)" 5 --rpc-url $SEPOLIA_RPC_URL 
 
 
 ## == Anvil Logs ==
@@ -79,6 +57,7 @@ cast call 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707 "tokenURI(uint256)(string)"
 
 
 
+# Sepolia Commands
 
 forge script script/Deploy.s.sol \
  --rpc-url $SEPOLIA_RPC_URL \
@@ -116,12 +95,12 @@ forge script script/Mint.s.sol:Mint \
  --etherscan-api-key $ETHERSCAN_API_KEY \
  -v
 
- forge script script/DeployAndSetRenderer.s.sol:DeployAndSetRenderer \
-    --rpc-url $SEPOLIA_RPC_URL \
-    --private-key $PRIVATE_KEY \
-    --broadcast \
-    --verify \
-    -v
+forge script script/DeployAndSetRenderer.s.sol:DeployAndSetRenderer \
+  --rpc-url $SEPOLIA_RPC_URL \
+  --private-key $PRIVATE_KEY \
+  --broadcast \
+  --verify \
+  -v
 
 forge script script/ViewTokenURI.s.sol:ViewTokenURI \
  --rpc-url $SEPOLIA_RPC_URL \
@@ -162,6 +141,7 @@ forge verify-contract 0x50351EE22258b3E6B5C193F65F60dEf3bfB155b4 \
 
 
 
+# Extra
 
 forge script script/Deploy.s.sol \
  --rpc-url http://localhost:3001/api/rpc \
@@ -192,3 +172,23 @@ forge script script/Deploy.s.sol \
 |-------------------- SEPOLIA TESTING --------------------|
 |---------------------------------------------------------|
 
+
+
+
+# New Commands
+
+forge script script/Deploy.s.sol --broadcast --verify -v
+
+forge script script/AddAssetsBatch.s.sol:AddAssetsBatch --broadcast --verify -v
+
+forge script script/VerifyAssets.s.sol:VerifyAssets --broadcast --verify -v
+
+forge script script/RevealShufflerSeed.s.sol:RevealShufflerSeed --broadcast --verify -v
+
+forge script script/Mint.s.sol:Mint --broadcast --verify -v
+
+forge script script/DeployAndSetRenderer.s.sol:DeployAndSetRenderer --broadcast --verify -v
+
+forge script script/ViewTokenURI.s.sol:ViewTokenURI --broadcast --verify -v
+
+forge script script/TokenURIBatchTest.s.sol:TokenURIBatchTest --broadcast --verify -v

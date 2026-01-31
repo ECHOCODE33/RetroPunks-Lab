@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import {AllowListData, PublicDrop, SignedMintValidationParams, TokenGatedDropStage} from "./SeaDropStructs.sol";
+import { AllowListData, PublicDrop, SignedMintValidationParams, TokenGatedDropStage } from "./SeaDropStructs.sol";
 
 interface ERC721SeaDropStructsErrorsAndEvents {
     /**
