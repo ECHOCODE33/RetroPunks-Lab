@@ -13,7 +13,7 @@ contract ViewTokenURI is Script {
     address retroPunksAddress = vm.envAddress("RETROPUNKS");
 
     // CHANGE THIS: Token ID you want to view
-    uint256 constant TOKEN_ID = 20;
+    uint256 constant TOKEN_ID = 8;
 
     // ====================== SCRIPT LOGIC ======================
 

@@ -8,7 +8,7 @@ import { Assets } from "../src/Assets.sol";
 contract AddAssetsBatch is Script {
     address assetsAddress = vm.envAddress("ASSETS");
 
-    uint256 constant batchLimit = 18;
+    uint256 constant BATCH_LIMIT = 10;
 
     // ====================== ASSETS ======================
 
@@ -98,12 +98,12 @@ contract AddAssetsBatch is Script {
         console.log("Starting asset upload to Assets contract:");
         console.logAddress(assetsAddress);
         console.log("Total assets to upload: %s", ASSETS.length);
-        console.log("Batch size: %s", batchLimit);
+        console.log("Batch size: %s", BATCH_LIMIT);
         console.log("----------------------------------------");
 
         uint256 total = ASSETS.length;
-        for (uint256 start = 0; start < total; start += batchLimit) {
-            uint256 end = start + batchLimit > total ? total : start + batchLimit;
+        for (uint256 start = 0; start < total; start += BATCH_LIMIT) {
+            uint256 end = start + BATCH_LIMIT > total ? total : start + BATCH_LIMIT;
             uint256 batchSize = end - start;
 
             uint256[] memory keys = new uint256[](batchSize);
@@ -142,7 +142,7 @@ contract AddAssetsBatch is Script {
 
         console.log("==========================================");
         console.log("All %s assets uploaded successfully!", total);
-        console.log("Total batches sent: %s", (total + batchLimit - 1) / batchLimit);
+        console.log("Total batches sent: %s", (total + BATCH_LIMIT - 1) / BATCH_LIMIT);
     }
 
     function uint2str(uint256 _i) internal pure returns (string memory) {

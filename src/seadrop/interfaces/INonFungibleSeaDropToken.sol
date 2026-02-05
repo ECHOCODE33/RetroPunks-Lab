@@ -133,8 +133,7 @@ interface INonFungibleSeaDropToken is ISeaDropTokenContractMetadata {
      * @param signedMintValidationParams Minimum and maximum parameters
      *                                   to enforce for signed mints.
      */
-    function updateSignedMintValidationParams(address seaDropImpl, address signer, SignedMintValidationParams memory signedMintValidationParams)
-        external;
+    function updateSignedMintValidationParams(address seaDropImpl, address signer, SignedMintValidationParams memory signedMintValidationParams) external;
 
     /**
      * @notice Update the allowed payers for this nft contract on SeaDrop.

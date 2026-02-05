@@ -246,9 +246,7 @@ interface SeaDropErrorsAndEvents {
      *                           Empty if unencrypted.
      * @param allowListURI       The URI for the allow list.
      */
-    event AllowListUpdated(
-        address indexed nftContract, bytes32 indexed previousMerkleRoot, bytes32 indexed newMerkleRoot, string[] publicKeyURI, string allowListURI
-    );
+    event AllowListUpdated(address indexed nftContract, bytes32 indexed previousMerkleRoot, bytes32 indexed newMerkleRoot, string[] publicKeyURI, string allowListURI);
 
     /**
      * @dev An event with updated drop URI for an nft contract.
@@ -271,9 +269,7 @@ interface SeaDropErrorsAndEvents {
      * @dev An event with the updated validation parameters for server-side
      *      signers.
      */
-    event SignedMintValidationParamsUpdated(
-        address indexed nftContract, address indexed signer, SignedMintValidationParams signedMintValidationParams
-    );
+    event SignedMintValidationParamsUpdated(address indexed nftContract, address indexed signer, SignedMintValidationParams signedMintValidationParams);
 
     /**
      * @dev An event with the updated payer for an nft contract.

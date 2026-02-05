@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.32;
 
-import { PreRevealSVGRenderer } from "../src/PreRevealSVGRenderer.sol";
+// import { PreRevealSVGRenderer } from "../src/PreRevealSVGRenderer.sol";
 import { RetroPunks } from "../src/RetroPunks.sol";
 import { SVGRenderer } from "../src/SVGRenderer.sol";
-import { IAssets } from "../src/interfaces/IAssets.sol";
+// import { IAssets } from "../src/interfaces/IAssets.sol";
 import { ISVGRenderer } from "../src/interfaces/ISVGRenderer.sol";
-import { ITraits } from "../src/interfaces/ITraits.sol";
+// import { ITraits } from "../src/interfaces/ITraits.sol";
 import { Script, console2 } from "forge-std/Script.sol";
 
 contract DeployAndSetRenderer is Script {

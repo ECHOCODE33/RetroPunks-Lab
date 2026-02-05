@@ -41,7 +41,7 @@ exclude_lints = [
 ]
 
 [fmt]
-line_length = 150
+line_length = 175
 bracket_spacing = true
 sort_imports = true
 ignore = [

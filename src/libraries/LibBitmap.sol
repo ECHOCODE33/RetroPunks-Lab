@@ -7,7 +7,7 @@ struct BitMap {
     uint32[48][48] pixels; // 0xRRGGBBAA
 }
 
-library PNG48x48 {
+library LibBitmap {
     uint32 constant MAGIC_TRANSPARENT = 0x5f5d6eFF;
 
     function renderPixelToBitMap(BitMap memory bitMap, uint256 x, uint256 y, uint32 src) internal pure {

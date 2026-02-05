@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import "forge-std/Script.sol";
-import "forge-std/Test.sol"; // Using Test for console and assertions
 import "../src/SVGRenderer.sol";
+import { Script } from "forge-std/Script.sol";
+import { console } from "forge-std/console.sol";
 
 contract SVGRendererTest is Script {
     // -----------------------------------------------------------
