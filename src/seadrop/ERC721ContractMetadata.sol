@@ -305,8 +305,8 @@ contract ERC721ContractMetadata is ERC721AConduitPreapproved, ERC721TransferVali
      * @param interfaceId The interface id to check against.
      */
     function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC721A) returns (bool) {
-        return interfaceId == type(IERC2981).interfaceId || interfaceId == type(ICreatorToken).interfaceId
-            || interfaceId == type(ILegacyCreatorToken).interfaceId || interfaceId == 0x49064906 // ERC-4906
+        return interfaceId == type(IERC2981).interfaceId || interfaceId == type(ICreatorToken).interfaceId || interfaceId == type(ILegacyCreatorToken).interfaceId
+            || interfaceId == 0x49064906 // ERC-4906
             || super.supportsInterface(interfaceId);
     }
 

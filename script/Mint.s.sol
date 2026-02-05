@@ -13,7 +13,7 @@ contract Mint is Script {
 
     address recipient = vm.envAddress("OWNER");
 
-    uint256 constant QUANTITY = 25;
+    uint256 constant QUANTITY = 15;
 
     // ====================== SCRIPT LOGIC ======================
 

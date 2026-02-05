@@ -9,10 +9,10 @@ contract TokenUriBatch is Script {
     // ====================== CONFIGURATION ======================
 
     // Your deployed RetroPunks contract address
-    address retroPunksAddress = vm.envAddress("RETROPUNKS");
+    address retroPunksAddress = 0x41571C3bD1Bf9107282bcA1829f16b316d6F67bc;
 
     // CHANGE THIS: The highest Token ID you want to view
-    uint256 constant MAX_TOKEN_ID_TO_VIEW = 25;
+    uint256 constant MAX_TOKEN_ID_TO_VIEW = 15;
 
     // ====================== SCRIPT LOGIC ======================
 

@@ -30,11 +30,7 @@ contract SVGRenderer is ISVGRenderer {
         _TRAITS_CONTRACT = traitsContract;
     }
 
-    function renderSVG(uint16 tokenIdSeed, uint8 backgroundIndex, uint256 globalSeed)
-        public
-        view
-        returns (string memory svg, string memory attributes)
-    {
+    function renderSVG(uint16 tokenIdSeed, uint8 backgroundIndex, uint256 globalSeed) public view returns (string memory svg, string memory attributes) {
         bytes memory buffer = DynamicBuffer.allocate(20000);
 
         TraitsContext memory traits = _TRAITS_CONTRACT.generateTraitsContext(tokenIdSeed, backgroundIndex, globalSeed);
@@ -64,13 +60,11 @@ contract SVGRenderer is ISVGRenderer {
             for (uint256 i = 0; i < len;) {
                 uint256 traitGroupIndex = uint8(traits.traitsToRender[i].traitGroup);
 
-                cachedTraitGroups.traitGroups[traitGroupIndex] =
-                    TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, traitGroupIndex);
+                cachedTraitGroups.traitGroups[traitGroupIndex] = TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, traitGroupIndex);
 
                 if (traits.traitsToRender[i].hasFiller) {
                     uint256 fillerGroupIdx = uint8(traits.traitsToRender[i].filler.traitGroup);
-                    cachedTraitGroups.traitGroups[fillerGroupIdx] =
-                        TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, fillerGroupIdx);
+                    cachedTraitGroups.traitGroups[fillerGroupIdx] = TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, fillerGroupIdx);
                 }
                 unchecked {
                     ++i;

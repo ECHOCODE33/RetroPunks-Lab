@@ -2,38 +2,8 @@
 pragma solidity ^0.8.32;
 
 import { Rarities } from "./Rarities.sol";
-import {
-    E_Background,
-    E_Female_Chain,
-    E_Female_Earring,
-    E_Female_Eye_Wear,
-    E_Female_Eyes,
-    E_Female_Face,
-    E_Female_Hair,
-    E_Female_Hat_Hair,
-    E_Female_Headwear,
-    E_Female_Mask,
-    E_Female_Scarf,
-    E_Female_Skin,
-    E_Filler_Traits,
-    E_Male_Chain,
-    E_Male_Earring,
-    E_Male_Eye_Wear,
-    E_Male_Eyes,
-    E_Male_Face,
-    E_Male_Facial_Hair,
-    E_Male_Hair,
-    E_Male_Hat_Hair,
-    E_Male_Headwear,
-    E_Male_Mask,
-    E_Male_Scarf,
-    E_Male_Skin,
-    E_Mouth,
-    E_Sex,
-    E_TraitsGroup,
-    NUM_SPECIAL_1S
-} from "./common/Enums.sol";
-import { FemaleTraits, FillerTrait, MaleTraits, TraitToRender, TraitsContext } from "./common/Structs.sol";
+import { E_Background, E_Female_Skin, E_Filler_Traits, E_Male_Skin, E_Sex, E_TraitsGroup, NUM_SPECIAL_1S } from "./common/Enums.sol";
+import { FemaleTraits, MaleTraits, TraitToRender, TraitsContext } from "./common/Structs.sol";
 import { ITraits } from "./interfaces/ITraits.sol";
 import { LibPRNG } from "./libraries/LibPRNG.sol";
 import { LibTraits } from "./libraries/LibTraits.sol";
@@ -46,8 +16,8 @@ contract Traits is ITraits, Rarities {
     uint32 private constant MIN_DATE = 4102444800;
     uint32 private constant RANGE_SIZE = 31496399;
 
-    uint256 private constant MALE_FILLER = (1 << uint8(E_Male_Skin.Robot)) | (1 << uint8(E_Male_Skin.Pumpkin));
-    uint256 private constant FEMALE_FILLER = (1 << uint8(E_Female_Skin.Robot));
+    uint256 private constant MALE_FILLER = (uint256(1) << uint256(E_Male_Skin.Robot)) | (uint256(1) << uint256(E_Male_Skin.Pumpkin));
+    uint256 private constant FEMALE_FILLER = (uint256(1) << uint256(E_Female_Skin.Robot));
 
     function generateTraitsContext(uint16 _tokenIdSeed, uint8 _backgroundIndex, uint256 _globalSeed) external pure returns (TraitsContext memory) {
         LibPRNG.PRNG memory prng;
@@ -178,9 +148,7 @@ contract Traits is ITraits, Rarities {
         _addTraitToRender(traits, E_TraitsGroup.Male_Headwear_Group, headwear);
 
         if ((MALE_FILLER >> uint8(traits.maleSkin)) & 1 == 1) {
-            uint8 filler = traits.maleSkin == E_Male_Skin.Robot
-                ? uint8(E_Filler_Traits.Male_Robot_Headwear_Cover)
-                : uint8(E_Filler_Traits.Male_Pumpkin_Headwear_Cover);
+            uint8 filler = traits.maleSkin == E_Male_Skin.Robot ? uint8(E_Filler_Traits.Male_Robot_Headwear_Cover) : uint8(E_Filler_Traits.Male_Pumpkin_Headwear_Cover);
 
             _addFillerTrait(traits, E_TraitsGroup.Filler_Traits_Group, filler);
         }

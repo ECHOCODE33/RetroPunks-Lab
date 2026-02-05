@@ -11,10 +11,10 @@ interface IRetroPunks {
 }
 
 contract Name is Script {
-    address constant retroPunksAddress = 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707;
+    address constant RETRO_PUNKS_ADDRESS = 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707;
 
     function run() external view {
-        IRetroPunks retroPunks = IRetroPunks(retroPunksAddress);
+        IRetroPunks retroPunks = IRetroPunks(RETRO_PUNKS_ADDRESS);
 
         console.log("Fetching names for tokens 1 to 350...");
         console.log("-------------------------------------");

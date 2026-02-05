@@ -6,7 +6,7 @@ import { console } from "forge-std/console.sol";
 
 import { Assets } from "../src/Assets.sol";
 import { PreRevealSVGRenderer } from "../src/PreRevealSVGRenderer.sol";
-import { Rarities } from "../src/Rarities.sol";
+// import { Rarities } from "../src/Rarities.sol";
 import { RetroPunks } from "../src/RetroPunks.sol";
 import { SVGRenderer } from "../src/SVGRenderer.sol";
 import { Traits } from "../src/Traits.sol";
@@ -30,8 +30,7 @@ contract Deploy is Script {
         address[] memory allowedSeaDrop = new address[](1);
         allowedSeaDrop[0] = 0x00005EA00Ac477B1030CE78506496e8C2dE24bf5;
 
-        RetroPunks retroPunks =
-            new RetroPunks(PreRevealSVGRenderer(address(prerenderer)), committedGlobalSeedHash, committedShufflerSeedHash, maxSupply, allowedSeaDrop);
+        RetroPunks retroPunks = new RetroPunks(PreRevealSVGRenderer(address(prerenderer)), committedGlobalSeedHash, committedShufflerSeedHash, maxSupply, allowedSeaDrop);
 
         console.log("Assets::", address(assets));
         console.log("Traits:", address(traits));

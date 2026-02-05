@@ -21,11 +21,7 @@ contract PreRevealSVGRenderer is ISVGRenderer {
         _ASSETS_CONTRACT = assetsContract;
     }
 
-    function renderSVG(uint16 tokenIdSeed, uint8 backgroundIndex, uint256 globalSeed)
-        public
-        view
-        returns (string memory svg, string memory attributes)
-    {
+    function renderSVG(uint16 tokenIdSeed, uint8 backgroundIndex, uint256 globalSeed) public view returns (string memory svg, string memory attributes) {
         attributes = '"attributes":[{"trait_type":"Status","value":"Unrevealed"}]';
 
         bytes memory gifContent = _ASSETS_CONTRACT.loadAsset(333, false);

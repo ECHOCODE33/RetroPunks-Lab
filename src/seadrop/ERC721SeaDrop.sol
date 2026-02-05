@@ -317,11 +317,7 @@ contract ERC721SeaDrop is ERC721ContractMetadata, INonFungibleSeaDropToken, ERC7
      * @param signedMintValidationParams Minimum and maximum parameters to
      *                                   enforce for signed mints.
      */
-    function updateSignedMintValidationParams(address seaDropImpl, address signer, SignedMintValidationParams memory signedMintValidationParams)
-        external
-        virtual
-        override
-    {
+    function updateSignedMintValidationParams(address seaDropImpl, address signer, SignedMintValidationParams memory signedMintValidationParams) external virtual override {
         // Ensure the sender is only the owner or contract itself.
         _onlyOwnerOrSelf();
 
