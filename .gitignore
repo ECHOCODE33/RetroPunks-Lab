@@ -1,9 +1,9 @@
-# Foundry artifacts
-cache/
+archive/
 out/
+artifacts/
 broadcast/
+cache/
 
-# Environment secrets
 .env
 .secret
 
@@ -12,3 +12,4 @@ broadcast/
 .DS_Store
 
 foundry.toml
+
