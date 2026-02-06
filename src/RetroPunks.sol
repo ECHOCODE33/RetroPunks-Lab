@@ -2,7 +2,7 @@
 pragma solidity ^0.8.32;
 
 import { E_Background, NUM_BACKGROUND, NUM_SPECIAL_1S } from "./common/Enums.sol"; // NUM_SPECIAL_1S = 16
-import { ISVGRenderer } from "./interfaces/ISVGRenderer.sol";
+import { IMetaGen } from "./interfaces/IMetaGen.sol";
 import { LibPRNG } from "./libraries/LibPRNG.sol";
 import { Utils } from "./libraries/Utils.sol";
 import { ERC721SeaDropPausableAndQueryable } from "./seadrop/extensions/ERC721SeaDropPausableAndQueryable.sol";
@@ -22,19 +22,17 @@ contract RetroPunks is ERC721SeaDropPausableAndQueryable {
     using LibPRNG for LibPRNG.LazyShuffler;
 
     uint16 private constant NUM_PRE_RENDERED_SPECIALS = 7;
+    uint8 internal revealRendererSet = 0;
 
-    ISVGRenderer public renderer;
+    IMetaGen public renderer;
 
     bytes32 public immutable COMMITTED_GLOBAL_SEED_HASH;
     bytes32 public immutable COMMITTED_SHUFFLER_SEED_HASH;
-
-    uint16 public ownerMintsRemaining = 25;
 
     uint256 public globalSeed;
     uint256 public shufflerSeed;
 
     uint8 public mintIsClosed = 0;
-    uint8 internal revealRendererSet = 0;
 
     bytes32[16] private SPECIAL_NAMES = [
         bytes32("Predator Blue"),
@@ -75,9 +73,9 @@ contract RetroPunks is ERC721SeaDropPausableAndQueryable {
     error NoRemainingTokens();
     error NonExistentToken();
     error CallerIsNotTokenOwner();
-    error NotEnoughOwnerMintsRemaining();
     error InvalidBackgroundIndex();
     error MetadataNotRevealedYet();
+    error ArrayLengthMismatch();
 
     // ----- Modifiers ----- //
     modifier tokenExists(uint256 _tokenId) {
@@ -111,7 +109,7 @@ contract RetroPunks is ERC721SeaDropPausableAndQueryable {
 
     // ----- Constructor ----- //
     constructor(
-        ISVGRenderer _rendererParam,
+        IMetaGen _rendererParam,
         bytes32 _committedGlobalSeedHashParam,
         bytes32 _committedShufflerSeedHashParam,
         uint256 _maxSupplyParam,
@@ -124,7 +122,7 @@ contract RetroPunks is ERC721SeaDropPausableAndQueryable {
     }
 
     // ----- Admin Functions ----- //
-    function setRenderer(ISVGRenderer _renderer, bool _isRevealRenderer) external onlyOwner {
+    function setRenderer(IMetaGen _renderer, bool _isRevealRenderer) external onlyOwner {
         renderer = _renderer;
         if (_isRevealRenderer) revealRendererSet = 1;
         if (totalSupply() != 0) emit BatchMetadataUpdate(1, _nextTokenId() - 1);
@@ -154,17 +152,23 @@ contract RetroPunks is ERC721SeaDropPausableAndQueryable {
         _tokenIdSeedShuffler.initialize(_maxSupply > 1000 ? _maxSupply : _maxSupply * 2);
     }
 
-    function ownerMint(address toAddress, uint256 quantity) external onlyOwner nonReentrant {
-        if (ownerMintsRemaining < quantity) revert NotEnoughOwnerMintsRemaining();
+    function batchOwnerMint(address[] calldata toAddresses, uint256[] calldata amounts) external onlyOwner nonReentrant {
+        if (toAddresses.length != amounts.length) revert ArrayLengthMismatch();
 
-        ownerMintsRemaining -= uint16(quantity);
-        _checkMaxSupply(quantity);
-        _addInternalMintMetadata(quantity);
-        _safeMint(toAddress, quantity);
-    }
+        uint256 totalRequested = 0;
 
-    function setOwnerMintsRemaining(uint16 newRemaining) external onlyOwner {
-        ownerMintsRemaining = newRemaining;
+        // Calculate total once to check supply and limits efficiently
+        for (uint256 i = 0; i < amounts.length; i++) {
+            totalRequested += amounts[i];
+        }
+
+        _checkMaxSupply(totalRequested);
+
+        // Mint to each address
+        for (uint256 i = 0; i < toAddresses.length; i++) {
+            _addInternalMintMetadata(amounts[i]);
+            _safeMint(toAddresses[i], amounts[i]);
+        }
     }
 
     // ----- Token Customization ----- //
@@ -254,13 +258,13 @@ contract RetroPunks is ERC721SeaDropPausableAndQueryable {
 
         if (revealRendererSet == 0) {
             // Pre-reveal: use placeholder values
-            (svg,) = renderer.renderSVG(_tokenIdSeed, _backgroundIndex, _globalSeed);
+            (svg,) = renderer.generateMetadata(_tokenIdSeed, _backgroundIndex, _globalSeed);
             finalName = "Unrevealed Punk";
             finalBio = "Wait for the reveal...";
             attributes = '"attributes":[{"trait_type":"Status","value":"Unrevealed"}]';
         } else {
             // Post-reveal: use actual renderer output
-            (svg, attributes) = renderer.renderSVG(_tokenIdSeed, _backgroundIndex, _globalSeed);
+            (svg, attributes) = renderer.generateMetadata(_tokenIdSeed, _backgroundIndex, _globalSeed);
 
             if (_tokenIdSeed < NUM_SPECIAL_1S) {
                 string memory defaultName = string.concat("#", Utils.toString(_tokenId));

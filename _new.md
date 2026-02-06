@@ -1,10 +1,26 @@
 ## Anvil (Local)
 
+### Script
+
+ forge script script/RetroPunks.s.sol:RetroPunksScript \
+ --sig "batchOwnerMint" \
+ --rpc-url localhost \
+ --broadcast \
+ --private-key $PRIVATE_KEY \
+ -vvv
+
+ cast call $RETROPUNKS "shufflerSeed()(uint256)" --rpc-url localhost
+
+ cast call $RETROPUNKS "tokenURI(uint256)(string)" 4 --rpc-url localhost
+
+ cast call $RETROPUNKS "totalSupply()(uint256)" --rpc-url localhost
+
+
 ### Deploy
 
-forge script script/Deploy.s.sol \
+forge script script/Deploy.s.sol:Deploy \
  --rpc-url localhost \
- --private-key $PRIVATE_KEY \
+ --private-key $ANVIL_PRIVATE_KEY \
  --broadcast \
  -vvv
 
@@ -28,7 +44,7 @@ forge script script/VerifyAssets.s.sol:VerifyAssets \
 
 forge script script/RevealGlobalSeed.s.sol:RevealGlobalSeed \
  --rpc-url localhost \
- --private-key $PRIVATE_KEY \
+ --private-key $ANVIL_PRIVATE_KEY \
  --broadcast \
  -vvv
 
@@ -36,7 +52,7 @@ forge script script/RevealGlobalSeed.s.sol:RevealGlobalSeed \
 
 forge script script/RevealShufflerSeed.s.sol:RevealShufflerSeed \
  --rpc-url localhost \
- --private-key $PRIVATE_KEY \
+ --private-key $ANVIL_PRIVATE_KEY \
  --broadcast \
  -vvv
 
@@ -44,7 +60,7 @@ forge script script/RevealShufflerSeed.s.sol:RevealShufflerSeed \
 
 forge script script/Mint.s.sol:Mint \
  --rpc-url localhost \
- --private-key $PRIVATE_KEY \
+ --private-key $ANVIL_PRIVATE_KEY \
  --broadcast \
  -vvv
 
@@ -52,7 +68,7 @@ forge script script/Mint.s.sol:Mint \
 
 forge script script/DeployAndSetRenderer.s.sol:DeployAndSetRenderer \
  --rpc-url localhost \
- --private-key $PRIVATE_KEY \
+ --private-key $ANVIL_PRIVATE_KEY \
  --broadcast \
  -vvv
 

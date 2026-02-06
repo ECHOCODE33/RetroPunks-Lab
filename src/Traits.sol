@@ -11,6 +11,8 @@ import { LibTraits } from "./libraries/LibTraits.sol";
 /**
  * @title Traits
  * @author ECHO
+ * @notice Generates traits for the RetroPunks collection, optimized for gas efficiency
+ * @dev Inherits rarity values from Rarities contract and selects / generates traits using a PRNG for gas efficiency
  */
 contract Traits is ITraits, Rarities {
     uint32 private constant MIN_DATE = 4102444800;

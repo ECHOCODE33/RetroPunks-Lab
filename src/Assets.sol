@@ -9,13 +9,15 @@ import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 /**
  * @title Assets
  * @author ECHO
+ * @notice Efficient on-chain asset storage, optimized for gas efficiency
+ * @dev Batch operations using SSTORE2 & LZ77 compression
  */
 contract Assets is Ownable, IAssets {
     error EmptyAssetInBatch();
     error AssetKeyLengthMismatch();
     error AssetDoesNotExist();
 
-    mapping(uint256 => address) private _assetsMap;
+    mapping(uint256 => address) private _assets;
 
     constructor() Ownable(msg.sender) { }
 
@@ -26,18 +28,16 @@ contract Assets is Ownable, IAssets {
         for (uint256 i = 0; i < length;) {
             if (assets[i].length == 0) revert EmptyAssetInBatch();
 
-            _assetsMap[keys[i]] = SSTORE2.write(assets[i]);
+            _assets[keys[i]] = SSTORE2.write(assets[i]);
 
-            unchecked {
-                ++i;
-            }
+            unchecked { ++i; }
         }
     }
 
     function removeAssetsBatch(uint256[] calldata keys) external onlyOwner {
         uint256 length = keys.length;
         for (uint256 i = 0; i < length;) {
-            delete _assetsMap[keys[i]];
+            delete _assets[keys[i]];
             unchecked {
                 ++i;
             }
@@ -45,7 +45,7 @@ contract Assets is Ownable, IAssets {
     }
 
     function loadAsset(uint256 key, bool decompress) external view returns (bytes memory) {
-        address pointer = _assetsMap[key];
+        address pointer = _assets[key];
 
         if (pointer == address(0)) revert AssetDoesNotExist();
 
