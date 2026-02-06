@@ -3,26 +3,15 @@ pragma solidity ^0.8.32;
 
 import {
     E_Female_Chain,
-    E_Female_Chain,
-    E_Female_Earring,
     E_Female_Earring,
     E_Female_Eye_Wear,
-    E_Female_Eye_Wear,
-    E_Female_Eyes,
     E_Female_Eyes,
     E_Female_Face,
-    E_Female_Face,
-    E_Female_Hair,
     E_Female_Hair,
     E_Female_Hat_Hair,
-    E_Female_Hat_Hair,
-    E_Female_Headwear,
     E_Female_Headwear,
     E_Female_Mask,
-    E_Female_Mask,
     E_Female_Scarf,
-    E_Female_Scarf,
-    E_Female_Skin,
     E_Female_Skin,
     E_Male_Chain,
     E_Male_Earring,
@@ -45,8 +34,12 @@ import { LibTraits } from "./libraries/LibTraits.sol";
 /**
  * @title Rarities
  * @author ECHO
+ * @notice Rarities for the RetroPunks collection, optimized for gas efficiency
+ * @dev Rarity values are stored in bytes arrays and selected using a PRNG for gas efficiency
  */
 contract Rarities {
+    error TraitSelectionFailed();
+
     // ---------- Male Rarities ---------- //
 
     bytes private constant M_SKIN = hex"0000002300AF000C002D0037000E02EE02EE02EE02EE02EE02EE02EE02EE02EE02EE02EE02EE000800160010003C0012001E000A0050012C0078";
@@ -166,26 +159,27 @@ contract Rarities {
     }
 
     function selectRandomTrait(LibPRNG.PRNG memory prng, bytes memory packedWeights, uint256 totalWeight) internal pure returns (uint256) {
-        if (totalWeight == 0) revert("totalWeight must be > 0");
         uint256 r = LibPRNG.uniform(prng, totalWeight);
 
         uint256 currentSum = 0;
         uint256 len = packedWeights.length;
 
         // Each weight is 2 bytes (uint16)
-        for (uint256 i = 0; i < len; i += 2) {
-            uint16 weight;
+        unchecked {
+            for (uint256 i = 0; i < len; i += 2) {
+                uint16 weight;
 
-            assembly {
-                // Load 2 bytes from packedWeights at index i. Skip 32 bytes length prefix.
-                weight := shr(240, mload(add(add(packedWeights, 32), i)))
+                assembly {
+                    // Load 2 bytes from packedWeights at index i. Skip 32 bytes length prefix.
+                    weight := shr(240, mload(add(add(packedWeights, 32), i)))
+                }
+
+                currentSum += weight;
+                if (r < currentSum) return i / 2;
             }
-
-            currentSum += weight;
-            if (r < currentSum) return i / 2;
         }
 
-        revert("Selection failed");
+        revert TraitSelectionFailed();
     }
 
     function selectMaleSkin(LibPRNG.PRNG memory prng) internal pure returns (E_Male_Skin) {
