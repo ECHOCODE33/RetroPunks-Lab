@@ -81,8 +81,8 @@ enum E_Special_1s {
 }
 
 enum E_Background {
-    Rainbow,
-    Standard,
+    Default,
+    Black,
 
     Smooth_Vertical,
     Pixelated_Vertical,

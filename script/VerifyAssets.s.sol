@@ -74,7 +74,7 @@ contract VerifyAssets is Script {
         EXPECTED_ASSETS.push(ExpectedAsset(106, "The Devil"));
         EXPECTED_ASSETS.push(ExpectedAsset(107, "The Portrait"));
 
-        EXPECTED_ASSETS.push(ExpectedAsset(1000, "Rainbow"));
+        // EXPECTED_ASSETS.push(ExpectedAsset(1000, "Rainbow"));
 
         EXPECTED_ASSETS.push(ExpectedAsset(333, "GIF"));
     }

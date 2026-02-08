@@ -30,7 +30,9 @@ contract Assets is Ownable, IAssets {
 
             _assets[keys[i]] = SSTORE2.write(assets[i]);
 
-            unchecked { ++i; }
+            unchecked {
+                ++i;
+            }
         }
     }
 

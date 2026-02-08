@@ -22,9 +22,9 @@ contract RetroPunks is ERC721SeaDropPausableAndQueryable {
     using LibPRNG for LibPRNG.LazyShuffler;
 
     uint16 private constant NUM_PRE_RENDERED_SPECIALS = 7;
-    uint8 internal revealRendererSet = 0;
+    uint8 internal revealMetaGenSet = 0;
 
-    IMetaGen public renderer;
+    IMetaGen public metaGen;
 
     bytes32 public immutable COMMITTED_GLOBAL_SEED_HASH;
     bytes32 public immutable COMMITTED_SHUFFLER_SEED_HASH;
@@ -109,7 +109,7 @@ contract RetroPunks is ERC721SeaDropPausableAndQueryable {
 
     // ----- Constructor ----- //
     constructor(
-        IMetaGen _rendererParam,
+        IMetaGen _metaGenParam,
         bytes32 _committedGlobalSeedHashParam,
         bytes32 _committedShufflerSeedHashParam,
         uint256 _maxSupplyParam,
@@ -117,14 +117,14 @@ contract RetroPunks is ERC721SeaDropPausableAndQueryable {
     ) ERC721SeaDropPausableAndQueryable("RetroPunks", "RPNKS", allowedSeaDropParam) {
         COMMITTED_GLOBAL_SEED_HASH = _committedGlobalSeedHashParam;
         COMMITTED_SHUFFLER_SEED_HASH = _committedShufflerSeedHashParam;
-        renderer = _rendererParam;
+        metaGen = _metaGenParam;
         _maxSupply = _maxSupplyParam;
     }
 
     // ----- Admin Functions ----- //
-    function setRenderer(IMetaGen _renderer, bool _isRevealRenderer) external onlyOwner {
-        renderer = _renderer;
-        if (_isRevealRenderer) revealRendererSet = 1;
+    function setMetaGen(IMetaGen _metaGen, bool _isRevealMetaGen) external onlyOwner {
+        metaGen = _metaGen;
+        if (_isRevealMetaGen) revealMetaGenSet = 1;
         if (totalSupply() != 0) emit BatchMetadataUpdate(1, _nextTokenId() - 1);
     }
 
@@ -173,7 +173,7 @@ contract RetroPunks is ERC721SeaDropPausableAndQueryable {
 
     // ----- Token Customization ----- //
     function setTokenMetadata(uint256 tokenId, bytes32 name, string calldata bio, uint8 backgroundIndex) external onlyTokenOwner(tokenId) {
-        if (revealRendererSet == 0) revert MetadataNotRevealedYet();
+        if (revealMetaGenSet == 0) revert MetadataNotRevealedYet();
         if (backgroundIndex >= NUM_BACKGROUND) revert InvalidBackgroundIndex();
         if (bytes(bio).length > 160) revert BioIsTooLong();
 
@@ -256,15 +256,15 @@ contract RetroPunks is ERC721SeaDropPausableAndQueryable {
         string memory attributes;
         string memory svg;
 
-        if (revealRendererSet == 0) {
+        if (revealMetaGenSet == 0) {
             // Pre-reveal: use placeholder values
-            (svg,) = renderer.generateMetadata(_tokenIdSeed, _backgroundIndex, _globalSeed);
+            (svg,) = metaGen.generateMetadata(_tokenIdSeed, _backgroundIndex, _globalSeed);
             finalName = "Unrevealed Punk";
             finalBio = "Wait for the reveal...";
             attributes = '"attributes":[{"trait_type":"Status","value":"Unrevealed"}]';
         } else {
-            // Post-reveal: use actual renderer output
-            (svg, attributes) = renderer.generateMetadata(_tokenIdSeed, _backgroundIndex, _globalSeed);
+            // Post-reveal: use actual metaGen output
+            (svg, attributes) = metaGen.generateMetadata(_tokenIdSeed, _backgroundIndex, _globalSeed);
 
             if (_tokenIdSeed < NUM_SPECIAL_1S) {
                 string memory defaultName = string.concat("#", Utils.toString(_tokenId));

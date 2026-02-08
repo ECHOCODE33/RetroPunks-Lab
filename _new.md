@@ -1,19 +1,21 @@
 ## Anvil (Local)
 
-### Script
+### Script 
 
  forge script script/RetroPunks.s.sol:RetroPunksScript \
- --sig "batchOwnerMint" \
- --rpc-url localhost \
- --broadcast \
+ --sig "deploy" \
+ --rpc-url $BASE_SEPOLIA_RPC_URL \
  --private-key $PRIVATE_KEY \
+ --broadcast \
+ --verify \
  -vvv
 
- cast call $RETROPUNKS "shufflerSeed()(uint256)" --rpc-url localhost
 
- cast call $RETROPUNKS "tokenURI(uint256)(string)" 4 --rpc-url localhost
+ forge script script/RetroPunks.s.sol:RetroPunksScript --sig "deploy" --rpc-url localhost --broadcast --private-key $PRIVATE_KEY --ffi -vvv
 
  cast call $RETROPUNKS "totalSupply()(uint256)" --rpc-url localhost
+
+ cast call $RETROPUNKS "tokenURI(uint256)(string)" 7 --rpc-url localhost
 
 
 ### Deploy
@@ -81,14 +83,6 @@ forge script script/ViewTokenURI.s.sol:ViewTokenURI \
 ### Batch View Token URI (read-only)
 
 forge script script/TokenUriBatch.s.sol:TokenUriBatch --rpc-url localhost -vvv
-
-## Batch Gas (1 gwei)
-
-1: 37196074, 0.037196074 ETH
-5: 35713343, 0.035713343 ETH
-10: 36087191, 0.036087191 ETH
-15: 36384660, 0.03638466 ETH
-20: 35289028, 0.035289028 ETH
 
 ## Stuck Fix
 
