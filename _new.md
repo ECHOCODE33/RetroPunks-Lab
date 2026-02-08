@@ -4,7 +4,7 @@
 
  forge script script/RetroPunks.s.sol:RetroPunksScript \
  --sig "deploy" \
- --rpc-url $BASE_SEPOLIA_RPC_URL \
+ --rpc-url dashboard \
  --private-key $PRIVATE_KEY \
  --broadcast \
  --verify \

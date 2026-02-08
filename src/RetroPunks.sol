@@ -55,7 +55,7 @@ contract RetroPunks is ERC721SeaDropPausableAndQueryable {
 
     mapping(uint256 => TokenMetadata) public globalTokenMetadata;
     LibPRNG.LazyShuffler private _tokenIdSeedShuffler;
-    uint8 public constant DEFAULT_BACKGROUND_INDEX = uint8(uint256(E_Background.Standard));
+    uint8 public constant DEFAULT_BACKGROUND_INDEX = uint8(uint256(E_Background.Default));
 
     // ----- Events ----- //
     event MetadataUpdate(uint256 _tokenId);
