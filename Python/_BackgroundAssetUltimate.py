@@ -25,15 +25,15 @@ BG_TYPE_NAMES = {v: k for k, v in BG_TYPES.items()}
 
 BACKGROUNDS = [
     {
-        'name': 'Rainbow',
-        'layerType': 1,
-        'palette': []
+        'name': 'Default',
+        'layerType': 2,
+        'palette': ["#e8eded"]
     },
 
     {
-        'name': 'Solid',
+        'name': 'Solid Black',
         'layerType': 2,
-        'palette': ["#b5b5b5"]
+        'palette': ["#e8eded"]
     },
 
     {

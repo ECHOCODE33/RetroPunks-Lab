@@ -24,7 +24,6 @@ MAGIC_TRANSPARENT = 0x5f5d6eff
 DEFAULT_LAYER_TYPE = 0
 INCLUDE_NONE_TRAIT = False 
 
-# // NEW: Define the EXACT order you want them to appear in the hex data
 TRAIT_ORDER = [
     "Predator Blue",
     "Predator Green",
@@ -44,7 +43,6 @@ TRAIT_ORDER = [
     "The Wizard"
 ]
 
-# // These will be encoded as "Empty" (0 pixels)
 PRE_RENDERED_SPECIALS = [
     "Predator Blue", "Predator Green", "Predator Red",
     "Santa Claus", "Shadow Ninja", "The Devil", "The Portrait"

@@ -1,15 +1,12 @@
 archive/
-out/
 artifacts/
 broadcast/
 cache/
-
+out/
+Python/
 .env
 .secret
 
-# Other common ignores
 *.log
 .DS_Store
-
-foundry.toml
 

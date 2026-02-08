@@ -19,11 +19,9 @@ COMBINED_FILENAME = "combined_traits_hex.txt"
 
 CANVAS_WIDTH = 48
 CANVAS_HEIGHT = 48
-# For RLE within bounds, we must treat transparency as a specific palette index
-# or ensure the palette includes 0x00000000 for "empty" pixels within the box.
+
 INCLUDE_NONE_TRAIT = True
 
-# THE EXACT ORDER FOR THE TXT FILE (Excluding Backgrounds as requested)
 ENUM_ORDER = [
     "Male_Skin_Group", "Male_Eyes_Group", "Male_Face_Group", "Male_Chain_Group", 
     "Male_Earring_Group", "Male_Facial_Hair_Group", "Male_Mask_Group", 
@@ -35,7 +33,6 @@ ENUM_ORDER = [
     "Female_Eye_Wear_Group", "Mouth_Group", "Filler_Traits_Group"
 ]
 
-# Suffixes to strip from filenames/trait names when they appear at the end
 _SUFFIXES = [
     " 1", " 2", " 3", " 4", " 5", " 6", " 7", " 8", " 9", " 10", " 11", " 12",
     " Left", " Right",
