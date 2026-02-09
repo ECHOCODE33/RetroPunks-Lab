@@ -1,13 +1,27 @@
+# Build artifacts and generated files
 archive/
 artifacts/
 broadcast/
 cache/
 out/
-Python/
+output/
+docs/
 traits/
+
+# Also match at any depth
+**/archive/
+**/artifacts/
+**/broadcast/
+**/cache/
+**/docs/
+**/out/
+**/output/
+**/traits/
+
+# Environment and secrets
 .env
 .secret
 
+# Logs and system files
 *.log
 .DS_Store
-
