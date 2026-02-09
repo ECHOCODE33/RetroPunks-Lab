@@ -13,7 +13,7 @@ RetroPunks is an NFT collection featuring:
 
 Metadata is generated on-chain using committed seeds revealed post-mint for provably fair randomness.
 
-## Project Structure
+## Project Tree Structure
 
 ```
 RetroPunks-Lab/
