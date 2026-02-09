@@ -4,6 +4,7 @@ broadcast/
 cache/
 out/
 Python/
+traits/
 .env
 .secret
 

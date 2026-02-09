@@ -12,8 +12,8 @@ load_dotenv()
 # CONFIGURATION
 # ============================================================================
 
-BASE_PATH = Path(os.getenv("BASE_DIR", "."))
-TRAITS_DIR = BASE_PATH
+# BASE_PATH = Path(os.getenv("BASE_DIR", "."))
+TRAITS_DIR = "/Users/mani/Downloads/RetroPunks-Lab/traits"
 OUTPUT_DIR = "output"
 COMBINED_FILENAME = "combined_traits_hex.txt"
 

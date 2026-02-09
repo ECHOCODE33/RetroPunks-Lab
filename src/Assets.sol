@@ -13,9 +13,9 @@ import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
  * @dev Batch operations using SSTORE2 & LZ77 compression
  */
 contract Assets is Ownable, IAssets {
-    error EmptyAssetInBatch();
-    error AssetKeyLengthMismatch();
-    error AssetDoesNotExist();
+    // error EmptyAssetInBatch();
+    // error AssetKeyLengthMismatch();
+    // error AssetDoesNotExist();
 
     mapping(uint256 => address) private _assets;
 
@@ -23,10 +23,10 @@ contract Assets is Ownable, IAssets {
 
     function addAssetsBatch(uint256[] calldata keys, bytes[] calldata assets) external onlyOwner {
         uint256 length = keys.length;
-        if (length != assets.length) revert AssetKeyLengthMismatch();
+        // if (length != assets.length) revert AssetKeyLengthMismatch();
 
         for (uint256 i = 0; i < length;) {
-            if (assets[i].length == 0) revert EmptyAssetInBatch();
+            // if (assets[i].length == 0) revert EmptyAssetInBatch();
 
             _assets[keys[i]] = SSTORE2.write(assets[i]);
 
@@ -49,7 +49,7 @@ contract Assets is Ownable, IAssets {
     function loadAsset(uint256 key, bool decompress) external view returns (bytes memory) {
         address pointer = _assets[key];
 
-        if (pointer == address(0)) revert AssetDoesNotExist();
+        // if (pointer == address(0)) revert AssetDoesNotExist();
 
         bytes memory asset = SSTORE2.read(pointer);
 
