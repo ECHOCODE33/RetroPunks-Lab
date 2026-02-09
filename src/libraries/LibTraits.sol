@@ -73,23 +73,19 @@ library LibTraits {
     // ============ Skin Type Bitmaps (Optimized) ============
     // Non-human male skins bitmap - includes all special skin types
     uint256 private constant MALE_NON_HUMAN_SKINS =
-        ((uint256(1) << uint256(E_Male_Skin.Alien)) | (uint256(1) << uint256(E_Male_Skin.Ape))
-            | (uint256(1) << uint256(E_Male_Skin.Demon)) | (uint256(1) << uint256(E_Male_Skin.Ghost))
-            | (uint256(1) << uint256(E_Male_Skin.Glitch)) | (uint256(1) << uint256(E_Male_Skin.Goblin))
-            | (uint256(1) << uint256(E_Male_Skin.Invisible)) | (uint256(1) << uint256(E_Male_Skin.Mummy))
-            | (uint256(1) << uint256(E_Male_Skin.Pumpkin)) | (uint256(1) << uint256(E_Male_Skin.Robot))
-            | (uint256(1) << uint256(E_Male_Skin.Skeleton)) | (uint256(1) << uint256(E_Male_Skin.Snowman))
-            | (uint256(1) << uint256(E_Male_Skin.Vampire)) | (uint256(1) << uint256(E_Male_Skin.Yeti))
-            | (uint256(1) << uint256(E_Male_Skin.Zombie_Ape)) | (uint256(1) << uint256(E_Male_Skin.Zombie)));
+        ((uint256(1) << uint256(E_Male_Skin.Alien)) | (uint256(1) << uint256(E_Male_Skin.Ape)) | (uint256(1) << uint256(E_Male_Skin.Demon))
+            | (uint256(1) << uint256(E_Male_Skin.Ghost)) | (uint256(1) << uint256(E_Male_Skin.Glitch)) | (uint256(1) << uint256(E_Male_Skin.Goblin))
+            | (uint256(1) << uint256(E_Male_Skin.Invisible)) | (uint256(1) << uint256(E_Male_Skin.Mummy)) | (uint256(1) << uint256(E_Male_Skin.Pumpkin))
+            | (uint256(1) << uint256(E_Male_Skin.Robot)) | (uint256(1) << uint256(E_Male_Skin.Skeleton)) | (uint256(1) << uint256(E_Male_Skin.Snowman))
+            | (uint256(1) << uint256(E_Male_Skin.Vampire)) | (uint256(1) << uint256(E_Male_Skin.Yeti)) | (uint256(1) << uint256(E_Male_Skin.Zombie_Ape))
+            | (uint256(1) << uint256(E_Male_Skin.Zombie)));
 
     // Non-human female skins bitmap
     uint256 private constant FEMALE_NON_HUMAN_SKINS =
-        ((uint256(1) << uint256(E_Female_Skin.Alien)) | (uint256(1) << uint256(E_Female_Skin.Ape))
-            | (uint256(1) << uint256(E_Female_Skin.Demon)) | (uint256(1) << uint256(E_Female_Skin.Ghost))
-            | (uint256(1) << uint256(E_Female_Skin.Glitch)) | (uint256(1) << uint256(E_Female_Skin.Goblin))
-            | (uint256(1) << uint256(E_Female_Skin.Invisible)) | (uint256(1) << uint256(E_Female_Skin.Mummy))
-            | (uint256(1) << uint256(E_Female_Skin.Robot)) | (uint256(1) << uint256(E_Female_Skin.Skeleton))
-            | (uint256(1) << uint256(E_Female_Skin.Vampire)) | (uint256(1) << uint256(E_Female_Skin.Zombie_Ape))
+        ((uint256(1) << uint256(E_Female_Skin.Alien)) | (uint256(1) << uint256(E_Female_Skin.Ape)) | (uint256(1) << uint256(E_Female_Skin.Demon))
+            | (uint256(1) << uint256(E_Female_Skin.Ghost)) | (uint256(1) << uint256(E_Female_Skin.Glitch)) | (uint256(1) << uint256(E_Female_Skin.Goblin))
+            | (uint256(1) << uint256(E_Female_Skin.Invisible)) | (uint256(1) << uint256(E_Female_Skin.Mummy)) | (uint256(1) << uint256(E_Female_Skin.Robot))
+            | (uint256(1) << uint256(E_Female_Skin.Skeleton)) | (uint256(1) << uint256(E_Female_Skin.Vampire)) | (uint256(1) << uint256(E_Female_Skin.Zombie_Ape))
             | (uint256(1) << uint256(E_Female_Skin.Zombie)));
 
     // ============ Facial Hair Checks ============

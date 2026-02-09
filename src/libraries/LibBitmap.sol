@@ -107,10 +107,10 @@ library LibBitmap {
                     // pixel is loaded as uint256, we need the lower 32 bits but stored big-endian
 
                     // Write RGBA bytes
-                    mstore8(rawPtr, shr(24, pixel))         // R
+                    mstore8(rawPtr, shr(24, pixel)) // R
                     mstore8(add(rawPtr, 1), shr(16, pixel)) // G
-                    mstore8(add(rawPtr, 2), shr(8, pixel))  // B
-                    mstore8(add(rawPtr, 3), pixel)          // A
+                    mstore8(add(rawPtr, 2), shr(8, pixel)) // B
+                    mstore8(add(rawPtr, 3), pixel) // A
                     rawPtr := add(rawPtr, 4)
                 }
             }
@@ -216,8 +216,8 @@ library LibBitmap {
                 let idx := and(xor(crc, b), 0xFF)
 
                 // Each entry is 4 bytes. idx/8 gives the bytes32 index, idx%8 gives position within
-                let tableOffset := mul(shr(3, idx), 0x20)  // (idx / 8) * 32
-                let bitOffset := mul(and(idx, 7), 32)      // (idx % 8) * 32 bits
+                let tableOffset := mul(shr(3, idx), 0x20) // (idx / 8) * 32
+                let bitOffset := mul(and(idx, 7), 32) // (idx % 8) * 32 bits
 
                 let tableWord := mload(add(tablePtr, tableOffset))
                 let tableVal := and(shr(sub(224, bitOffset), tableWord), 0xFFFFFFFF)

@@ -5,11 +5,11 @@ import { Script } from "forge-std/Script.sol";
 import { console } from "forge-std/console.sol";
 
 import { Assets } from "../src/Assets.sol";
-import { IMetaGen } from "../src/interfaces/IMetaGen.sol";
 import { MetaGen } from "../src/MetaGen.sol";
 import { PreviewMetaGen } from "../src/PreviewMetaGen.sol";
 import { RetroPunks } from "../src/RetroPunks.sol";
 import { Traits } from "../src/Traits.sol";
+import { IMetaGen } from "../src/interfaces/IMetaGen.sol";
 import { ISeaDrop } from "../src/seadrop/interfaces/ISeaDrop.sol";
 import { PublicDrop } from "../src/seadrop/lib/SeaDropStructs.sol";
 
@@ -21,29 +21,30 @@ import { PublicDrop } from "../src/seadrop/lib/SeaDropStructs.sol";
 contract HelperContract is Script {
     /// @dev Creates address array from 1-10 addresses. Pass address(0) for unused slots.
     /// @notice Gas optimized: single function replaces 10 overloads
-    function _toAddressArray(
-        address a1,
-        address a2,
-        address a3,
-        address a4,
-        address a5,
-        address a6,
-        address a7,
-        address a8,
-        address a9,
-        address a10
-    ) internal pure returns (address[] memory arr) {
+    function _toAddressArray(address a1, address a2, address a3, address a4, address a5, address a6, address a7, address a8, address a9, address a10)
+        internal
+        pure
+        returns (address[] memory arr)
+    {
         // Count non-zero addresses from the end
         uint256 count = 10;
-        if (a10 == address(0)) { count = 9;
-            if (a9 == address(0)) { count = 8;
-                if (a8 == address(0)) { count = 7;
-                    if (a7 == address(0)) { count = 6;
-                        if (a6 == address(0)) { count = 5;
-                            if (a5 == address(0)) { count = 4;
-                                if (a4 == address(0)) { count = 3;
-                                    if (a3 == address(0)) { count = 2;
-                                        if (a2 == address(0)) { count = 1; }
+        if (a10 == address(0)) {
+            count = 9;
+            if (a9 == address(0)) {
+                count = 8;
+                if (a8 == address(0)) {
+                    count = 7;
+                    if (a7 == address(0)) {
+                        count = 6;
+                        if (a6 == address(0)) {
+                            count = 5;
+                            if (a5 == address(0)) {
+                                count = 4;
+                                if (a4 == address(0)) {
+                                    count = 3;
+                                    if (a3 == address(0)) {
+                                        count = 2;
+                                        if (a2 == address(0)) count = 1;
                                     }
                                 }
                             }
@@ -73,29 +74,30 @@ contract HelperContract is Script {
 
     /// @dev Creates uint256 array from 1-10 values. Pass 0 for unused slots (but be careful if 0 is a valid value).
     /// @notice For cases where 0 is valid, use the explicit count version
-    function _toUintArray(
-        uint256 u1,
-        uint256 u2,
-        uint256 u3,
-        uint256 u4,
-        uint256 u5,
-        uint256 u6,
-        uint256 u7,
-        uint256 u8,
-        uint256 u9,
-        uint256 u10
-    ) internal pure returns (uint256[] memory arr) {
+    function _toUintArray(uint256 u1, uint256 u2, uint256 u3, uint256 u4, uint256 u5, uint256 u6, uint256 u7, uint256 u8, uint256 u9, uint256 u10)
+        internal
+        pure
+        returns (uint256[] memory arr)
+    {
         // Count non-zero values from the end (NOTE: 0 is treated as "not set")
         uint256 count = 10;
-        if (u10 == 0) { count = 9;
-            if (u9 == 0) { count = 8;
-                if (u8 == 0) { count = 7;
-                    if (u7 == 0) { count = 6;
-                        if (u6 == 0) { count = 5;
-                            if (u5 == 0) { count = 4;
-                                if (u4 == 0) { count = 3;
-                                    if (u3 == 0) { count = 2;
-                                        if (u2 == 0) { count = 1; }
+        if (u10 == 0) {
+            count = 9;
+            if (u9 == 0) {
+                count = 8;
+                if (u8 == 0) {
+                    count = 7;
+                    if (u7 == 0) {
+                        count = 6;
+                        if (u6 == 0) {
+                            count = 5;
+                            if (u5 == 0) {
+                                count = 4;
+                                if (u4 == 0) {
+                                    count = 3;
+                                    if (u3 == 0) {
+                                        count = 2;
+                                        if (u2 == 0) count = 1;
                                     }
                                 }
                             }

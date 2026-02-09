@@ -15,23 +15,19 @@ library TraitsLoader {
     function initCachedTraitGroups(uint256 _traitGroupsLength) public pure returns (CachedTraitGroups memory) {
         return CachedTraitGroups({
             traitGroups: new TraitGroup[](_traitGroupsLength),
-            loadedBitmap: 0  // All bits start as 0 (not loaded)
+            loadedBitmap: 0 // All bits start as 0 (not loaded)
         });
     }
 
     /// @dev Optimized: uses bitmap for loaded check instead of array access
-    function loadAndCacheTraitGroup(IAssets _assetsContract, CachedTraitGroups memory _cachedTraitGroups, uint256 _traitGroupIndex)
-        public
-        view
-        returns (TraitGroup memory)
-    {
+    function loadAndCacheTraitGroup(IAssets _assetsContract, CachedTraitGroups memory _cachedTraitGroups, uint256 _traitGroupIndex) public view returns (TraitGroup memory) {
         // Check if already loaded using bitmap (bit i = 1 means loaded)
         if ((_cachedTraitGroups.loadedBitmap >> _traitGroupIndex) & 1 == 1) {
             return _cachedTraitGroups.traitGroups[_traitGroupIndex];
         }
 
         TraitGroup memory traitGroup;
-        traitGroup.traitGroupIndex = uint8(_traitGroupIndex);  // Now uint8 instead of uint256
+        traitGroup.traitGroupIndex = uint8(_traitGroupIndex); // Now uint8 instead of uint256
 
         bytes memory traitGroupData = _assetsContract.loadAsset(_traitGroupIndex, true);
 
@@ -120,11 +116,7 @@ library TraitsLoader {
         return name;
     }
 
-    function _decodeTraitGroupPalette(bytes memory traitGroupData, uint256 startIndex)
-        internal
-        pure
-        returns (uint32[] memory paletteRgba, uint256 nextIndex)
-    {
+    function _decodeTraitGroupPalette(bytes memory traitGroupData, uint256 startIndex) internal pure returns (uint32[] memory paletteRgba, uint256 nextIndex) {
         uint16 paletteSize = uint16(uint8(traitGroupData[startIndex])) << 8 | uint16(uint8(traitGroupData[startIndex + 1]));
 
         if (paletteSize == 0) return (new uint32[](0), startIndex + 2);
@@ -134,9 +126,7 @@ library TraitsLoader {
 
         unchecked {
             for (uint256 i = 0; i < paletteSize; i++) {
-                uint32 color = uint32(uint8(traitGroupData[cursor])) << 24
-                    | uint32(uint8(traitGroupData[cursor + 1])) << 16
-                    | uint32(uint8(traitGroupData[cursor + 2])) << 8
+                uint32 color = uint32(uint8(traitGroupData[cursor])) << 24 | uint32(uint8(traitGroupData[cursor + 1])) << 16 | uint32(uint8(traitGroupData[cursor + 2])) << 8
                     | uint32(uint8(traitGroupData[cursor + 3]));
                 paletteRgba[i] = color;
                 cursor += 4;

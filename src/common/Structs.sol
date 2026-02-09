@@ -86,7 +86,7 @@ struct TraitsContext {
 struct TraitToRender {
     E_TraitsGroup traitGroup;
     uint8 traitIndex;
-    E_TraitsGroup fillerGroup;  // 0 = no filler (Background_Group is never a filler)
+    E_TraitsGroup fillerGroup; // 0 = no filler (Background_Group is never a filler)
     uint8 fillerIndex;
 }
 
@@ -96,12 +96,12 @@ struct TraitToRender {
 /// @notice Supports up to 256 trait groups (current max is ~26)
 struct CachedTraitGroups {
     TraitGroup[] traitGroups;
-    uint256 loadedBitmap;  // bit i = 1 if group i is loaded
+    uint256 loadedBitmap; // bit i = 1 if group i is loaded
 }
 
 /// @dev Optimized: reduced traitGroupIndex from uint256 to uint8
 struct TraitGroup {
-    uint8 traitGroupIndex;  // Reduced from uint256 (saves 31 bytes)
+    uint8 traitGroupIndex; // Reduced from uint256 (saves 31 bytes)
     bytes traitGroupName;
     uint32[] paletteRgba;
     TraitInfo[] traits;

@@ -38,7 +38,7 @@ import { LibTraits } from "./libraries/LibTraits.sol";
  * @dev Rarity values are stored in bytes arrays and selected using a PRNG for gas efficiency
  */
 contract Rarities {
-    // error TraitSelectionFailed();
+    error TraitSelectionFailed();
 
     // ---------- Male Rarities ---------- //
 
@@ -158,39 +158,28 @@ contract Rarities {
         return f;
     }
 
-    /// @dev Optimized trait selection using assembly
-    /// @notice ~30% faster than Solidity loop for weighted random selection
     function selectRandomTrait(LibPRNG.PRNG memory prng, bytes memory packedWeights, uint256 totalWeight) internal pure returns (uint256) {
         uint256 r = LibPRNG.uniform(prng, totalWeight);
-        uint256 result;
 
-        assembly {
-            let len := mload(packedWeights)
-            let ptr := add(packedWeights, 32)
-            let endPtr := add(ptr, len)
-            let currentSum := 0
-            let idx := 0
+        uint256 currentSum = 0;
+        uint256 len = packedWeights.length;
 
-            // Process 2 bytes at a time (each weight is uint16)
-            for { } lt(ptr, endPtr) { } {
-                // Load uint16 weight (big-endian)
-                let weight := shr(240, mload(ptr))
-                currentSum := add(currentSum, weight)
+        // Each weight is 2 bytes (uint16)
+        unchecked {
+            for (uint256 i = 0; i < len; i += 2) {
+                uint16 weight;
 
-                // Check if we found our trait
-                if lt(r, currentSum) {
-                    result := idx
-                    // Break out of loop
-                    ptr := endPtr
+                assembly {
+                    // Load 2 bytes from packedWeights at index i. Skip 32 bytes length prefix.
+                    weight := shr(240, mload(add(add(packedWeights, 32), i)))
                 }
 
-                // Move to next weight
-                ptr := add(ptr, 2)
-                idx := add(idx, 1)
+                currentSum += weight;
+                if (r < currentSum) return i / 2;
             }
         }
 
-        return result;
+        revert TraitSelectionFailed();
     }
 
     function selectMaleSkin(LibPRNG.PRNG memory prng) internal pure returns (E_Male_Skin) {

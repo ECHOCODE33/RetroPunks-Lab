@@ -328,7 +328,7 @@ library TraitsRenderer {
             // Hex character lookup: 0-9 = 0x30-0x39, a-f = 0x61-0x66
             function toHex(val) -> h {
                 switch lt(val, 10)
-                case 1 { h := add(val, 0x30) }  // '0'-'9'
+                case 1 { h := add(val, 0x30) } // '0'-'9'
                 default { h := add(val, 0x57) } // 'a'-'f' (10 + 0x57 = 0x61 = 'a')
             }
 

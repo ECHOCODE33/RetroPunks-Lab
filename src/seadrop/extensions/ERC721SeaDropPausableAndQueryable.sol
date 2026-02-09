@@ -4,12 +4,12 @@ pragma solidity ^0.8.32;
 import { ERC721SeaDropPausable } from "./ERC721SeaDropPausable.sol";
 
 /**
- * @title  ERC721SeaDropPausableAndQueryable
- * @notice A token contract that extends ERC721SeaDropPausable to be able to
- *         pause token transfers and query the ownership of tokens.
+ * @title ERC721SeaDropPausableAndQueryable
+ * @author SeaDrop
+ * @notice Extends ERC721SeaDropPausable with off-chain querying capabilities for ownership data.
  *
- *         Extends ERC721SeaDropPausable to be able to pause token transfers.
- *         Get implementation from ERC721AQueryable to be able to query the ownership of tokens and be compatible with ERC721A
+ *         This contract provides gas-efficient methods to query token ownership information,
+ *         enumerate tokens by owner, and handle edge cases like burned tokens and spot mints.
  */
 contract ERC721SeaDropPausableAndQueryable is ERC721SeaDropPausable {
     /**
