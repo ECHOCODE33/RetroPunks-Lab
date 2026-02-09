@@ -25,3 +25,5 @@ traits/
 # Logs and system files
 *.log
 .DS_Store
+
+_new.md
