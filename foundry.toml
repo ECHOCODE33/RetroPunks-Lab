@@ -49,9 +49,8 @@ ignore = [
 ]
 
 [rpc_endpoints]
-localhost = "${LOCAL_RPC_URL}"
-dashboard = "${FOUNDRY_DASHBOARD_RPC_URL}"
-mainnet = "${MAINNET_RPC_URL}"
-sepolia = "${SEPOLIA_RPC_URL}"
-base = "${BASE_MAINNET_RPC_URL}"
-base-sepolia = "${BASE_SEPOLIA_RPC_URL}"
+localhost = "${LOCAL_RPC}"
+mainnet = "${MAINNET_RPC}"
+sepolia = "${SEPOLIA_RPC}"
+base = "${BASE_MAINNET_RPC}"
+base-sepolia = "${BASE_SEPOLIA_RPC}"

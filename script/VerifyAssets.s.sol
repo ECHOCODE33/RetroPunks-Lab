@@ -38,8 +38,9 @@ contract VerifyAssets is Script {
     ExpectedAsset[] private EXPECTED_ASSETS;
 
     function setUp() public {
-        EXPECTED_ASSETS.push(ExpectedAsset(0, "Special 1s"));
-        EXPECTED_ASSETS.push(ExpectedAsset(1, "Background"));
+        // Key mapping must match AddAssetsBatch.s.sol (traitGroupIndex = asset key)
+        EXPECTED_ASSETS.push(ExpectedAsset(0, "Background"));
+        EXPECTED_ASSETS.push(ExpectedAsset(1, "Special 1s"));
         EXPECTED_ASSETS.push(ExpectedAsset(2, "Male Skin"));
         EXPECTED_ASSETS.push(ExpectedAsset(3, "Male Eyes"));
         EXPECTED_ASSETS.push(ExpectedAsset(4, "Male Face"));
