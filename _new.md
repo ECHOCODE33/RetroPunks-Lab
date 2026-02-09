@@ -3,7 +3,7 @@
 ### Script 
 
  forge script script/RetroPunks.s.sol:RetroPunksScript \
-  --sig "deploy()" \
+  --sig "addAssetsBatch()" \
   --rpc-url $BASE_SEPOLIA_RPC \
   --private-key $PRIVATE_KEY \
   --broadcast \

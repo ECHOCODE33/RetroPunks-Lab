@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.32;
 
-import { NUM_BACKGROUND, NUM_PRE_RENDERED_SPECIALS, NUM_SPECIAL_1S, SPECIAL_NAMES } from "./common/Enums.sol";
+import { NUM_BACKGROUND, NUM_PRE_RENDERED_SPECIALS, NUM_SPECIAL_1S } from "./common/Enums.sol";
 import { IMetaGen } from "./interfaces/IMetaGen.sol";
 import { IRetroPunks } from "./interfaces/IRetroPunks.sol";
 import { LibPRNG } from "./libraries/LibPRNG.sol";
@@ -23,6 +23,25 @@ contract RetroPunks is IRetroPunks, ERC721SeaDropPausableAndQueryable {
     IMetaGen public metaGen;
 
     mapping(uint256 => TokenMetadata) public globalTokenMetadata;
+
+    bytes32[16] internal SPECIAL_NAMES = [
+        bytes32("Predator Blue"),
+        bytes32("Predator Green"),
+        bytes32("Predator Red"),
+        bytes32("Santa Claus"),
+        bytes32("Shadow Ninja"),
+        bytes32("The Devil"),
+        bytes32("The Portrait"),
+        bytes32("Ancient Mummy"),
+        bytes32("CyberApe"),
+        bytes32("Ancient Skeleton"),
+        bytes32("Pig"),
+        bytes32("Slenderman"),
+        bytes32("The Clown"),
+        bytes32("The Pirate"),
+        bytes32("The Witch"),
+        bytes32("The Wizard")
+    ];
 
     bytes32 public immutable COMMITTED_GLOBAL_SEED_HASH;
     bytes32 public immutable COMMITTED_SHUFFLER_SEED_HASH;
