@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+"""
+Background asset generator for RetroPunks.
+Output format must match TraitsLoader.sol and E_Background / E_Background_Type in Enums.sol.
+
+BACKGROUNDS order MUST match E_Background enum order (Default, Black, Smooth_Vertical, ...).
+layerType values MUST match E_Background_Type (Solid=2, S_Vertical=3, ..., Radial=11).
+
+Workflow: Run this script -> node libzip.js -> paste compressed hex into AddAssetsBatch key 0.
+"""
 import os
 import struct
 

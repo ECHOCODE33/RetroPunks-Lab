@@ -11,6 +11,8 @@ import { MetaGen } from "../src/MetaGen.sol";
 import { PreviewMetaGen } from "../src/PreviewMetaGen.sol";
 import { RetroPunks } from "../src/RetroPunks.sol";
 import { Traits } from "../src/Traits.sol";
+import { ISeaDrop } from "../src/seadrop/interfaces/ISeaDrop.sol";
+import { PublicDrop } from "../src/seadrop/lib/SeaDropStructs.sol";
 
 contract HelperContract is Script {
     function _toAddressArray(address a1) internal pure returns (address[] memory arr) {
@@ -223,11 +225,14 @@ contract HelperContract is Script {
 contract RetroPunksScript is HelperContract {
     address public OWNER = vm.envAddress("OWNER");
     uint256 internal PRIVATE_KEY = vm.envUint("PRIVATE_KEY");
+
     address public ASSETS = vm.envAddress("ASSETS");
     address public TRAITS = vm.envAddress("TRAITS");
     address public PREVIEW_META_GEN = vm.envAddress("PREVIEW_META_GEN");
     address public META_GEN = vm.envAddress("META_GEN");
     address public RETROPUNKS = vm.envAddress("RETROPUNKS");
+
+    address public SEADROP = address(0x00005EA00Ac477B1030CE78506496e8C2dE24bf5);
 
     RetroPunks public retroPunksContract = RetroPunks(RETROPUNKS);
     IMetaGen public metaGenContract;
@@ -240,8 +245,21 @@ contract RetroPunksScript is HelperContract {
     uint256 public SHUFFLER_NONCE = 8904927786;
     bytes32 public SHUFFLER_SEED_HASH = keccak256(abi.encodePacked(SHUFFLER_SEED, SHUFFLER_NONCE));
 
+    // ======================== CALL ORDER (run in sequence) ========================
+    // 1. deploy()
+    // 2. addAssetsBatch()
+    // 3. verifyAssets()
+    // 4. revealShufflerSeed()     <- required before any minting (owner or SeaDrop)
+    // 5. setupSeaDrop()           <- configures public drop so mintAsUser() works
+    // 6. batchOwnerMint()         <- optional: owner mints
+    // 7. mintAsUser()             <- optional: any address mints via SeaDrop
+    // 8. revealGlobalSeed()       <- when ready (affects traits)
+    // 9. setRevealMetaGen()       <- when ready (metadata reveal)
+    // 10. closeMint()             <- when done (irreversible)
+    // =============================================================================
+
     /**
-     * @notice Main deployment function
+     * 1. Deploy RetroPunks and dependencies.
      * @dev Run with: forge script script/RetroPunks.s.sol:RetroPunksScript --sig "deploy()" --rpc-url <RPC_URL> --broadcast
      */
     function deploy() external {
@@ -266,8 +284,7 @@ contract RetroPunksScript is HelperContract {
     }
 
     /**
-     * @notice Add assets batch (required before any minting)
-     * @dev Add assets to the contract
+     * 2. Add assets batch (required before any minting).
      */
     function addAssetsBatch() external {
         string[] memory inputs = new string[](9);
@@ -276,7 +293,7 @@ contract RetroPunksScript is HelperContract {
         inputs[1] = "script";
         inputs[2] = "script/AddAssetsBatch.s.sol:AddAssetsBatch";
         inputs[3] = "--rpc-url";
-        inputs[4] = "localhost";
+        inputs[4] = vm.envString("BASE_SEPOLIA_RPC");
         inputs[5] = "--private-key";
         inputs[6] = vm.envString("PRIVATE_KEY");
         inputs[7] = "--broadcast";
@@ -287,8 +304,7 @@ contract RetroPunksScript is HelperContract {
     }
 
     /**
-     * @notice Verify assets (required before any minting)
-     * @dev Verify assets in the contract
+     * 3. Verify assets (required before any minting).
      */
     function verifyAssets() external {
         string[] memory inputs = new string[](9);
@@ -297,7 +313,7 @@ contract RetroPunksScript is HelperContract {
         inputs[1] = "script";
         inputs[2] = "script/VerifyAssets.s.sol:VerifyAssets";
         inputs[3] = "--rpc-url";
-        inputs[4] = "localhost";
+        inputs[4] = vm.envString("BASE_SEPOLIA_RPC");
         inputs[5] = "--private-key";
         inputs[6] = vm.envString("PRIVATE_KEY");
         inputs[7] = "--broadcast";
@@ -308,8 +324,7 @@ contract RetroPunksScript is HelperContract {
     }
 
     /**
-     * @notice Reveal the shuffler seed (required before any minting)
-     * @dev Run this FIRST before allowing any mints
+     * 4. Reveal the shuffler seed (required before any minting — owner or SeaDrop).
      */
     function revealShufflerSeed() external {
         console.log("=== Revealing Shuffler Seed ===");
@@ -328,12 +343,47 @@ contract RetroPunksScript is HelperContract {
     }
 
     /**
-     * @notice Batch owner mint to multiple addresses
-     * @dev Useful for team allocation, airdrops, etc.
+     * 5. Configure SeaDrop so public/user minting works.
+     * @dev Call this after revealShufflerSeed(). Sets public drop window, mint price, creator payout, and optionally allowed fee recipient.
+     *      Optional env: PUBLIC_MINT_PRICE (wei, default 0), PUBLIC_MAX_PER_WALLET (default 10).
+     */
+    function setupSeaDrop() external {
+        uint256 mintPriceWei = vm.envOr("PUBLIC_MINT_PRICE", uint256(0));
+        uint256 maxPerWallet = vm.envOr("PUBLIC_MAX_PER_WALLET", uint256(10));
+
+        // Public drop: start now, end at max uint48 so drop stays open until you change it
+        PublicDrop memory publicDrop = PublicDrop({
+            mintPrice: uint80(mintPriceWei),
+            startTime: uint48(block.timestamp),
+            endTime: type(uint48).max,
+            maxTotalMintableByWallet: uint16(maxPerWallet),
+            feeBps: 0,
+            restrictFeeRecipients: false
+        });
+
+        console.log("=== SeaDrop setup ===");
+        console.log("RetroPunks:", RETROPUNKS);
+        console.log("SeaDrop:", SEADROP);
+        console.log("Mint price (wei):", publicDrop.mintPrice);
+        console.log("Max per wallet:", publicDrop.maxTotalMintableByWallet);
+        console.log("Creator payout:", OWNER);
+
+        vm.startBroadcast(PRIVATE_KEY);
+
+        retroPunksContract.updatePublicDrop(SEADROP, publicDrop);
+        retroPunksContract.updateCreatorPayoutAddress(SEADROP, OWNER);
+
+        vm.stopBroadcast();
+
+        console.log("SeaDrop configured. You can now call mintAsUser().");
+    }
+
+    /**
+     * 6. Batch owner mint to multiple addresses (optional).
      */
     function batchOwnerMint() external {
-        address[] memory recipients = _toAddressArray(OWNER);
-        uint256[] memory quantities = _toUintArray(25);
+        address[] memory recipients = _toAddressArray(0x1006842663a46B628A823798De55FBb94b7AD4fb);
+        uint256[] memory quantities = _toUintArray(5);
 
         console.log("=== Batch Owner Minting ===");
         console.log("RetroPunks:", RETROPUNKS);
@@ -357,8 +407,60 @@ contract RetroPunksScript is HelperContract {
     }
 
     /**
-     * @notice Set the reveal metaGenContract (makes metadata visible)
-     * @dev Call this when you want to reveal all token metadata
+     * 7. Mint as a normal user via SeaDrop (optional). Requires setupSeaDrop() first.
+     * @dev Set MINT_PRIVATE_KEY in env to mint as that account; otherwise PRIVATE_KEY. Set MINT_QUANTITY (default 1).
+     */
+    function mintAsUser() external {
+        uint256 minterKey = PRIVATE_KEY;
+        uint256 quantity = uint256(10);
+
+        ISeaDrop seaDrop = ISeaDrop(SEADROP);
+        PublicDrop memory publicDrop = seaDrop.getPublicDrop(RETROPUNKS);
+
+        require(block.timestamp >= publicDrop.startTime, "Public drop not started");
+        require(block.timestamp <= publicDrop.endTime, "Public drop ended");
+
+        address feeRecipient = seaDrop.getCreatorPayoutAddress(RETROPUNKS);
+        uint256 value = uint256(publicDrop.mintPrice) * quantity;
+
+        address minter = vm.addr(minterKey);
+        console.log("=== SeaDrop Public Mint (as user) ===");
+        console.log("RetroPunks:", RETROPUNKS);
+        console.log("SeaDrop:", SEADROP);
+        console.log("Minter:", minter);
+        console.log("Quantity:", quantity);
+        console.log("Value (wei):", value);
+
+        vm.startBroadcast(minterKey);
+
+        seaDrop.mintPublic{ value: value }(RETROPUNKS, feeRecipient, address(0), quantity);
+
+        vm.stopBroadcast();
+
+        console.log("Mint complete! Total supply:", retroPunksContract.totalSupply());
+    }
+
+    /**
+     * 8. Reveal the global seed (affects all token traits). Optional, run when ready.
+     */
+    function revealGlobalSeed() external {
+        console.log("=== Revealing Global Seed ===");
+        console.log("RetroPunks:", RETROPUNKS);
+        console.log("Global Seed:", GLOBAL_SEED);
+        console.log("Global Nonce:", GLOBAL_NONCE);
+
+        vm.startBroadcast(PRIVATE_KEY);
+
+        retroPunksContract.revealGlobalSeed(GLOBAL_SEED, GLOBAL_NONCE);
+
+        vm.stopBroadcast();
+
+        console.log("Global seed revealed successfully!");
+        console.log("New global seed value:", retroPunksContract.globalSeed());
+    }
+
+    /**
+     * 9. Set the reveal MetaGen (makes metadata visible). Optional, call when you want to reveal.
      */
     function setRevealMetaGen() external {
         console.log("=== Setting Reveal MetaGen ===");
@@ -376,23 +478,22 @@ contract RetroPunksScript is HelperContract {
     }
 
     /**
-     * @notice Reveal the global seed (affects all token traits)
-     * @dev Run after minting starts but before full reveal
+     * 10. Close minting permanently (irreversible). Optional, when done.
      */
-    function revealGlobalSeed() external {
-        console.log("=== Revealing Global Seed ===");
+    function closeMint() external {
+        console.log("=== Closing Mint ===");
         console.log("RetroPunks:", RETROPUNKS);
-        console.log("Global Seed:", GLOBAL_SEED);
-        console.log("Global Nonce:", GLOBAL_NONCE);
+        console.log("Current total supply:", retroPunksContract.totalSupply());
+        console.log("WARNING: This action is irreversible!");
 
         vm.startBroadcast(PRIVATE_KEY);
 
-        retroPunksContract.revealGlobalSeed(GLOBAL_SEED, GLOBAL_NONCE);
+        retroPunksContract.closeMint();
 
         vm.stopBroadcast();
 
-        console.log("Global seed revealed successfully!");
-        console.log("New global seed value:", retroPunksContract.globalSeed());
+        console.log("Minting closed successfully!");
+        console.log("Mint status:", retroPunksContract.mintIsClosed());
     }
 
     /**
@@ -449,7 +550,6 @@ contract RetroPunksScript is HelperContract {
         vm.writeFile(fileName, "");
 
         for (uint256 i = _startTokenId; i <= _endTokenId; i++) {
-
             string memory line = string.concat("Token ", vm.toString(i), ":\n", retroPunksContract.tokenURI(i), "\n");
 
             vm.writeLine(fileName, line);
@@ -458,27 +558,7 @@ contract RetroPunksScript is HelperContract {
         console.log(string.concat("Token URIs written to file: ", fileName));
     }
 
-    /**
-     * @notice Close minting permanently
-     * @dev This is irreversible - use with caution
-     */
-    function closeMint() external {
-        console.log("=== Closing Mint ===");
-        console.log("RetroPunks:", RETROPUNKS);
-        console.log("Current total supply:", retroPunksContract.totalSupply());
-        console.log("WARNING: This action is irreversible!");
-
-        vm.startBroadcast(PRIVATE_KEY);
-
-        retroPunksContract.closeMint();
-
-        vm.stopBroadcast();
-
-        console.log("Minting closed successfully!");
-        console.log("Mint status:", retroPunksContract.mintIsClosed());
-    }
-
-    // =============================== EXTRA FUNCTIONS =============================== //
+    // =============================== EXTRA / QUERY FUNCTIONS =============================== //
 
     /**
      * @notice Query token information
@@ -574,34 +654,26 @@ contract RetroPunksScript is HelperContract {
     }
 
     /**
-     * @notice Complete deployment workflow
-     * @dev Runs through the entire setup process
+     * @notice Complete deployment workflow (runs steps 1–5 in order)
+     * @dev Does not run addAssetsBatch/verifyAssets (run those separately). Includes SeaDrop setup.
      */
     function fullDeploymentWorkflow() external {
         console.log("=== FULL DEPLOYMENT WORKFLOW ===");
 
-        // Step 1: Deploy
         console.log("\n1. Deploying contract...");
         this.deploy();
 
-        // Step 2: Reveal shuffler seed (required for minting)
-        console.log("\n2. Revealing shuffler seed...");
+        console.log("\n2. Revealing shuffler seed (required for minting)...");
         this.revealShufflerSeed();
 
-        // Step 3: Owner mints (if desired)
-        console.log("\n3. Performing owner mints...");
-        // this.ownerMint(); // Uncomment and configure as needed
+        console.log("\n3. Configuring SeaDrop (public drop)...");
+        this.setupSeaDrop();
 
-        // Step 4: Reveal global seed (for traits)
-        console.log("\n4. Revealing global seed...");
-        this.revealGlobalSeed();
+        console.log("\n4. (Optional) Run batchOwnerMint() or mintAsUser() to mint.");
+        console.log("\n5. (Optional) revealGlobalSeed() then setRevealMetaGen() when ready.");
 
-        // Step 5: Set reveal metaGenContract
-        console.log("\n5. Setting reveal metaGenContract...");
-        // this.setRevealMetaGen(); // Uncomment when ready
-
-        console.log("\n=== DEPLOYMENT COMPLETE ===");
-        console.log("Contract is ready for public minting!");
+        console.log("\n=== SETUP COMPLETE ===");
+        console.log("Contract is ready. Run addAssetsBatch(), verifyAssets(), then mint.");
     }
 
     function _verifyDeployment() internal view {

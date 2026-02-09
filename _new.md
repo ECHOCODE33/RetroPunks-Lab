@@ -3,19 +3,15 @@
 ### Script 
 
  forge script script/RetroPunks.s.sol:RetroPunksScript \
- --sig "deploy" \
- --rpc-url dashboard \
- --private-key $PRIVATE_KEY \
- --broadcast \
- --verify \
- -vvv
+  --sig "deploy()"\
+  --rpc-url $BASE_SEPOLIA_RPC \
+  --private-key $PRIVATE_KEY \
+  --broadcast \
+  --verify \
+  --ffi \
+  -vvv
 
-
- forge script script/RetroPunks.s.sol:RetroPunksScript --sig "deploy" --rpc-url localhost --broadcast --private-key $PRIVATE_KEY --ffi -vvv
-
- cast call $RETROPUNKS "totalSupply()(uint256)" --rpc-url localhost
-
- cast call $RETROPUNKS "tokenURI(uint256)(string)" 7 --rpc-url localhost
+ cast call $RETROPUNKS "totalSupply()(uint256)" --rpc-url $BASE_SEPOLIA_RPC
 
 
 ### Deploy
