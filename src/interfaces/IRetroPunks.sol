@@ -6,8 +6,6 @@ pragma solidity ^0.8.32;
  * @notice Interface containing structs, events, and errors for the RetroPunks collection
  */
 interface IRetroPunks {
-    // ----- Structs ----- //
-    
     struct TokenMetadata {
         uint16 tokenIdSeed;
         uint8 backgroundIndex;
@@ -15,12 +13,8 @@ interface IRetroPunks {
         string bio;
     }
 
-    // ----- Events ----- //
-    
     event MetadataUpdate(uint256 _tokenId);
 
-    // ----- Errors ----- //
-    
     error MintIsClosed();
     error PreRenderedSpecialCannotBeCustomized();
     error BioIsTooLong();

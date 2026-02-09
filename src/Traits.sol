@@ -167,25 +167,25 @@ contract Traits is ITraits, Rarities {
         }
     }
 
-    /// @dev Optimized: directly writes to struct fields instead of using separate struct assignment
     function _addTraitToRender(TraitsContext memory _traits, E_TraitsGroup _traitGroup, uint8 _traitIndex) internal pure {
         uint256 len = _traits.traitsToRenderLength;
-        _traits.traitsToRender[len].traitGroup = _traitGroup;
-        _traits.traitsToRender[len].traitIndex = _traitIndex;
-        _traits.traitsToRender[len].fillerGroup = E_TraitsGroup.Background_Group; // 0 = no filler
-        _traits.traitsToRender[len].fillerIndex = 0;
+        TraitToRender memory t = _traits.traitsToRender[len];
+        t.traitGroup = _traitGroup;
+        t.traitIndex = _traitIndex;
+        t.hasFiller = false;
         unchecked {
             _traits.traitsToRenderLength++;
         }
     }
 
-    /// @dev Optimized: filler data is now inlined into TraitToRender struct
     function _addFillerTrait(TraitsContext memory _traits, E_TraitsGroup _traitGroup, uint8 _traitIndex) internal pure {
         uint256 lastIdx;
         unchecked {
             lastIdx = _traits.traitsToRenderLength - 1;
         }
-        _traits.traitsToRender[lastIdx].fillerGroup = _traitGroup;
-        _traits.traitsToRender[lastIdx].fillerIndex = _traitIndex;
+        TraitToRender memory t = _traits.traitsToRender[lastIdx];
+        t.hasFiller = true;
+        t.filler.traitGroup = _traitGroup;
+        t.filler.traitIndex = _traitIndex;
     }
 }

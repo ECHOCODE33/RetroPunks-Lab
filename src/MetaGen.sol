@@ -62,9 +62,8 @@ contract MetaGen is IMetaGen {
 
                 cachedTraitGroups.traitGroups[traitGroupIndex] = TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, traitGroupIndex);
 
-                // Check for filler: fillerGroup != 0 (Background_Group) means there's a filler
-                if (traits.traitsToRender[i].fillerGroup != E_TraitsGroup.Background_Group) {
-                    uint256 fillerGroupIdx = uint8(traits.traitsToRender[i].fillerGroup);
+                if (traits.traitsToRender[i].hasFiller) {
+                    uint256 fillerGroupIdx = uint8(traits.traitsToRender[i].filler.traitGroup);
                     cachedTraitGroups.traitGroups[fillerGroupIdx] = TraitsLoader.loadAndCacheTraitGroup(_ASSETS_CONTRACT, cachedTraitGroups, fillerGroupIdx);
                 }
                 unchecked {

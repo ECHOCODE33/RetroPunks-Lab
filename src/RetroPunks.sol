@@ -1,26 +1,23 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.32;
 
-import { E_Background, NUM_BACKGROUND, NUM_SPECIAL_1S } from "./common/Enums.sol"; // NUM_SPECIAL_1S = 16
+import { E_Background, NUM_BACKGROUND, NUM_SPECIAL_1S } from "./common/Enums.sol";
 import { IMetaGen } from "./interfaces/IMetaGen.sol";
 import { LibPRNG } from "./libraries/LibPRNG.sol";
 import { Utils } from "./libraries/Utils.sol";
 import { ERC721SeaDropPausableAndQueryable } from "./seadrop/extensions/ERC721SeaDropPausableAndQueryable.sol";
-
-struct TokenMetadata {
-    uint16 tokenIdSeed;
-    uint8 backgroundIndex;
-    bytes32 name;
-    string bio;
-}
+import { IRetroPunks } from "./interfaces/IRetroPunks.sol";
 
 /**
  * @title RetroPunks
  * @author ECHO
  * @notice The main contract for the RetroPunks collection
- * @dev Inherits ERC721SeaDropPausableAndQueryable
+ * @dev Uses ERC721SeaDropPausableAndQueryable for pausable and queryable functionality.
+ *      Uses IMetaGen for metadata generation.
+ *      Uses LibPRNG for random number generation.
+ *      Uses Utils for utility functions.
  */
-contract RetroPunks is ERC721SeaDropPausableAndQueryable {
+contract RetroPunks is IRetroPunks, ERC721SeaDropPausableAndQueryable {
     using LibPRNG for LibPRNG.LazyShuffler;
 
     uint16 private constant NUM_PRE_RENDERED_SPECIALS = 7;
@@ -59,25 +56,6 @@ contract RetroPunks is ERC721SeaDropPausableAndQueryable {
     LibPRNG.LazyShuffler private _tokenIdSeedShuffler;
     uint8 public constant DEFAULT_BACKGROUND_INDEX = uint8(uint256(E_Background.Standard));
 
-    // ----- Events ----- //
-    event MetadataUpdate(uint256 _tokenId);
-
-    // ----- Errors ----- //
-    error MintIsClosed();
-    error PreRenderedSpecialCannotBeCustomized();
-    error BioIsTooLong();
-    error InvalidCharacterInName();
-    error GlobalSeedAlreadyRevealed();
-    error InvalidGlobalSeedReveal();
-    error ShufflerSeedAlreadyRevealed();
-    error InvalidShufflerSeedReveal();
-    error ShufflerSeedNotRevealedYet();
-    error NoRemainingTokens();
-    error NonExistentToken();
-    error CallerIsNotTokenOwner();
-    error InvalidBackgroundIndex();
-    error MetadataNotRevealedYet();
-    error ArrayLengthMismatch();
 
     // ----- Modifiers ----- //
     modifier tokenExists(uint256 _tokenId) {
