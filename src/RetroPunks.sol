@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.32;
 
-import { E_Background, NUM_BACKGROUND, NUM_SPECIAL_1S } from "./common/Enums.sol";
+import { NUM_BACKGROUND, NUM_PRE_RENDERED_SPECIALS, NUM_SPECIAL_1S, SPECIAL_NAMES } from "./common/Enums.sol";
 import { IMetaGen } from "./interfaces/IMetaGen.sol";
+import { IRetroPunks } from "./interfaces/IRetroPunks.sol";
 import { LibPRNG } from "./libraries/LibPRNG.sol";
 import { Utils } from "./libraries/Utils.sol";
 import { ERC721SeaDropPausableAndQueryable } from "./seadrop/extensions/ERC721SeaDropPausableAndQueryable.sol";
-import { IRetroPunks } from "./interfaces/IRetroPunks.sol";
 
 /**
  * @title RetroPunks
- * @author ECHO
+ * @author ECHO (echomatrix.eth)
  * @notice The main contract for the RetroPunks collection
  * @dev Uses ERC721SeaDropPausableAndQueryable for pausable and queryable functionality.
  *      Uses IMetaGen for metadata generation.
@@ -20,74 +20,39 @@ import { IRetroPunks } from "./interfaces/IRetroPunks.sol";
 contract RetroPunks is IRetroPunks, ERC721SeaDropPausableAndQueryable {
     using LibPRNG for LibPRNG.LazyShuffler;
 
-    uint16 private constant NUM_PRE_RENDERED_SPECIALS = 7;
-    uint8 internal revealMetaGenSet = 0;
-
     IMetaGen public metaGen;
+
+    mapping(uint256 => TokenMetadata) public globalTokenMetadata;
 
     bytes32 public immutable COMMITTED_GLOBAL_SEED_HASH;
     bytes32 public immutable COMMITTED_SHUFFLER_SEED_HASH;
-
     uint256 public globalSeed;
     uint256 public shufflerSeed;
 
     uint8 public mintIsClosed = 0;
 
-    bytes32[16] private SPECIAL_NAMES = [
-        bytes32("Predator Blue"),
-        bytes32("Predator Green"),
-        bytes32("Predator Red"),
-        bytes32("Santa Claus"),
-        bytes32("Shadow Ninja"),
-        bytes32("The Devil"),
-        bytes32("The Portrait"),
-        bytes32("Ancient Mummy"),
-        bytes32("CyberApe"),
-        bytes32("Ancient Skeleton"),
-        bytes32("Pig"),
-        bytes32("Slenderman"),
-        bytes32("The Clown"),
-        bytes32("The Pirate"),
-        bytes32("The Witch"),
-        bytes32("The Wizard")
-    ];
+    uint8 internal revealMetaGenSet = 0;
 
-    mapping(uint256 => TokenMetadata) public globalTokenMetadata;
-    LibPRNG.LazyShuffler private _tokenIdSeedShuffler;
-    uint8 public constant DEFAULT_BACKGROUND_INDEX = uint8(uint256(E_Background.Standard));
+    LibPRNG.LazyShuffler internal _tokenIdSeedShuffler;
 
-
-    // ----- Modifiers ----- //
     modifier tokenExists(uint256 _tokenId) {
-        _tokenExists(_tokenId);
+        if (!_exists(_tokenId)) revert NonExistentToken();
         _;
     }
 
     modifier onlyTokenOwner(uint256 _tokenId) {
-        _onlyTokenOwner(_tokenId);
-        _;
-    }
-
-    modifier notPreRenderedSpecial(uint256 tokenId) {
-        _notPreRenderedSpecial(tokenId);
-        _;
-    }
-
-    function _tokenExists(uint256 _tokenId) internal view {
-        if (!_exists(_tokenId)) revert NonExistentToken();
-    }
-
-    function _onlyTokenOwner(uint256 _tokenId) internal view {
         if (ownerOf(_tokenId) != msg.sender) revert CallerIsNotTokenOwner();
+        _;
     }
 
-    function _notPreRenderedSpecial(uint256 tokenId) internal view {
-        // NEW: Only restrict the first 7 (Seeds 0-6).
-        // Seeds 7-15 are allowed to change backgrounds.
-        if (globalTokenMetadata[tokenId].tokenIdSeed < NUM_PRE_RENDERED_SPECIALS) revert PreRenderedSpecialCannotBeCustomized();
-    }
-
-    // ----- Constructor ----- //
+    /**
+     * @notice Constructor for the RetroPunks contract.
+     * @param _metaGenParam The IMetaGen (metadata generator) contract address.
+     * @param _committedGlobalSeedHashParam The committed global seed hash.
+     * @param _committedShufflerSeedHashParam The committed shuffler seed hash.
+     * @param _maxSupplyParam The maximum supply of the collection.
+     * @param allowedSeaDropParam The allowed SeaDrop contract addresses.
+     */
     constructor(
         IMetaGen _metaGenParam,
         bytes32 _committedGlobalSeedHashParam,
@@ -101,7 +66,6 @@ contract RetroPunks is IRetroPunks, ERC721SeaDropPausableAndQueryable {
         _maxSupply = _maxSupplyParam;
     }
 
-    // ----- Admin Functions ----- //
     function setMetaGen(IMetaGen _metaGen, bool _isRevealMetaGen) external onlyOwner {
         metaGen = _metaGen;
         if (_isRevealMetaGen) revealMetaGenSet = 1;
@@ -151,7 +115,6 @@ contract RetroPunks is IRetroPunks, ERC721SeaDropPausableAndQueryable {
         }
     }
 
-    // ----- Token Customization ----- //
     function setTokenMetadata(uint256 tokenId, bytes32 name, string calldata bio, uint8 backgroundIndex) external onlyTokenOwner(tokenId) {
         if (revealMetaGenSet == 0) revert MetadataNotRevealedYet();
         if (backgroundIndex >= NUM_BACKGROUND) revert InvalidBackgroundIndex();
@@ -180,8 +143,6 @@ contract RetroPunks is IRetroPunks, ERC721SeaDropPausableAndQueryable {
         emit MetadataUpdate(tokenId);
     }
 
-    // ----- Public & Internal Functions ----- //
-
     function _saveNewSeed(uint256 tokenId, uint256 remaining) internal {
         if (remaining == 0) revert NoRemainingTokens();
 
@@ -190,10 +151,7 @@ contract RetroPunks is IRetroPunks, ERC721SeaDropPausableAndQueryable {
         uint256 newTokenIdSeed = _tokenIdSeedShuffler.next(randomness);
 
         globalTokenMetadata[tokenId] = TokenMetadata({
-            tokenIdSeed: uint16(newTokenIdSeed),
-            backgroundIndex: DEFAULT_BACKGROUND_INDEX,
-            name: bytes32(abi.encodePacked("#", Utils.toString(tokenId))),
-            bio: "A RetroPunk living on-chain."
+            tokenIdSeed: uint16(newTokenIdSeed), backgroundIndex: 0, name: bytes32(abi.encodePacked("#", Utils.toString(tokenId))), bio: "A RetroPunk living on-chain."
         });
     }
 

@@ -1,11 +1,32 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.32;
 
+uint8 constant NUM_TRAIT_GROUPS = uint8(type(E_TraitsGroup).max) + 1;
+
 uint8 constant NUM_BACKGROUND = uint8(type(E_Background).max) + 1;
 
 uint16 constant NUM_SPECIAL_1S = uint16(type(E_Special_1s).max) + 1;
 
-uint8 constant NUM_TRAIT_GROUPS = uint8(type(E_TraitsGroup).max) + 1;
+uint16 constant NUM_PRE_RENDERED_SPECIALS = 7;
+
+bytes32[16] constant SPECIAL_NAMES = [
+    bytes32("Predator Blue"),
+    bytes32("Predator Green"),
+    bytes32("Predator Red"),
+    bytes32("Santa Claus"),
+    bytes32("Shadow Ninja"),
+    bytes32("The Devil"),
+    bytes32("The Portrait"),
+    bytes32("Ancient Mummy"),
+    bytes32("CyberApe"),
+    bytes32("Ancient Skeleton"),
+    bytes32("Pig"),
+    bytes32("Slenderman"),
+    bytes32("The Clown"),
+    bytes32("The Pirate"),
+    bytes32("The Witch"),
+    bytes32("The Wizard")
+];
 
 enum E_Background_Type {
     None, // not a background
