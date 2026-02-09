@@ -15,9 +15,14 @@ import {
 } from "../common/Enums.sol";
 import { TraitsContext } from "../common/Structs.sol";
 
-/// @author ECHO
-
+/**
+ * @title LibTraits
+ * @author ECHO
+ * @notice Trait checking utilities optimized with bitmap lookups
+ * @dev All skin type checks use pre-computed bitmaps for O(1) lookups
+ */
 library LibTraits {
+    // ============ Facial Hair Bitmaps ============
     uint256 private constant FACIAL_HAIR_IS_BLACK =
         ((uint256(1) << uint256(E_Male_Facial_Hair.Anchor_Beard_Black)) | (uint256(1) << uint256(E_Male_Facial_Hair.Beard_Black))
             | (uint256(1) << uint256(E_Male_Facial_Hair.Big_Beard_Black)) | (uint256(1) << uint256(E_Male_Facial_Hair.Chin_Goatee_Black))
@@ -30,6 +35,7 @@ library LibTraits {
             | (uint256(1) << uint256(E_Male_Facial_Hair.Muttonchops_Black)) | (uint256(1) << uint256(E_Male_Facial_Hair.Pyramid_Mustache_Black))
             | (uint256(1) << uint256(E_Male_Facial_Hair.Walrus_Black)));
 
+    // ============ Eye Wear Bitmaps ============
     uint256 private constant MALE_EYEWEAR_IS_EYE_PATCH =
         ((uint256(1) << uint256(E_Male_Eye_Wear.Bionic_Eye_Patch_Blue)) | (uint256(1) << uint256(E_Male_Eye_Wear.Bionic_Eye_Patch_Green))
             | (uint256(1) << uint256(E_Male_Eye_Wear.Bionic_Eye_Patch_Orange)) | (uint256(1) << uint256(E_Male_Eye_Wear.Bionic_Eye_Patch_Pink))
@@ -37,13 +43,6 @@ library LibTraits {
             | (uint256(1) << uint256(E_Male_Eye_Wear.Bionic_Eye_Patch_Turquoise)) | (uint256(1) << uint256(E_Male_Eye_Wear.Bionic_Eye_Patch_Yellow))
             | (uint256(1) << uint256(E_Male_Eye_Wear.Eye_Patch)) | (uint256(1) << uint256(E_Male_Eye_Wear.Pirate_Eye_Patch))
             | (uint256(1) << uint256(E_Male_Eye_Wear.Eye_Mask)));
-    uint256 private constant MALE_HEADWEAR_IS_CLOAK_OR_HOODIE =
-        ((uint256(1) << uint256(E_Male_Headwear.Cloak_Black)) | (uint256(1) << uint256(E_Male_Headwear.Cloak_Blue)) | (uint256(1) << uint256(E_Male_Headwear.Cloak_Green))
-            | (uint256(1) << uint256(E_Male_Headwear.Cloak_Purple)) | (uint256(1) << uint256(E_Male_Headwear.Cloak_Red)) | (uint256(1) << uint256(E_Male_Headwear.Cloak_White))
-            | (uint256(1) << uint256(E_Male_Headwear.Cloak)) | (uint256(1) << uint256(E_Male_Headwear.Hoodie_Blue)) | (uint256(1) << uint256(E_Male_Headwear.Hoodie_Green))
-            | (uint256(1) << uint256(E_Male_Headwear.Hoodie_Purple)) | (uint256(1) << uint256(E_Male_Headwear.Hoodie_Red)) | (uint256(1) << uint256(E_Male_Headwear.Hoodie))
-            | (uint256(1) << uint256(E_Male_Headwear.Sherpa_Hat_Blue)) | (uint256(1) << uint256(E_Male_Headwear.Sherpa_Hat_Brown))
-            | (uint256(1) << uint256(E_Male_Headwear.Sherpa_Hat_Red)));
 
     uint256 private constant FEMALE_EYEWEAR_IS_EYE_PATCH =
         ((uint256(1) << uint256(E_Female_Eye_Wear.Bionic_Eye_Patch_Blue)) | (uint256(1) << uint256(E_Female_Eye_Wear.Bionic_Eye_Patch_Green))
@@ -52,6 +51,15 @@ library LibTraits {
             | (uint256(1) << uint256(E_Female_Eye_Wear.Bionic_Eye_Patch_Turquoise)) | (uint256(1) << uint256(E_Female_Eye_Wear.Bionic_Eye_Patch_Yellow))
             | (uint256(1) << uint256(E_Female_Eye_Wear.Eye_Patch)) | (uint256(1) << uint256(E_Female_Eye_Wear.Pirate_Eye_Patch))
             | (uint256(1) << uint256(E_Female_Eye_Wear.Eye_Mask)));
+
+    // ============ Headwear Bitmaps ============
+    uint256 private constant MALE_HEADWEAR_IS_CLOAK_OR_HOODIE =
+        ((uint256(1) << uint256(E_Male_Headwear.Cloak_Black)) | (uint256(1) << uint256(E_Male_Headwear.Cloak_Blue)) | (uint256(1) << uint256(E_Male_Headwear.Cloak_Green))
+            | (uint256(1) << uint256(E_Male_Headwear.Cloak_Purple)) | (uint256(1) << uint256(E_Male_Headwear.Cloak_Red)) | (uint256(1) << uint256(E_Male_Headwear.Cloak_White))
+            | (uint256(1) << uint256(E_Male_Headwear.Cloak)) | (uint256(1) << uint256(E_Male_Headwear.Hoodie_Blue)) | (uint256(1) << uint256(E_Male_Headwear.Hoodie_Green))
+            | (uint256(1) << uint256(E_Male_Headwear.Hoodie_Purple)) | (uint256(1) << uint256(E_Male_Headwear.Hoodie_Red)) | (uint256(1) << uint256(E_Male_Headwear.Hoodie))
+            | (uint256(1) << uint256(E_Male_Headwear.Sherpa_Hat_Blue)) | (uint256(1) << uint256(E_Male_Headwear.Sherpa_Hat_Brown))
+            | (uint256(1) << uint256(E_Male_Headwear.Sherpa_Hat_Red)));
 
     uint256 private constant FEMALE_HEADWEAR_IS_CLOAK_OR_HOODIE =
         ((uint256(1) << uint256(E_Female_Headwear.Cloak_Black)) | (uint256(1) << uint256(E_Female_Headwear.Cloak_Blue))
@@ -62,261 +70,234 @@ library LibTraits {
             | (uint256(1) << uint256(E_Female_Headwear.Hoodie)) | (uint256(1) << uint256(E_Female_Headwear.Sherpa_Hat_Blue))
             | (uint256(1) << uint256(E_Female_Headwear.Sherpa_Hat_Brown)) | (uint256(1) << uint256(E_Female_Headwear.Sherpa_Hat_Red)));
 
+    // ============ Skin Type Bitmaps (Optimized) ============
+    // Non-human male skins bitmap - includes all special skin types
+    uint256 private constant MALE_NON_HUMAN_SKINS =
+        ((uint256(1) << uint256(E_Male_Skin.Alien)) | (uint256(1) << uint256(E_Male_Skin.Ape))
+            | (uint256(1) << uint256(E_Male_Skin.Demon)) | (uint256(1) << uint256(E_Male_Skin.Ghost))
+            | (uint256(1) << uint256(E_Male_Skin.Glitch)) | (uint256(1) << uint256(E_Male_Skin.Goblin))
+            | (uint256(1) << uint256(E_Male_Skin.Invisible)) | (uint256(1) << uint256(E_Male_Skin.Mummy))
+            | (uint256(1) << uint256(E_Male_Skin.Pumpkin)) | (uint256(1) << uint256(E_Male_Skin.Robot))
+            | (uint256(1) << uint256(E_Male_Skin.Skeleton)) | (uint256(1) << uint256(E_Male_Skin.Snowman))
+            | (uint256(1) << uint256(E_Male_Skin.Vampire)) | (uint256(1) << uint256(E_Male_Skin.Yeti))
+            | (uint256(1) << uint256(E_Male_Skin.Zombie_Ape)) | (uint256(1) << uint256(E_Male_Skin.Zombie)));
+
+    // Non-human female skins bitmap
+    uint256 private constant FEMALE_NON_HUMAN_SKINS =
+        ((uint256(1) << uint256(E_Female_Skin.Alien)) | (uint256(1) << uint256(E_Female_Skin.Ape))
+            | (uint256(1) << uint256(E_Female_Skin.Demon)) | (uint256(1) << uint256(E_Female_Skin.Ghost))
+            | (uint256(1) << uint256(E_Female_Skin.Glitch)) | (uint256(1) << uint256(E_Female_Skin.Goblin))
+            | (uint256(1) << uint256(E_Female_Skin.Invisible)) | (uint256(1) << uint256(E_Female_Skin.Mummy))
+            | (uint256(1) << uint256(E_Female_Skin.Robot)) | (uint256(1) << uint256(E_Female_Skin.Skeleton))
+            | (uint256(1) << uint256(E_Female_Skin.Vampire)) | (uint256(1) << uint256(E_Female_Skin.Zombie_Ape))
+            | (uint256(1) << uint256(E_Female_Skin.Zombie)));
+
+    // ============ Facial Hair Checks ============
     function maleHasBlackFacialHair(TraitsContext memory traits) internal pure returns (bool) {
         unchecked {
-            return (FACIAL_HAIR_IS_BLACK & (uint256(1) << uint256(traits.maleFacialHair))) != 0;
+            return (FACIAL_HAIR_IS_BLACK >> uint256(traits.maleFacialHair)) & 1 != 0;
         }
     }
 
+    // ============ Eye Wear Checks ============
     function maleEyeWearIsEyePatch(TraitsContext memory traits) internal pure returns (bool) {
         unchecked {
-            return ((MALE_EYEWEAR_IS_EYE_PATCH >> uint256(traits.maleEyeWear)) & 1) != 0;
-        }
-    }
-
-    function maleHeadwearIsCloakOrHoodie(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return (MALE_HEADWEAR_IS_CLOAK_OR_HOODIE & (uint256(1) << uint256(traits.maleHeadwear))) != 0;
+            return (MALE_EYEWEAR_IS_EYE_PATCH >> uint256(traits.maleEyeWear)) & 1 != 0;
         }
     }
 
     function femaleEyeWearIsEyePatch(TraitsContext memory traits) internal pure returns (bool) {
         unchecked {
-            return ((FEMALE_EYEWEAR_IS_EYE_PATCH >> uint256(traits.femaleEyeWear)) & 1) != 0;
+            return (FEMALE_EYEWEAR_IS_EYE_PATCH >> uint256(traits.femaleEyeWear)) & 1 != 0;
+        }
+    }
+
+    // ============ Headwear Checks ============
+    function maleHeadwearIsCloakOrHoodie(TraitsContext memory traits) internal pure returns (bool) {
+        unchecked {
+            return (MALE_HEADWEAR_IS_CLOAK_OR_HOODIE >> uint256(traits.maleHeadwear)) & 1 != 0;
         }
     }
 
     function femaleHeadwearIsCloakOrHoodie(TraitsContext memory traits) internal pure returns (bool) {
         unchecked {
-            return (FEMALE_HEADWEAR_IS_CLOAK_OR_HOODIE & (uint256(1) << uint256(traits.femaleHeadwear))) != 0;
+            return (FEMALE_HEADWEAR_IS_CLOAK_OR_HOODIE >> uint256(traits.femaleHeadwear)) & 1 != 0;
         }
     }
 
+    // ============ Sex Checks ============
     function isMale(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.sex == E_Sex.Male;
-        }
+        return traits.sex == E_Sex.Male;
     }
 
     function isFemale(TraitsContext memory traits) internal pure returns (bool) {
+        return traits.sex == E_Sex.Female;
+    }
+
+    // ============ Male Skin Checks (Optimized with bitmap) ============
+    /// @dev Optimized: uses bitmap negation instead of range check
+    function maleIsHuman(TraitsContext memory traits) internal pure returns (bool) {
         unchecked {
-            return traits.sex == E_Sex.Female;
+            return (MALE_NON_HUMAN_SKINS >> uint256(traits.maleSkin)) & 1 == 0;
         }
     }
 
-    function maleIsHuman(TraitsContext memory traits) internal pure returns (bool) {
+    /// @dev Consolidated non-human check using bitmap
+    function maleIsNonHuman(TraitsContext memory traits) internal pure returns (bool) {
         unchecked {
-            return traits.maleSkin >= E_Male_Skin.Human_1 && traits.maleSkin <= E_Male_Skin.Human_12;
+            return (MALE_NON_HUMAN_SKINS >> uint256(traits.maleSkin)) & 1 != 0;
         }
     }
 
     function maleIsAlien(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.maleSkin == E_Male_Skin.Alien;
-        }
+        return traits.maleSkin == E_Male_Skin.Alien;
     }
 
     function maleIsApe(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.maleSkin == E_Male_Skin.Ape;
-        }
+        return traits.maleSkin == E_Male_Skin.Ape;
     }
 
     function maleIsDemon(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.maleSkin == E_Male_Skin.Demon;
-        }
+        return traits.maleSkin == E_Male_Skin.Demon;
     }
 
     function maleIsGhost(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.maleSkin == E_Male_Skin.Ghost;
-        }
+        return traits.maleSkin == E_Male_Skin.Ghost;
     }
 
     function maleIsGlitch(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.maleSkin == E_Male_Skin.Glitch;
-        }
+        return traits.maleSkin == E_Male_Skin.Glitch;
     }
 
     function maleIsGoblin(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.maleSkin == E_Male_Skin.Goblin;
-        }
+        return traits.maleSkin == E_Male_Skin.Goblin;
     }
 
     function maleIsInvisible(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.maleSkin == E_Male_Skin.Invisible;
-        }
+        return traits.maleSkin == E_Male_Skin.Invisible;
     }
 
     function maleIsMummy(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.maleSkin == E_Male_Skin.Mummy;
-        }
+        return traits.maleSkin == E_Male_Skin.Mummy;
     }
 
     function maleIsPumpkin(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.maleSkin == E_Male_Skin.Pumpkin;
-        }
+        return traits.maleSkin == E_Male_Skin.Pumpkin;
     }
 
     function maleIsRobot(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.maleSkin == E_Male_Skin.Robot;
-        }
+        return traits.maleSkin == E_Male_Skin.Robot;
     }
 
     function maleIsSkeleton(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.maleSkin == E_Male_Skin.Skeleton;
-        }
+        return traits.maleSkin == E_Male_Skin.Skeleton;
     }
 
     function maleIsSnowman(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.maleSkin == E_Male_Skin.Snowman;
-        }
+        return traits.maleSkin == E_Male_Skin.Snowman;
     }
 
     function maleIsVampire(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.maleSkin == E_Male_Skin.Vampire;
-        }
+        return traits.maleSkin == E_Male_Skin.Vampire;
     }
 
     function maleIsYeti(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.maleSkin == E_Male_Skin.Yeti;
-        }
+        return traits.maleSkin == E_Male_Skin.Yeti;
     }
 
     function maleIsZombieApe(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.maleSkin == E_Male_Skin.Zombie_Ape;
-        }
+        return traits.maleSkin == E_Male_Skin.Zombie_Ape;
     }
 
     function maleIsZombie(TraitsContext memory traits) internal pure returns (bool) {
+        return traits.maleSkin == E_Male_Skin.Zombie;
+    }
+
+    // ============ Female Skin Checks (Optimized with bitmap) ============
+    /// @dev Optimized: uses bitmap negation instead of range check
+    function femaleIsHuman(TraitsContext memory traits) internal pure returns (bool) {
         unchecked {
-            return traits.maleSkin == E_Male_Skin.Zombie;
+            return (FEMALE_NON_HUMAN_SKINS >> uint256(traits.femaleSkin)) & 1 == 0;
         }
     }
 
-    function femaleIsHuman(TraitsContext memory traits) internal pure returns (bool) {
+    /// @dev Consolidated non-human check using bitmap
+    function femaleIsNonHuman(TraitsContext memory traits) internal pure returns (bool) {
         unchecked {
-            return traits.femaleSkin >= E_Female_Skin.Human_1 && traits.femaleSkin <= E_Female_Skin.Human_12;
+            return (FEMALE_NON_HUMAN_SKINS >> uint256(traits.femaleSkin)) & 1 != 0;
         }
     }
 
     function femaleIsAlien(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.femaleSkin == E_Female_Skin.Alien;
-        }
+        return traits.femaleSkin == E_Female_Skin.Alien;
     }
 
     function femaleIsApe(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.femaleSkin == E_Female_Skin.Ape;
-        }
+        return traits.femaleSkin == E_Female_Skin.Ape;
     }
 
     function femaleIsDemon(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.femaleSkin == E_Female_Skin.Demon;
-        }
+        return traits.femaleSkin == E_Female_Skin.Demon;
     }
 
     function femaleIsGhost(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.femaleSkin == E_Female_Skin.Ghost;
-        }
+        return traits.femaleSkin == E_Female_Skin.Ghost;
     }
 
     function femaleIsGlitch(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.femaleSkin == E_Female_Skin.Glitch;
-        }
+        return traits.femaleSkin == E_Female_Skin.Glitch;
     }
 
     function femaleIsGoblin(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.femaleSkin == E_Female_Skin.Goblin;
-        }
+        return traits.femaleSkin == E_Female_Skin.Goblin;
     }
 
     function femaleIsInvisible(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.femaleSkin == E_Female_Skin.Invisible;
-        }
+        return traits.femaleSkin == E_Female_Skin.Invisible;
     }
 
     function femaleIsMummy(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.femaleSkin == E_Female_Skin.Mummy;
-        }
+        return traits.femaleSkin == E_Female_Skin.Mummy;
     }
 
     function femaleIsRobot(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.femaleSkin == E_Female_Skin.Robot;
-        }
+        return traits.femaleSkin == E_Female_Skin.Robot;
     }
 
     function femaleIsSkeleton(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.femaleSkin == E_Female_Skin.Skeleton;
-        }
+        return traits.femaleSkin == E_Female_Skin.Skeleton;
     }
 
     function femaleIsVampire(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.femaleSkin == E_Female_Skin.Vampire;
-        }
+        return traits.femaleSkin == E_Female_Skin.Vampire;
     }
 
     function femaleIsZombieApe(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.femaleSkin == E_Female_Skin.Zombie_Ape;
-        }
+        return traits.femaleSkin == E_Female_Skin.Zombie_Ape;
     }
 
     function femaleIsZombie(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.femaleSkin == E_Female_Skin.Zombie;
-        }
+        return traits.femaleSkin == E_Female_Skin.Zombie;
     }
 
+    // ============ Has Trait Checks ============
     function maleHasHeadwear(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.maleHeadwear != E_Male_Headwear.None;
-        }
+        return traits.maleHeadwear != E_Male_Headwear.None;
     }
 
     function femaleHasHeadwear(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.femaleHeadwear != E_Female_Headwear.None;
-        }
+        return traits.femaleHeadwear != E_Female_Headwear.None;
     }
 
     function maleHasMask(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.maleMask != E_Male_Mask.None;
-        }
+        return traits.maleMask != E_Male_Mask.None;
     }
 
     function femaleHasMask(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.femaleMask != E_Female_Mask.None;
-        }
+        return traits.femaleMask != E_Female_Mask.None;
     }
 
     function maleHasFacialHair(TraitsContext memory traits) internal pure returns (bool) {
-        unchecked {
-            return traits.maleFacialHair != E_Male_Facial_Hair.None;
-        }
+        return traits.maleFacialHair != E_Male_Facial_Hair.None;
     }
 }

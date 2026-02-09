@@ -7,7 +7,6 @@
   --rpc-url $BASE_SEPOLIA_RPC \
   --private-key $PRIVATE_KEY \
   --broadcast \
-  --verify \
   --ffi \
   -vvv
 

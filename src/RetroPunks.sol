@@ -7,11 +7,13 @@ import { LibPRNG } from "./libraries/LibPRNG.sol";
 import { Utils } from "./libraries/Utils.sol";
 import { ERC721SeaDropPausableAndQueryable } from "./seadrop/extensions/ERC721SeaDropPausableAndQueryable.sol";
 
+/// @dev Packed struct for gas-efficient storage
+/// @notice First 3 fields fit in a single 32-byte slot
 struct TokenMetadata {
-    uint16 tokenIdSeed;
-    uint8 backgroundIndex;
-    bytes32 name;
-    string bio;
+    uint16 tokenIdSeed;    // 2 bytes
+    uint8 backgroundIndex; // 1 byte
+    bytes32 name;          // 32 bytes (next slot)
+    string bio;            // dynamic (next slot+)
 }
 
 /**
@@ -172,6 +174,8 @@ contract RetroPunks is ERC721SeaDropPausableAndQueryable {
     }
 
     // ----- Token Customization ----- //
+
+    /// @dev Optimized name validation using bitmap lookup
     function setTokenMetadata(uint256 tokenId, bytes32 name, string calldata bio, uint8 backgroundIndex) external onlyTokenOwner(tokenId) {
         if (revealMetaGenSet == 0) revert MetadataNotRevealedYet();
         if (backgroundIndex >= NUM_BACKGROUND) revert InvalidBackgroundIndex();
@@ -183,12 +187,45 @@ contract RetroPunks is ERC721SeaDropPausableAndQueryable {
             }
         }
 
-        for (uint256 i = 0; i < 32; i++) {
-            bytes1 c = name[i];
-            if (c == 0) break; // End of string
-            if (!((c >= 0x30 && c <= 0x39) || (c >= 0x41 && c <= 0x5A) || (c >= 0x61 && c <= 0x7A)
-                        || (c == 0x20 || c == 0x21 || c == 0x2D || c == 0x2E || c == 0x5F || c == 0x27))) {
-                revert InvalidCharacterInName();
+        // Optimized name validation using bitmap lookup
+        // Valid chars: 0-9, A-Z, a-z, space, !, -, ., _, '
+        assembly {
+            // Pre-computed bitmap for characters 0x00-0x7F
+            // Bit positions: space(0x20), !(0x21), '(0x27), -(0x2D), .(0x2E), 0-9(0x30-0x39), A-Z(0x41-0x5A), _(0x5F), a-z(0x61-0x7A)
+            // Low 64 bits (chars 0x00-0x3F): space, !, ', -, ., 0-9
+            // 0x20=32, 0x21=33, 0x27=39, 0x2D=45, 0x2E=46, 0x30-0x39=48-57
+            let validLow := 0x000003FF60000086 // Pre-computed: bits for space,!,',-.0-9
+
+            // High 64 bits (chars 0x40-0x7F) shifted down by 0x40:
+            // A-Z: 0x41-0x5A -> bits 1-26, _: 0x5F -> bit 31, a-z: 0x61-0x7A -> bits 33-58
+            let validHigh := 0x07FFFFFE87FFFFFE // Pre-computed: bits for A-Z, _, a-z
+
+            for { let i := 0 } lt(i, 32) { i := add(i, 1) } {
+                let c := byte(i, name)
+
+                // Null terminator ends validation
+                if iszero(c) { break }
+
+                // High chars (>= 0x7F) are invalid
+                if gt(c, 0x7A) {
+                    mstore(0x00, 0x9f0e0ac000000000000000000000000000000000000000000000000000000000)
+                    revert(0x00, 0x04)
+                }
+
+                // Check bitmap
+                let valid
+                switch lt(c, 0x40)
+                case 1 {
+                    valid := and(shr(c, validLow), 1)
+                }
+                default {
+                    valid := and(shr(sub(c, 0x40), validHigh), 1)
+                }
+
+                if iszero(valid) {
+                    mstore(0x00, 0x9f0e0ac000000000000000000000000000000000000000000000000000000000)
+                    revert(0x00, 0x04)
+                }
             }
         }
 

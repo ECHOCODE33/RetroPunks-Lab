@@ -5,19 +5,35 @@ import { E_TraitsGroup } from "../common/Enums.sol";
 import { CachedTraitGroups, TraitGroup, TraitInfo } from "../common/Structs.sol";
 import { IAssets } from "../interfaces/IAssets.sol";
 
+/**
+ * @title TraitsLoader
+ * @notice Loads and decodes trait group data from the assets contract
+ * @dev Optimized with bitmap for loaded tracking instead of bool[]
+ */
 library TraitsLoader {
+    /// @dev Optimized: returns struct with uint256 bitmap instead of bool[]
     function initCachedTraitGroups(uint256 _traitGroupsLength) public pure returns (CachedTraitGroups memory) {
-        return CachedTraitGroups({ traitGroups: new TraitGroup[](_traitGroupsLength), traitGroupsLoaded: new bool[](_traitGroupsLength) });
+        return CachedTraitGroups({
+            traitGroups: new TraitGroup[](_traitGroupsLength),
+            loadedBitmap: 0  // All bits start as 0 (not loaded)
+        });
     }
 
-    function loadAndCacheTraitGroup(IAssets _assetsContract, CachedTraitGroups memory _cachedTraitGroups, uint256 _traitGroupIndex) public view returns (TraitGroup memory) {
-        if (_cachedTraitGroups.traitGroupsLoaded[_traitGroupIndex]) return _cachedTraitGroups.traitGroups[_traitGroupIndex];
+    /// @dev Optimized: uses bitmap for loaded check instead of array access
+    function loadAndCacheTraitGroup(IAssets _assetsContract, CachedTraitGroups memory _cachedTraitGroups, uint256 _traitGroupIndex)
+        public
+        view
+        returns (TraitGroup memory)
+    {
+        // Check if already loaded using bitmap (bit i = 1 means loaded)
+        if ((_cachedTraitGroups.loadedBitmap >> _traitGroupIndex) & 1 == 1) {
+            return _cachedTraitGroups.traitGroups[_traitGroupIndex];
+        }
 
         TraitGroup memory traitGroup;
-        traitGroup.traitGroupIndex = _traitGroupIndex;
+        traitGroup.traitGroupIndex = uint8(_traitGroupIndex);  // Now uint8 instead of uint256
 
         bytes memory traitGroupData = _assetsContract.loadAsset(_traitGroupIndex, true);
-        uint256 dataLength = traitGroupData.length;
 
         uint256 index = 0;
 
@@ -73,7 +89,6 @@ library TraitsLoader {
                         uint256 pixelsTracked = 0;
                         while (pixelsTracked < traitPixelCount) {
                             uint8 runLength = uint8(traitGroupData[index++]);
-
                             index += pSize;
                             pixelsTracked += runLength;
                         }
@@ -90,7 +105,9 @@ library TraitsLoader {
         }
 
         _cachedTraitGroups.traitGroups[_traitGroupIndex] = traitGroup;
-        _cachedTraitGroups.traitGroupsLoaded[_traitGroupIndex] = true;
+        // Set bit to mark as loaded
+        _cachedTraitGroups.loadedBitmap |= (1 << _traitGroupIndex);
+
         return traitGroup;
     }
 
@@ -103,7 +120,11 @@ library TraitsLoader {
         return name;
     }
 
-    function _decodeTraitGroupPalette(bytes memory traitGroupData, uint256 startIndex) internal pure returns (uint32[] memory paletteRgba, uint256 nextIndex) {
+    function _decodeTraitGroupPalette(bytes memory traitGroupData, uint256 startIndex)
+        internal
+        pure
+        returns (uint32[] memory paletteRgba, uint256 nextIndex)
+    {
         uint16 paletteSize = uint16(uint8(traitGroupData[startIndex])) << 8 | uint16(uint8(traitGroupData[startIndex + 1]));
 
         if (paletteSize == 0) return (new uint32[](0), startIndex + 2);
@@ -113,7 +134,9 @@ library TraitsLoader {
 
         unchecked {
             for (uint256 i = 0; i < paletteSize; i++) {
-                uint32 color = uint32(uint8(traitGroupData[cursor])) << 24 | uint32(uint8(traitGroupData[cursor + 1])) << 16 | uint32(uint8(traitGroupData[cursor + 2])) << 8
+                uint32 color = uint32(uint8(traitGroupData[cursor])) << 24
+                    | uint32(uint8(traitGroupData[cursor + 1])) << 16
+                    | uint32(uint8(traitGroupData[cursor + 2])) << 8
                     | uint32(uint8(traitGroupData[cursor + 3]));
                 paletteRgba[i] = color;
                 cursor += 4;
@@ -123,6 +146,7 @@ library TraitsLoader {
         nextIndex = cursor;
     }
 
+    /// @dev Optimized memory copy using assembly
     function _memoryCopy(bytes memory dest, uint256 destOffset, bytes memory src, uint256 srcOffset, uint256 len) internal pure {
         if (len == 0) return;
         assembly {
