@@ -11,6 +11,7 @@
   --ffi \
   -vvv
 
+  
  cast call $RETROPUNKS "totalSupply()(uint256)" --rpc-url $BASE_SEPOLIA_RPC
 
 

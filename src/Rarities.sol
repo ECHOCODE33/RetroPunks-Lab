@@ -38,7 +38,7 @@ import { LibTraits } from "./libraries/LibTraits.sol";
  * @dev Rarity values are stored in bytes arrays and selected using a PRNG for gas efficiency
  */
 contract Rarities {
-    error TraitSelectionFailed();
+    // error TraitSelectionFailed();
 
     // ---------- Male Rarities ---------- //
 
@@ -179,7 +179,7 @@ contract Rarities {
             }
         }
 
-        revert TraitSelectionFailed();
+        // revert TraitSelectionFailed();
     }
 
     function selectMaleSkin(LibPRNG.PRNG memory prng) internal pure returns (E_Male_Skin) {
