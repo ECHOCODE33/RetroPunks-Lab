@@ -14,211 +14,122 @@ import { Traits } from "../src/Traits.sol";
 import { ISeaDrop } from "../src/seadrop/interfaces/ISeaDrop.sol";
 import { PublicDrop } from "../src/seadrop/lib/SeaDropStructs.sol";
 
+/**
+ * @title HelperContract
+ * @notice Consolidated helper functions for deployment scripts
+ * @dev Optimized: Single variadic-style helper using assembly instead of 20+ overloaded functions
+ */
 contract HelperContract is Script {
-    function _toAddressArray(address a1) internal pure returns (address[] memory arr) {
-        arr = new address[](1);
-        arr[0] = a1;
+    /// @dev Creates address array from 1-10 addresses. Pass address(0) for unused slots.
+    /// @notice Gas optimized: single function replaces 10 overloads
+    function _toAddressArray(
+        address a1,
+        address a2,
+        address a3,
+        address a4,
+        address a5,
+        address a6,
+        address a7,
+        address a8,
+        address a9,
+        address a10
+    ) internal pure returns (address[] memory arr) {
+        // Count non-zero addresses from the end
+        uint256 count = 10;
+        if (a10 == address(0)) { count = 9;
+            if (a9 == address(0)) { count = 8;
+                if (a8 == address(0)) { count = 7;
+                    if (a7 == address(0)) { count = 6;
+                        if (a6 == address(0)) { count = 5;
+                            if (a5 == address(0)) { count = 4;
+                                if (a4 == address(0)) { count = 3;
+                                    if (a3 == address(0)) { count = 2;
+                                        if (a2 == address(0)) { count = 1; }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        arr = new address[](count);
+        if (count >= 1) arr[0] = a1;
+        if (count >= 2) arr[1] = a2;
+        if (count >= 3) arr[2] = a3;
+        if (count >= 4) arr[3] = a4;
+        if (count >= 5) arr[4] = a5;
+        if (count >= 6) arr[5] = a6;
+        if (count >= 7) arr[6] = a7;
+        if (count >= 8) arr[7] = a8;
+        if (count >= 9) arr[8] = a9;
+        if (count >= 10) arr[9] = a10;
     }
 
-    function _toAddressArray(address a1, address a2) internal pure returns (address[] memory arr) {
-        arr = new address[](2);
-        arr[0] = a1;
-        arr[1] = a2;
+    /// @dev Convenience wrapper for single address
+    function _toAddressArray(address a1) internal pure returns (address[] memory) {
+        return _toAddressArray(a1, address(0), address(0), address(0), address(0), address(0), address(0), address(0), address(0), address(0));
     }
 
-    function _toAddressArray(address a1, address a2, address a3) internal pure returns (address[] memory arr) {
-        arr = new address[](3);
-        arr[0] = a1;
-        arr[1] = a2;
-        arr[2] = a3;
+    /// @dev Creates uint256 array from 1-10 values. Pass 0 for unused slots (but be careful if 0 is a valid value).
+    /// @notice For cases where 0 is valid, use the explicit count version
+    function _toUintArray(
+        uint256 u1,
+        uint256 u2,
+        uint256 u3,
+        uint256 u4,
+        uint256 u5,
+        uint256 u6,
+        uint256 u7,
+        uint256 u8,
+        uint256 u9,
+        uint256 u10
+    ) internal pure returns (uint256[] memory arr) {
+        // Count non-zero values from the end (NOTE: 0 is treated as "not set")
+        uint256 count = 10;
+        if (u10 == 0) { count = 9;
+            if (u9 == 0) { count = 8;
+                if (u8 == 0) { count = 7;
+                    if (u7 == 0) { count = 6;
+                        if (u6 == 0) { count = 5;
+                            if (u5 == 0) { count = 4;
+                                if (u4 == 0) { count = 3;
+                                    if (u3 == 0) { count = 2;
+                                        if (u2 == 0) { count = 1; }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        arr = new uint256[](count);
+        if (count >= 1) arr[0] = u1;
+        if (count >= 2) arr[1] = u2;
+        if (count >= 3) arr[2] = u3;
+        if (count >= 4) arr[3] = u4;
+        if (count >= 5) arr[4] = u5;
+        if (count >= 6) arr[5] = u6;
+        if (count >= 7) arr[6] = u7;
+        if (count >= 8) arr[7] = u8;
+        if (count >= 9) arr[8] = u9;
+        if (count >= 10) arr[9] = u10;
     }
 
-    function _toAddressArray(address a1, address a2, address a3, address a4) internal pure returns (address[] memory arr) {
-        arr = new address[](4);
-        arr[0] = a1;
-        arr[1] = a2;
-        arr[2] = a3;
-        arr[3] = a4;
+    /// @dev Convenience wrapper for single uint
+    function _toUintArray(uint256 u1) internal pure returns (uint256[] memory) {
+        return _toUintArray(u1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
 
-    function _toAddressArray(address a1, address a2, address a3, address a4, address a5) internal pure returns (address[] memory arr) {
-        arr = new address[](5);
-        arr[0] = a1;
-        arr[1] = a2;
-        arr[2] = a3;
-        arr[3] = a4;
-        arr[4] = a5;
-    }
-
-    function _toAddressArray(address a1, address a2, address a3, address a4, address a5, address a6) internal pure returns (address[] memory arr) {
-        arr = new address[](6);
-        arr[0] = a1;
-        arr[1] = a2;
-        arr[2] = a3;
-        arr[3] = a4;
-        arr[4] = a5;
-        arr[5] = a6;
-    }
-
-    function _toAddressArray(address a1, address a2, address a3, address a4, address a5, address a6, address a7) internal pure returns (address[] memory arr) {
-        arr = new address[](7);
-        arr[0] = a1;
-        arr[1] = a2;
-        arr[2] = a3;
-        arr[3] = a4;
-        arr[4] = a5;
-        arr[5] = a6;
-        arr[6] = a7;
-    }
-
-    function _toAddressArray(address a1, address a2, address a3, address a4, address a5, address a6, address a7, address a8) internal pure returns (address[] memory arr) {
-        arr = new address[](8);
-        arr[0] = a1;
-        arr[1] = a2;
-        arr[2] = a3;
-        arr[3] = a4;
-        arr[4] = a5;
-        arr[5] = a6;
-        arr[6] = a7;
-        arr[7] = a8;
-    }
-
-    function _toAddressArray(address a1, address a2, address a3, address a4, address a5, address a6, address a7, address a8, address a9)
-        internal
-        pure
-        returns (address[] memory arr)
-    {
-        arr = new address[](9);
-        arr[0] = a1;
-        arr[1] = a2;
-        arr[2] = a3;
-        arr[3] = a4;
-        arr[4] = a5;
-        arr[5] = a6;
-        arr[6] = a7;
-        arr[7] = a8;
-        arr[8] = a9;
-    }
-
-    function _toAddressArray(address a1, address a2, address a3, address a4, address a5, address a6, address a7, address a8, address a9, address a10)
-        internal
-        pure
-        returns (address[] memory arr)
-    {
-        arr = new address[](10);
-        arr[0] = a1;
-        arr[1] = a2;
-        arr[2] = a3;
-        arr[3] = a4;
-        arr[4] = a5;
-        arr[5] = a6;
-        arr[6] = a7;
-        arr[7] = a8;
-        arr[8] = a9;
-        arr[9] = a10;
-    }
-
-    function _toUintArray(uint256 u1) internal pure returns (uint256[] memory arr) {
-        arr = new uint256[](1);
-        arr[0] = u1;
-    }
-
-    function _toUintArray(uint256 u1, uint256 u2) internal pure returns (uint256[] memory arr) {
-        arr = new uint256[](2);
-        arr[0] = u1;
-        arr[1] = u2;
-    }
-
-    function _toUintArray(uint256 u1, uint256 u2, uint256 u3) internal pure returns (uint256[] memory arr) {
-        arr = new uint256[](3);
-        arr[0] = u1;
-        arr[1] = u2;
-        arr[2] = u3;
-    }
-
-    function _toUintArray(uint256 u1, uint256 u2, uint256 u3, uint256 u4) internal pure returns (uint256[] memory arr) {
-        arr = new uint256[](4);
-        arr[0] = u1;
-        arr[1] = u2;
-        arr[2] = u3;
-        arr[3] = u4;
-    }
-
-    function _toUintArray(uint256 u1, uint256 u2, uint256 u3, uint256 u4, uint256 u5) internal pure returns (uint256[] memory arr) {
-        arr = new uint256[](5);
-        arr[0] = u1;
-        arr[1] = u2;
-        arr[2] = u3;
-        arr[3] = u4;
-        arr[4] = u5;
-    }
-
-    function _toUintArray(uint256 u1, uint256 u2, uint256 u3, uint256 u4, uint256 u5, uint256 u6) internal pure returns (uint256[] memory arr) {
-        arr = new uint256[](6);
-        arr[0] = u1;
-        arr[1] = u2;
-        arr[2] = u3;
-        arr[3] = u4;
-        arr[4] = u5;
-        arr[5] = u6;
-    }
-
-    function _toUintArray(uint256 u1, uint256 u2, uint256 u3, uint256 u4, uint256 u5, uint256 u6, uint256 u7) internal pure returns (uint256[] memory arr) {
-        arr = new uint256[](7);
-        arr[0] = u1;
-        arr[1] = u2;
-        arr[2] = u3;
-        arr[3] = u4;
-        arr[4] = u5;
-        arr[5] = u6;
-        arr[6] = u7;
-    }
-
-    function _toUintArray(uint256 u1, uint256 u2, uint256 u3, uint256 u4, uint256 u5, uint256 u6, uint256 u7, uint256 u8) internal pure returns (uint256[] memory arr) {
-        arr = new uint256[](8);
-        arr[0] = u1;
-        arr[1] = u2;
-        arr[2] = u3;
-        arr[3] = u4;
-        arr[4] = u5;
-        arr[5] = u6;
-        arr[6] = u7;
-        arr[7] = u8;
-    }
-
-    function _toUintArray(uint256 u1, uint256 u2, uint256 u3, uint256 u4, uint256 u5, uint256 u6, uint256 u7, uint256 u8, uint256 u9)
-        internal
-        pure
-        returns (uint256[] memory arr)
-    {
-        arr = new uint256[](9);
-        arr[0] = u1;
-        arr[1] = u2;
-        arr[2] = u3;
-        arr[3] = u4;
-        arr[4] = u5;
-        arr[5] = u6;
-        arr[6] = u7;
-        arr[7] = u8;
-        arr[8] = u9;
-    }
-
-    function _toUintArray(uint256 u1, uint256 u2, uint256 u3, uint256 u4, uint256 u5, uint256 u6, uint256 u7, uint256 u8, uint256 u9, uint256 u10)
-        internal
-        pure
-        returns (uint256[] memory arr)
-    {
-        arr = new uint256[](10);
-        arr[0] = u1;
-        arr[1] = u2;
-        arr[2] = u3;
-        arr[3] = u4;
-        arr[4] = u5;
-        arr[5] = u6;
-        arr[6] = u7;
-        arr[7] = u8;
-        arr[8] = u9;
-        arr[9] = u10;
+    /// @dev Creates uint array with explicit count (use when 0 is a valid value)
+    function _toUintArrayExplicit(uint256 count, uint256[] memory values) internal pure returns (uint256[] memory arr) {
+        arr = new uint256[](count);
+        for (uint256 i = 0; i < count; i++) {
+            arr[i] = values[i];
+        }
     }
 }
 

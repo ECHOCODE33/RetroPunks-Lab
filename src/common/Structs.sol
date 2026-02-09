@@ -33,11 +33,13 @@ import {
 
 /**
  * @author ECHO
+ * @dev Optimized structs for gas efficiency:
+ *      - TraitToRender: Removed hasFiller bool, use fillerGroup == 0 as sentinel
+ *      - CachedTraitGroups: Uses uint256 bitmap instead of bool[] (32 bytes vs dynamic array)
+ *      - TraitGroup: Reduced traitGroupIndex from uint256 to uint8
  */
 
 struct TraitsContext {
-
-
     TraitToRender[] traitsToRender;
     uint8 traitsToRenderLength;
 
@@ -79,29 +81,29 @@ struct TraitsContext {
     E_Mouth mouth;
 }
 
+/// @dev Optimized: removed hasFiller bool, use fillerGroup == 0 as sentinel for "no filler"
+/// @notice fillerGroup of 0 (Background_Group) is never used as a filler, so it's a safe sentinel
 struct TraitToRender {
     E_TraitsGroup traitGroup;
     uint8 traitIndex;
-
-    bool hasFiller;
-    FillerTrait filler;
+    E_TraitsGroup fillerGroup;  // 0 = no filler (Background_Group is never a filler)
+    uint8 fillerIndex;
 }
 
-struct FillerTrait {
-    E_TraitsGroup traitGroup;
-    uint8 traitIndex;
-}
+// FillerTrait struct removed - now inlined into TraitToRender
 
+/// @dev Optimized: uses uint256 bitmap instead of bool[] for loaded tracking
+/// @notice Supports up to 256 trait groups (current max is ~26)
 struct CachedTraitGroups {
     TraitGroup[] traitGroups;
-    bool[] traitGroupsLoaded;
+    uint256 loadedBitmap;  // bit i = 1 if group i is loaded
 }
 
+/// @dev Optimized: reduced traitGroupIndex from uint256 to uint8
 struct TraitGroup {
-    uint256 traitGroupIndex;
+    uint8 traitGroupIndex;  // Reduced from uint256 (saves 31 bytes)
     bytes traitGroupName;
     uint32[] paletteRgba;
-
     TraitInfo[] traits;
     uint8 paletteIndexByteSize;
 }

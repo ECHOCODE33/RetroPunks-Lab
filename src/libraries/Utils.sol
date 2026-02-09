@@ -4,6 +4,11 @@ pragma solidity ^0.8.32;
 import { DynamicBuffer } from "./DynamicBuffer.sol";
 import { LibString } from "./LibString.sol";
 
+/**
+ * @title Utils
+ * @notice Utility functions for string manipulation and encoding
+ * @dev Optimized for gas efficiency with assembly implementations
+ */
 library Utils {
     function toString(bytes32 _bytes32) internal pure returns (string memory) {
         return string(toByteArray(_bytes32));
@@ -62,14 +67,27 @@ library Utils {
         }
     }
 
-    function toByteArray(bytes32 _bytes32) internal pure returns (bytes memory) {
-        uint8 i = 0;
-        while (i < 32 && _bytes32[i] != 0) i++;
-        bytes memory bytesArray = new bytes(i);
-        for (i = 0; i < 32 && _bytes32[i] != 0; i++) {
-            bytesArray[i] = _bytes32[i];
+    /// @dev Optimized bytes32 to byte array - single loop with assembly
+    function toByteArray(bytes32 _bytes32) internal pure returns (bytes memory result) {
+        assembly {
+            // Find length (first null byte or 32)
+            let len := 0
+            for { } lt(len, 32) { len := add(len, 1) } {
+                if iszero(byte(len, _bytes32)) { break }
+            }
+
+            // Allocate result
+            result := mload(0x40)
+            mstore(result, len)
+
+            // Copy bytes in one operation if len > 0
+            if len {
+                mstore(add(result, 32), _bytes32)
+            }
+
+            // Update free memory pointer (round up to 32-byte boundary)
+            mstore(0x40, add(result, and(add(add(len, 32), 31), not(31))))
         }
-        return bytesArray;
     }
 
     function concat(bytes memory buffer, bytes memory c1) internal pure {
@@ -165,19 +183,26 @@ library Utils {
         }
     }
 
+    /// @dev Optimized fixed length string formatting using assembly
     function _numToFixedLengthStr(uint256 decimalPlaces, int256 num) internal pure returns (string memory result) {
-        unchecked {
-            if (num < 0) num = -num;
+        assembly {
+            // Handle negative numbers
+            if slt(num, 0) { num := sub(0, num) }
 
-            bytes memory byteString;
-            for (uint256 i = 0; i < decimalPlaces; i++) {
-                uint256 digit = uint256(num % 10); // Always Positive
-                byteString = abi.encodePacked(LibString.toString(digit), byteString);
-                num = num / 10;
+            // Allocate memory for result
+            result := mload(0x40)
+            mstore(result, decimalPlaces)
+
+            // Write digits from right to left
+            let ptr := add(result, add(32, decimalPlaces))
+            for { let i := 0 } lt(i, decimalPlaces) { i := add(i, 1) } {
+                ptr := sub(ptr, 1)
+                mstore8(ptr, add(48, mod(num, 10))) // '0' = 48
+                num := div(num, 10)
             }
-            // Pad with leading zeros if the number was smaller than decimalPlaces
-            while (byteString.length < decimalPlaces) byteString = abi.encodePacked("0", byteString);
-            result = string(byteString);
+
+            // Update free memory pointer
+            mstore(0x40, add(result, add(64, decimalPlaces)))
         }
     }
 }
