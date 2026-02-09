@@ -6,7 +6,6 @@ import { console } from "forge-std/console.sol";
 
 import { Assets } from "../src/Assets.sol";
 import { IMetaGen } from "../src/interfaces/IMetaGen.sol";
-// import { Rarities } from "../src/Rarities.sol";
 import { MetaGen } from "../src/MetaGen.sol";
 import { PreviewMetaGen } from "../src/PreviewMetaGen.sol";
 import { RetroPunks } from "../src/RetroPunks.sol";

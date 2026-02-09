@@ -15,8 +15,8 @@ import { LibTraits } from "./libraries/LibTraits.sol";
  * @dev Inherits rarity values from Rarities contract and selects / generates traits using a PRNG for gas efficiency
  */
 contract Traits is ITraits, Rarities {
-    // uint32 private constant MIN_DATE = 4102444800;
-    // uint32 private constant RANGE_SIZE = 31496399;
+    uint32 private constant MIN_DATE = 4102444800;
+    uint32 private constant RANGE_SIZE = 31496399;
 
     uint256 private constant MALE_FILLER = (uint256(1) << uint256(E_Male_Skin.Robot)) | (uint256(1) << uint256(E_Male_Skin.Pumpkin));
     uint256 private constant FEMALE_FILLER = (uint256(1) << uint256(E_Female_Skin.Robot));
@@ -27,7 +27,7 @@ contract Traits is ITraits, Rarities {
 
         TraitsContext memory traits;
         traits.tokenIdSeed = _tokenIdSeed;
-        traits.birthday = uint32(4102444800 + LibPRNG.uniform(prng, 31496399 + 1));
+        traits.birthday = uint32(MIN_DATE + LibPRNG.uniform(prng, RANGE_SIZE + 1));
 
         if (_tokenIdSeed < NUM_SPECIAL_1S) {
             traits.specialId = _tokenIdSeed + 1;

@@ -11,7 +11,7 @@
   -vvv
 
   
- cast call $RETROPUNKS "totalSupply()(uint256)" --rpc-url $BASE_SEPOLIA_RPC
+ cast call $RETROPUNKS "totalSupply()(uint256)" 5 --rpc-url $BASE_SEPOLIA_RPC
 
 
 ### Deploy
