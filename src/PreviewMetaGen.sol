@@ -8,7 +8,7 @@ import { Utils } from "./libraries/Utils.sol";
 
 /**
  * @title PreviewMetaGen (Preview Metadata Generator)
- * @author ECHO
+ * @author ECHO (echomatrix.eth)
  * @notice Generates preview GIF & JSON attributes for unrevealed tokens in the RetroPunks collection
  * @dev Uses Assets contract to load pre-rendered GIF asset for gas efficiency
  */

@@ -13,7 +13,7 @@ import { Utils } from "./libraries/Utils.sol";
 
 /**
  * @title MetaGen (Metadata Generator)
- * @author ECHO
+ * @author ECHO (echomatrix.eth)
  * @notice Generates rendered SVG & JSON attributes for the RetroPunks collection, optimized for gas efficiency
  * @dev Uses TraitsLoader & TraitsRenderer libraries to efficiently generate base64 encoded SVG
  */

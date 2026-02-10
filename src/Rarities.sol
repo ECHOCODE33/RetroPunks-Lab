@@ -33,7 +33,7 @@ import { LibTraits } from "./libraries/LibTraits.sol";
 
 /**
  * @title Rarities
- * @author ECHO
+ * @author ECHO (echomatrix.eth)
  * @notice Rarities for the RetroPunks collection, optimized for gas efficiency
  * @dev Rarity values are stored in bytes arrays and selected using a PRNG for gas efficiency
  */

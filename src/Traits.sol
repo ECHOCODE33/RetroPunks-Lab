@@ -10,7 +10,7 @@ import { LibTraits } from "./libraries/LibTraits.sol";
 
 /**
  * @title Traits
- * @author ECHO
+ * @author ECHO (echomatrix.eth)
  * @notice Generates traits for the RetroPunks collection, optimized for gas efficiency
  * @dev Inherits rarity values from Rarities contract and selects / generates traits using a PRNG for gas efficiency
  */

@@ -8,7 +8,7 @@ import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
  * @title Assets
- * @author ECHO
+ * @author ECHO (echomatrix.eth)
  * @notice Efficient on-chain asset storage, optimized for gas efficiency
  * @dev Batch operations using SSTORE2 & LZ77 compression
  */
