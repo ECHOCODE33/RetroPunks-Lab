@@ -86,7 +86,8 @@ library TraitsRenderer {
             Utils.concat(buffer, bytes(Utils.toString(trait.y2)));
             Utils.concat(buffer, '">');
 
-            bool isPixelated = bg == E_Background_Type.P_Vertical || bg == E_Background_Type.P_Horizontal || bg == E_Background_Type.P_Down || bg == E_Background_Type.P_Up;
+            bool isPixelated =
+                bg == E_Background_Type.P_Vertical || bg == E_Background_Type.P_Horizontal || bg == E_Background_Type.P_Down || bg == E_Background_Type.P_Up;
 
             if (isPixelated) _renderPixelGradientStops(buffer, cachedTraitGroups, bgGroupIndex, trait);
             else _renderSmoothGradientStops(buffer, cachedTraitGroups, bgGroupIndex, trait);
@@ -135,7 +136,10 @@ library TraitsRenderer {
         }
     }
 
-    function _renderPixelGradientStops(bytes memory buffer, CachedTraitGroups memory cachedTraitGroups, uint256 traitGroupIndex, TraitInfo memory trait) private pure {
+    function _renderPixelGradientStops(bytes memory buffer, CachedTraitGroups memory cachedTraitGroups, uint256 traitGroupIndex, TraitInfo memory trait)
+        private
+        pure
+    {
         TraitGroup memory traitGroup = cachedTraitGroups.traitGroups[traitGroupIndex];
         require(trait.traitData.length > 0, "TraitData is empty, couldn't fetch gradient stops");
 
@@ -163,7 +167,10 @@ library TraitsRenderer {
         }
     }
 
-    function _renderSmoothGradientStops(bytes memory buffer, CachedTraitGroups memory cachedTraitGroups, uint256 traitGroupIndex, TraitInfo memory trait) private pure {
+    function _renderSmoothGradientStops(bytes memory buffer, CachedTraitGroups memory cachedTraitGroups, uint256 traitGroupIndex, TraitInfo memory trait)
+        private
+        pure
+    {
         TraitGroup memory traitGroup = cachedTraitGroups.traitGroups[traitGroupIndex];
         require(trait.traitData.length > 0, "TraitData is empty, couldn't fetch gradient stops");
 

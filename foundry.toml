@@ -12,6 +12,7 @@ optimizer = true
 optimizer_runs = 200
 ignored_error_codes = [2424, 8429]
 bytecode_hash = "none"
+fs_permissions = [{ access = "read-write", path = "./" }]
 remappings = [
   '@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/',
   '@solady/=lib/solady/src/',
@@ -38,7 +39,7 @@ exclude_lints = [
 ]
 
 [fmt]
-line_length = 175
+line_length = 165
 bracket_spacing = true
 sort_imports = true
 ignore = [

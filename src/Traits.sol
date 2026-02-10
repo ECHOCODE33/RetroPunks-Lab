@@ -150,7 +150,8 @@ contract Traits is ITraits, Rarities {
         _addTraitToRender(traits, E_TraitsGroup.Male_Headwear_Group, headwear);
 
         if ((MALE_FILLER >> uint8(traits.maleSkin)) & 1 == 1) {
-            uint8 filler = traits.maleSkin == E_Male_Skin.Robot ? uint8(E_Filler_Traits.Male_Robot_Headwear_Cover) : uint8(E_Filler_Traits.Male_Pumpkin_Headwear_Cover);
+            uint8 filler =
+                traits.maleSkin == E_Male_Skin.Robot ? uint8(E_Filler_Traits.Male_Robot_Headwear_Cover) : uint8(E_Filler_Traits.Male_Pumpkin_Headwear_Cover);
 
             _addFillerTrait(traits, E_TraitsGroup.Filler_Traits_Group, filler);
         }

@@ -41,10 +41,12 @@ library LibTraits {
             | (uint256(1) << uint256(E_Male_Eye_Wear.Eye_Patch)) | (uint256(1) << uint256(E_Male_Eye_Wear.Pirate_Eye_Patch))
             | (uint256(1) << uint256(E_Male_Eye_Wear.Eye_Mask)));
     uint256 private constant MALE_HEADWEAR_IS_CLOAK_OR_HOODIE =
-        ((uint256(1) << uint256(E_Male_Headwear.Cloak_Black)) | (uint256(1) << uint256(E_Male_Headwear.Cloak_Blue)) | (uint256(1) << uint256(E_Male_Headwear.Cloak_Green))
-            | (uint256(1) << uint256(E_Male_Headwear.Cloak_Purple)) | (uint256(1) << uint256(E_Male_Headwear.Cloak_Red)) | (uint256(1) << uint256(E_Male_Headwear.Cloak_White))
-            | (uint256(1) << uint256(E_Male_Headwear.Cloak)) | (uint256(1) << uint256(E_Male_Headwear.Hoodie_Blue)) | (uint256(1) << uint256(E_Male_Headwear.Hoodie_Green))
-            | (uint256(1) << uint256(E_Male_Headwear.Hoodie_Purple)) | (uint256(1) << uint256(E_Male_Headwear.Hoodie_Red)) | (uint256(1) << uint256(E_Male_Headwear.Hoodie))
+        ((uint256(1) << uint256(E_Male_Headwear.Cloak_Black)) | (uint256(1) << uint256(E_Male_Headwear.Cloak_Blue))
+            | (uint256(1) << uint256(E_Male_Headwear.Cloak_Green)) | (uint256(1) << uint256(E_Male_Headwear.Cloak_Purple))
+            | (uint256(1) << uint256(E_Male_Headwear.Cloak_Red)) | (uint256(1) << uint256(E_Male_Headwear.Cloak_White))
+            | (uint256(1) << uint256(E_Male_Headwear.Cloak)) | (uint256(1) << uint256(E_Male_Headwear.Hoodie_Blue))
+            | (uint256(1) << uint256(E_Male_Headwear.Hoodie_Green)) | (uint256(1) << uint256(E_Male_Headwear.Hoodie_Purple))
+            | (uint256(1) << uint256(E_Male_Headwear.Hoodie_Red)) | (uint256(1) << uint256(E_Male_Headwear.Hoodie))
             | (uint256(1) << uint256(E_Male_Headwear.Sherpa_Hat_Blue)) | (uint256(1) << uint256(E_Male_Headwear.Sherpa_Hat_Brown))
             | (uint256(1) << uint256(E_Male_Headwear.Sherpa_Hat_Red)));
 
@@ -59,11 +61,12 @@ library LibTraits {
     uint256 private constant FEMALE_HEADWEAR_IS_CLOAK_OR_HOODIE =
         ((uint256(1) << uint256(E_Female_Headwear.Cloak_Black)) | (uint256(1) << uint256(E_Female_Headwear.Cloak_Blue))
             | (uint256(1) << uint256(E_Female_Headwear.Cloak_Green)) | (uint256(1) << uint256(E_Female_Headwear.Cloak_Purple))
-            | (uint256(1) << uint256(E_Female_Headwear.Cloak_Red)) | (uint256(1) << uint256(E_Female_Headwear.Cloak_White)) | (uint256(1) << uint256(E_Female_Headwear.Cloak))
-            | (uint256(1) << uint256(E_Female_Headwear.Hoodie_Blue)) | (uint256(1) << uint256(E_Female_Headwear.Hoodie_Green))
-            | (uint256(1) << uint256(E_Female_Headwear.Hoodie_Purple)) | (uint256(1) << uint256(E_Female_Headwear.Hoodie_Red))
-            | (uint256(1) << uint256(E_Female_Headwear.Hoodie)) | (uint256(1) << uint256(E_Female_Headwear.Sherpa_Hat_Blue))
-            | (uint256(1) << uint256(E_Female_Headwear.Sherpa_Hat_Brown)) | (uint256(1) << uint256(E_Female_Headwear.Sherpa_Hat_Red)));
+            | (uint256(1) << uint256(E_Female_Headwear.Cloak_Red)) | (uint256(1) << uint256(E_Female_Headwear.Cloak_White))
+            | (uint256(1) << uint256(E_Female_Headwear.Cloak)) | (uint256(1) << uint256(E_Female_Headwear.Hoodie_Blue))
+            | (uint256(1) << uint256(E_Female_Headwear.Hoodie_Green)) | (uint256(1) << uint256(E_Female_Headwear.Hoodie_Purple))
+            | (uint256(1) << uint256(E_Female_Headwear.Hoodie_Red)) | (uint256(1) << uint256(E_Female_Headwear.Hoodie))
+            | (uint256(1) << uint256(E_Female_Headwear.Sherpa_Hat_Blue)) | (uint256(1) << uint256(E_Female_Headwear.Sherpa_Hat_Brown))
+            | (uint256(1) << uint256(E_Female_Headwear.Sherpa_Hat_Red)));
 
     function maleHasBlackFacialHair(TraitsContext memory traits) internal pure returns (bool) {
         return (FACIAL_HAIR_IS_BLACK & (uint256(1) << uint256(traits.maleFacialHair))) != 0;

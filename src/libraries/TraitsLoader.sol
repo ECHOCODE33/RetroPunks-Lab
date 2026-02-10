@@ -10,7 +10,11 @@ library TraitsLoader {
         return CachedTraitGroups({ traitGroups: new TraitGroup[](_traitGroupsLength), traitGroupsLoaded: new bool[](_traitGroupsLength) });
     }
 
-    function loadAndCacheTraitGroup(IAssets _assetsContract, CachedTraitGroups memory _cachedTraitGroups, uint256 _traitGroupIndex) public view returns (TraitGroup memory) {
+    function loadAndCacheTraitGroup(IAssets _assetsContract, CachedTraitGroups memory _cachedTraitGroups, uint256 _traitGroupIndex)
+        public
+        view
+        returns (TraitGroup memory)
+    {
         if (_cachedTraitGroups.traitGroupsLoaded[_traitGroupIndex]) return _cachedTraitGroups.traitGroups[_traitGroupIndex];
 
         TraitGroup memory traitGroup;
@@ -113,8 +117,8 @@ library TraitsLoader {
 
         unchecked {
             for (uint256 i = 0; i < paletteSize; i++) {
-                uint32 color = uint32(uint8(traitGroupData[cursor])) << 24 | uint32(uint8(traitGroupData[cursor + 1])) << 16 | uint32(uint8(traitGroupData[cursor + 2])) << 8
-                    | uint32(uint8(traitGroupData[cursor + 3]));
+                uint32 color = uint32(uint8(traitGroupData[cursor])) << 24 | uint32(uint8(traitGroupData[cursor + 1])) << 16
+                    | uint32(uint8(traitGroupData[cursor + 2])) << 8 | uint32(uint8(traitGroupData[cursor + 3]));
                 paletteRgba[i] = color;
                 cursor += 4;
             }

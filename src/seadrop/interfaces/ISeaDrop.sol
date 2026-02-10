@@ -26,9 +26,14 @@ interface ISeaDrop is SeaDropErrorsAndEvents {
      * @param mintParams       The mint parameters.
      * @param proof            The proof for the leaf of the allow list.
      */
-    function mintAllowList(address nftContract, address feeRecipient, address minterIfNotPayer, uint256 quantity, MintParams calldata mintParams, bytes32[] calldata proof)
-        external
-        payable;
+    function mintAllowList(
+        address nftContract,
+        address feeRecipient,
+        address minterIfNotPayer,
+        uint256 quantity,
+        MintParams calldata mintParams,
+        bytes32[] calldata proof
+    ) external payable;
 
     /**
      * @notice Mint with a server-side signature.

@@ -48,6 +48,8 @@ contract RetroPunks is IRetroPunks, ERC721SeaDropPausableAndQueryable {
     uint256 public globalSeed;
     uint256 public shufflerSeed;
 
+    uint8 public defaultBackgroundIndex = 0;
+
     uint8 public mintIsClosed = 0;
 
     uint8 internal revealMetaGenSet = 0;
@@ -91,6 +93,10 @@ contract RetroPunks is IRetroPunks, ERC721SeaDropPausableAndQueryable {
         if (totalSupply() != 0) emit BatchMetadataUpdate(1, _nextTokenId() - 1);
     }
 
+    function setDefaultBackgroundIndex(uint8 _defaultBackgroundIndex) external onlyOwner {
+        defaultBackgroundIndex = _defaultBackgroundIndex;
+    }
+
     function closeMint() external onlyOwner {
         mintIsClosed = 1;
     }
@@ -115,38 +121,38 @@ contract RetroPunks is IRetroPunks, ERC721SeaDropPausableAndQueryable {
         _tokenIdSeedShuffler.initialize(_maxSupply > 1000 ? _maxSupply : _maxSupply * 2);
     }
 
-    function batchOwnerMint(address[] calldata toAddresses, uint256[] calldata amounts) external onlyOwner nonReentrant {
-        if (toAddresses.length != amounts.length) revert ArrayLengthMismatch();
+    function batchOwnerMint(address[] calldata _toAddresses, uint256[] calldata _amounts) external onlyOwner nonReentrant {
+        if (_toAddresses.length != _amounts.length) revert ArrayLengthMismatch();
 
         uint256 totalRequested = 0;
 
         // Calculate total once to check supply and limits efficiently
-        for (uint256 i = 0; i < amounts.length; i++) {
-            totalRequested += amounts[i];
+        for (uint256 i = 0; i < _amounts.length; i++) {
+            totalRequested += _amounts[i];
         }
 
         _checkMaxSupply(totalRequested);
 
         // Mint to each address
-        for (uint256 i = 0; i < toAddresses.length; i++) {
-            _addInternalMintMetadata(amounts[i]);
-            _safeMint(toAddresses[i], amounts[i]);
+        for (uint256 i = 0; i < _toAddresses.length; i++) {
+            _addInternalMintMetadata(_amounts[i]);
+            _safeMint(_toAddresses[i], _amounts[i]);
         }
     }
 
-    function setTokenMetadata(uint256 tokenId, bytes32 name, string calldata bio, uint8 backgroundIndex) external onlyTokenOwner(tokenId) {
+    function setTokenMetadata(uint256 _tokenId, bytes32 _name, string calldata _bio, uint8 _backgroundIndex) external onlyTokenOwner(_tokenId) {
         if (revealMetaGenSet == 0) revert MetadataNotRevealedYet();
-        if (backgroundIndex >= NUM_BACKGROUND) revert InvalidBackgroundIndex();
-        if (bytes(bio).length > 160) revert BioIsTooLong();
+        if (_backgroundIndex >= NUM_BACKGROUND) revert InvalidBackgroundIndex();
+        if (bytes(_bio).length > 160) revert BioIsTooLong();
 
-        if (globalTokenMetadata[tokenId].tokenIdSeed < NUM_PRE_RENDERED_SPECIALS) {
-            if (backgroundIndex != globalTokenMetadata[tokenId].backgroundIndex) {
+        if (globalTokenMetadata[_tokenId].tokenIdSeed < NUM_PRE_RENDERED_SPECIALS) {
+            if (_backgroundIndex != globalTokenMetadata[_tokenId].backgroundIndex) {
                 revert("Special Punks cannot change background");
             }
         }
 
         for (uint256 i = 0; i < 32; i++) {
-            bytes1 c = name[i];
+            bytes1 c = _name[i];
             if (c == 0) break; // End of string
             if (!((c >= 0x30 && c <= 0x39) || (c >= 0x41 && c <= 0x5A) || (c >= 0x61 && c <= 0x7A)
                         || (c == 0x20 || c == 0x21 || c == 0x2D || c == 0x2E || c == 0x5F || c == 0x27))) {
@@ -154,56 +160,59 @@ contract RetroPunks is IRetroPunks, ERC721SeaDropPausableAndQueryable {
             }
         }
 
-        TokenMetadata storage meta = globalTokenMetadata[tokenId];
-        meta.name = name;
-        meta.bio = bio;
-        meta.backgroundIndex = backgroundIndex;
+        TokenMetadata storage meta = globalTokenMetadata[_tokenId];
+        meta.name = _name;
+        meta.bio = _bio;
+        meta.backgroundIndex = _backgroundIndex;
 
-        emit MetadataUpdate(tokenId);
+        emit MetadataUpdate(_tokenId);
     }
 
-    function _saveNewSeed(uint256 tokenId, uint256 remaining) internal {
-        if (remaining == 0) revert NoRemainingTokens();
+    function _saveNewSeed(uint256 _tokenId, uint256 _remaining) internal {
+        if (_remaining == 0) revert NoRemainingTokens();
 
         uint256 numShuffled = _tokenIdSeedShuffler.numShuffled();
         uint256 randomness = uint256(keccak256(abi.encodePacked(shufflerSeed, numShuffled)));
         uint256 newTokenIdSeed = _tokenIdSeedShuffler.next(randomness);
 
-        globalTokenMetadata[tokenId] = TokenMetadata({
-            tokenIdSeed: uint16(newTokenIdSeed), backgroundIndex: 0, name: bytes32(abi.encodePacked("#", Utils.toString(tokenId))), bio: "A RetroPunk living on-chain."
+        globalTokenMetadata[_tokenId] = TokenMetadata({
+            tokenIdSeed: uint16(newTokenIdSeed),
+            backgroundIndex: defaultBackgroundIndex,
+            name: bytes32(abi.encodePacked("#", Utils.toString(_tokenId))),
+            bio: "A RetroPunk living on-chain."
         });
     }
 
-    function _addInternalMintMetadata(uint256 quantity) internal {
+    function _addInternalMintMetadata(uint256 _quantity) internal {
         if (shufflerSeed == 0) revert ShufflerSeedNotRevealedYet();
 
         uint256 currentMintCount = _totalMinted();
 
-        for (uint256 i = 0; i < quantity; i++) {
+        for (uint256 i = 0; i < _quantity; i++) {
             _saveNewSeed(currentMintCount + i + 1, _maxSupply - (currentMintCount + i));
         }
     }
 
-    function _checkMaxSupply(uint256 quantity) internal view {
-        if (_totalMinted() + quantity > maxSupply()) {
-            revert MintQuantityExceedsMaxSupply(_totalMinted() + quantity, maxSupply());
+    function _checkMaxSupply(uint256 _quantity) internal view {
+        if (_totalMinted() + _quantity > maxSupply()) {
+            revert MintQuantityExceedsMaxSupply(_totalMinted() + _quantity, maxSupply());
         }
     }
 
-    function _mint(address to, uint256 quantity) internal override {
+    function _mint(address _to, uint256 _quantity) internal override {
         if (mintIsClosed == 1) revert MintIsClosed();
-        _checkMaxSupply(quantity);
-        _addInternalMintMetadata(quantity);
-        super._mint(to, quantity);
+        _checkMaxSupply(_quantity);
+        _addInternalMintMetadata(_quantity);
+        super._mint(_to, _quantity);
         if (_totalMinted() == maxSupply()) mintIsClosed = 1;
     }
 
     function tokenURI(uint256 tokenId) public view override tokenExists(tokenId) returns (string memory) {
         TokenMetadata memory meta = globalTokenMetadata[tokenId];
-        return renderDataUri(tokenId, meta.tokenIdSeed, meta.backgroundIndex, Utils.toString(meta.name), meta.bio, globalSeed);
+        return renderDataURI(tokenId, meta.tokenIdSeed, meta.backgroundIndex, Utils.toString(meta.name), meta.bio, globalSeed);
     }
 
-    function renderDataUri(uint256 _tokenId, uint16 _tokenIdSeed, uint8 _backgroundIndex, string memory _name, string memory _bio, uint256 _globalSeed)
+    function renderDataURI(uint256 _tokenId, uint16 _tokenIdSeed, uint8 _backgroundIndex, string memory _name, string memory _bio, uint256 _globalSeed)
         internal
         view
         returns (string memory)
@@ -216,7 +225,7 @@ contract RetroPunks is IRetroPunks, ERC721SeaDropPausableAndQueryable {
         if (revealMetaGenSet == 0) {
             // Pre-reveal: use placeholder values
             (svg,) = metaGen.generateMetadata(_tokenIdSeed, _backgroundIndex, _globalSeed);
-            finalName = "Unrevealed Punk";
+            finalName = "#???";
             finalBio = "Wait for the reveal...";
             attributes = '"attributes":[{"trait_type":"Status","value":"Unrevealed"}]';
         } else {

@@ -83,7 +83,8 @@ contract Rarities {
 
     bytes private constant F_SKIN = hex"0000001900E1000F002D0041001402EE02EE02EE02EE02EE02EE02EE02EE02EE02EE02EE02EE00080019005A0016000A012C0096";
 
-    bytes private constant F_EYES = hex"000000320064000B000B000B000B000B000B000B000B000B00FA001E001E001E001E001E001E001E001E00000000101D00190019101D007D01F401F4004B";
+    bytes private constant F_EYES =
+        hex"000000320064000B000B000B000B000B000B000B000B000B00FA001E001E001E001E001E001E001E001E00000000101D00190019101D007D01F401F4004B";
 
     bytes private constant F_FACE_A = hex"24A10010000C004B0010007D0023000A000A00080012000A0016000C00C8000C0014000E0008";
     bytes private constant F_FACE_B = hex"25C100000000004B001000000000000A000A0000000000000000000C00C8000C000000000000";
@@ -315,8 +316,8 @@ contract Rarities {
             packed = F_FACE_B;
             totalWeight = 10000;
         } else if (
-            LibTraits.femaleIsAlien(ctx) || LibTraits.femaleIsDemon(ctx) || LibTraits.femaleIsGhost(ctx) || LibTraits.femaleIsGlitch(ctx) || LibTraits.femaleIsGoblin(ctx)
-                || LibTraits.femaleIsSkeleton(ctx) || LibTraits.femaleIsVampire(ctx)
+            LibTraits.femaleIsAlien(ctx) || LibTraits.femaleIsDemon(ctx) || LibTraits.femaleIsGhost(ctx) || LibTraits.femaleIsGlitch(ctx)
+                || LibTraits.femaleIsGoblin(ctx) || LibTraits.femaleIsSkeleton(ctx) || LibTraits.femaleIsVampire(ctx)
         ) {
             // All other weights (Only Mole, Tattoos, Bandage)
             packed = F_FACE_C;

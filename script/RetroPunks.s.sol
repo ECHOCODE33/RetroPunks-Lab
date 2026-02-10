@@ -149,12 +149,12 @@ contract RetroPunksScript is HelperContract {
     RetroPunks public retroPunksContract = RetroPunks(RETROPUNKS);
     IMetaGen public metaGenContract;
 
-    uint256 public MAX_SUPPLY = 30;
-    uint256 public GLOBAL_SEED = 6397004135;
-    uint256 public GLOBAL_NONCE = 5291012319;
+    uint256 public MAX_SUPPLY = 10000;
+    uint256 public GLOBAL_SEED = 3801428711;
+    uint256 public GLOBAL_NONCE = 6637905404;
     bytes32 public GLOBAL_SEED_HASH = keccak256(abi.encodePacked(GLOBAL_SEED, GLOBAL_NONCE));
-    uint256 public SHUFFLER_SEED = 2401460252;
-    uint256 public SHUFFLER_NONCE = 8904927786;
+    uint256 public SHUFFLER_SEED = 7409379534;
+    uint256 public SHUFFLER_NONCE = 3929615063;
     bytes32 public SHUFFLER_SEED_HASH = keccak256(abi.encodePacked(SHUFFLER_SEED, SHUFFLER_NONCE));
 
     // ======================== CALL ORDER (run in sequence) ========================
@@ -196,6 +196,24 @@ contract RetroPunksScript is HelperContract {
     }
 
     /**
+     * 1. Deploy RetroPunks and dependencies.
+     * @dev Run with: forge script script/RetroPunks.s.sol:RetroPunksScript --sig "deploy()" --rpc-url <RPC_URL> --broadcast
+     */
+    function deployContract() external {
+        vm.startBroadcast();
+
+        address[] memory allowedSeaDrop = new address[](1);
+        allowedSeaDrop[0] = 0x00005EA00Ac477B1030CE78506496e8C2dE24bf5;
+
+        RetroPunks retroPunks =
+            new RetroPunks(PreviewMetaGen(0x36733D835Bcd02d59FF29532D0975aBa3Ae232f1), GLOBAL_SEED_HASH, SHUFFLER_SEED_HASH, MAX_SUPPLY, allowedSeaDrop);
+
+        console.log("RetroPunks:", address(retroPunks));
+
+        vm.stopBroadcast();
+    }
+
+    /**
      * 2. Add assets batch (required before any minting).
      */
     function addAssetsBatch() external {
@@ -205,6 +223,7 @@ contract RetroPunksScript is HelperContract {
         inputs[1] = "script";
         inputs[2] = "script/AddAssetsBatch.s.sol:AddAssetsBatch";
         inputs[3] = "--rpc-url";
+        // inputs[4] = vm.envString("LOCAL_HOST_RPC");
         inputs[4] = vm.envString("BASE_SEPOLIA_RPC");
         inputs[5] = "--private-key";
         inputs[6] = vm.envString("PRIVATE_KEY");
@@ -225,6 +244,7 @@ contract RetroPunksScript is HelperContract {
         inputs[1] = "script";
         inputs[2] = "script/VerifyAssets.s.sol:VerifyAssets";
         inputs[3] = "--rpc-url";
+        // inputs[4] = vm.envString("LOCAL_HOST_RPC");
         inputs[4] = vm.envString("BASE_SEPOLIA_RPC");
         inputs[5] = "--private-key";
         inputs[6] = vm.envString("PRIVATE_KEY");
@@ -294,7 +314,7 @@ contract RetroPunksScript is HelperContract {
      * 6. Batch owner mint to multiple addresses (optional).
      */
     function batchOwnerMint() external {
-        address[] memory recipients = _toAddressArray(0x1006842663a46B628A823798De55FBb94b7AD4fb);
+        address[] memory recipients = _toAddressArray(OWNER);
         uint256[] memory quantities = _toUintArray(5);
 
         console.log("=== Batch Owner Minting ===");
@@ -324,7 +344,7 @@ contract RetroPunksScript is HelperContract {
      */
     function mintAsUser() external {
         uint256 minterKey = PRIVATE_KEY;
-        uint256 quantity = uint256(10);
+        uint256 quantity = uint256(5);
 
         ISeaDrop seaDrop = ISeaDrop(SEADROP);
         PublicDrop memory publicDrop = seaDrop.getPublicDrop(RETROPUNKS);
@@ -390,6 +410,21 @@ contract RetroPunksScript is HelperContract {
     }
 
     /**
+     * 10. Set the default background index
+     */
+    function setDefaultBackgroundIndex(uint8 _defaultBackgroundIndex) external {
+        console.log("=== Setting Default Background Index ===");
+        console.log("RetroPunks:", RETROPUNKS);
+        console.log("Default Background Index:", retroPunksContract.defaultBackgroundIndex());
+
+        vm.startBroadcast(PRIVATE_KEY);
+        retroPunksContract.setDefaultBackgroundIndex(_defaultBackgroundIndex);
+        vm.stopBroadcast();
+
+        console.log("Default background index set to", _defaultBackgroundIndex, "successfully!");
+    }
+
+    /**
      * 10. Close minting permanently (irreversible). Optional, when done.
      */
     function closeMint() external {
@@ -415,10 +450,10 @@ contract RetroPunksScript is HelperContract {
     function customizeToken() external {
         address tokenOwner = vm.addr(PRIVATE_KEY);
 
-        uint256 tokenId = 3;
-        string memory name = "Bach";
-        string memory bio = "Legendary musician & composer of the Baroque era.";
-        uint8 backgroundIndex = 8;
+        uint256 tokenId = 5;
+        string memory name = "Vivaldi";
+        string memory bio = "Legendary violin musician & composer of the Baroque era.";
+        uint8 backgroundIndex = 11;
 
         console.log("=== Customizing Token ===");
         console.log("Token ID:", tokenId);
