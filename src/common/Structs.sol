@@ -31,13 +31,7 @@ import {
     E_TraitsGroup
 } from "./Enums.sol";
 
-/**
- * @author ECHO
- */
-
 struct TraitsContext {
-
-
     TraitToRender[] traitsToRender;
     uint8 traitsToRenderLength;
 
