@@ -224,7 +224,7 @@ contract RetroPunksScript is HelperContract {
         inputs[2] = "script/AddAssetsBatch.s.sol:AddAssetsBatch";
         inputs[3] = "--rpc-url";
         // inputs[4] = vm.envString("LOCAL_HOST_RPC");
-        inputs[4] = vm.envString("BASE_SEPOLIA_RPC");
+        inputs[4] = vm.envString("BASE_MAINNET_RPC");
         inputs[5] = "--private-key";
         inputs[6] = vm.envString("PRIVATE_KEY");
         inputs[7] = "--broadcast";
@@ -245,7 +245,7 @@ contract RetroPunksScript is HelperContract {
         inputs[2] = "script/VerifyAssets.s.sol:VerifyAssets";
         inputs[3] = "--rpc-url";
         // inputs[4] = vm.envString("LOCAL_HOST_RPC");
-        inputs[4] = vm.envString("BASE_SEPOLIA_RPC");
+        inputs[4] = vm.envString("BASE_MAINNET_RPC");
         inputs[5] = "--private-key";
         inputs[6] = vm.envString("PRIVATE_KEY");
         inputs[7] = "--broadcast";

@@ -33,7 +33,7 @@ BACKGROUNDS = [
     {
         'name': 'Solid Black',
         'layerType': 2,
-        'palette': ["#e8eded"]
+        'palette': ["#000000"]
     },
 
     {

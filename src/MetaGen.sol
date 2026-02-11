@@ -101,7 +101,7 @@ contract MetaGen is IMetaGen {
         bytes memory buffer = DynamicBuffer.allocate(2500);
         Utils.concat(buffer, '"attributes":[');
 
-        Utils.concat(buffer, '{"display_type":"date","trait_type":"Birthday","value":');
+        Utils.concat(buffer, '{"display_type":"date","trait_type":"birthday","value":');
         Utils.concat(buffer, bytes(Utils.toString(traits.birthday)));
         Utils.concat(buffer, "},");
 

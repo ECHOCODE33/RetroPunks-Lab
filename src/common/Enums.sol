@@ -9,29 +9,6 @@ uint16 constant NUM_SPECIAL_1S = uint16(type(E_Special_1s).max) + 1;
 
 uint16 constant NUM_PRE_RENDERED_SPECIALS = 7;
 
-enum E_Background_Type {
-    None, // not a background
-    Background_Image,
-    Solid,
-
-    S_Vertical,
-    P_Vertical,
-
-    S_Horizontal,
-    P_Horizontal,
-
-    S_Down,
-    P_Down,
-    S_Up,
-    P_Up,
-
-    Radial
-}
-
-enum E_Sex {
-    Male,
-    Female
-}
 
 enum E_TraitsGroup {
     Background_Group,
@@ -63,6 +40,52 @@ enum E_TraitsGroup {
     Filler_Traits_Group
 }
 
+enum E_Background_Type {
+    None, // not a background
+    Background_Image,
+    Solid,
+
+    S_Vertical,
+    P_Vertical,
+
+    S_Horizontal,
+    P_Horizontal,
+
+    S_Down,
+    P_Down,
+    S_Up,
+    P_Up,
+
+    Radial
+}
+
+enum E_Background {
+    Default,
+    Black,
+
+    Smooth_Vertical,
+    Pixelated_Vertical,
+    Smooth_Vertical_Inverse,
+    Pixelated_Vertical_Inverse,
+
+    Smooth_Horizontal,
+    Pixelated_Horizontal,
+    Smooth_Horizontal_Inverse,
+    Pixelated_Horizontal_Inverse,
+
+    Smooth_Down,
+    Pixelated_Down,
+    Smooth_Down_Inverse,
+    Pixelated_Down_Inverse,
+
+    Smooth_Up,
+    Pixelated_Up,
+    Smooth_Up_Inverse,
+    Pixelated_Up_Inverse,
+
+    Radial
+}
+
 enum E_Special_1s {
     Predator_Blue,
     Predator_Green,
@@ -82,31 +105,9 @@ enum E_Special_1s {
     The_Wizard
 }
 
-enum E_Background {
-    Default,
-    Black,
-
-    Smooth_Vertical,
-    Pixelated_Vertical,
-    Smooth_Vertical_Inverse,
-    Pixelated_Vertical_Inverse,
-
-    Smooth_Horizontal,
-    Pixelated_Horizontal,
-    Smooth_Horizontal_Inverse,
-    Pixelated_Horizontal_Inverse,
-
-    Smooth_Diagonal,
-    Pixelated_Diagonal,
-    Smooth_Diagonal_Inverse,
-    Pixelated_Diagonal_Inverse,
-
-    Smooth_Reverse_Diagonal,
-    Pixelated_Reverse_Diagonal,
-    Smooth_Reverse_Diagonal_Inverse,
-    Pixelated_Reverse_Diagonal_Inverse,
-
-    Radial
+enum E_Sex {
+    Male,
+    Female
 }
 
 enum E_Male_Skin {
