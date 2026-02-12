@@ -1,21 +1,24 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.32;
 
-import { ERC721SeaDropPausableAndQueryable } from "./seadrop/extensions/ERC721SeaDropPausableAndQueryable.sol";
 import { NUM_BACKGROUND, NUM_PRE_RENDERED_SPECIALS, NUM_SPECIAL_1S } from "./global/Enums.sol";
 import { IMetaGen } from "./interfaces/IMetaGen.sol";
 import { IRetroPunksTypes } from "./interfaces/IRetroPunksTypes.sol";
 import { LibPRNG } from "./libraries/LibPRNG.sol";
 import { Utils } from "./libraries/Utils.sol";
+import { ERC721SeaDropPausableAndQueryable } from "./seadrop/extensions/ERC721SeaDropPausableAndQueryable.sol";
 
 /**
  * @title RetroPunks
  * @author ECHO (echomatrix.eth)
  * @notice The main contract for the RetroPunks collection
- * @dev Inherits ERC721SeaDropPausableAndQueryable for pausable and queryable functionality.
- *      Uses IMetaGen interface for metadata generation.
- *      Uses LibPRNG library for random number generation.
- *      Uses Utils library for utility functions.
+ *
+ * ██████╗  ███████╗ ████████╗ ██████╗   ██████╗  ██████╗  ██╗   ██╗ ███╗   ██╗ ██╗  ██╗ ███████╗
+ * ██╔══██╗ ██╔════╝ ╚══██╔══╝ ██╔══██╗ ██╔═══██╗ ██╔══██╗ ██║   ██║ ████╗  ██║ ██║ ██╔╝ ██╔════╝
+ * ██████╔╝ █████╗      ██║    ██████╔╝ ██║   ██║ ██████╔╝ ██║   ██║ ██╔██╗ ██║ █████╔╝  ███████╗
+ * ██╔══██╗ ██╔══╝      ██║    ██╔══██╗ ██║   ██║ ██╔═══╝  ██║   ██║ ██║╚██╗██║ ██╔═██╗  ╚════██║
+ * ██║  ██║ ███████╗    ██║    ██║  ██║ ╚██████╔╝ ██║      ╚██████╔╝ ██║ ╚████║ ██║  ██╗ ███████║
+ * ╚═╝  ╚═╝ ╚══════╝    ╚═╝    ╚═╝  ╚═╝  ╚═════╝  ╚═╝       ╚═════╝  ╚═╝  ╚═══╝ ╚═╝  ╚═╝ ╚══════╝
  */
 contract RetroPunks is IRetroPunksTypes, ERC721SeaDropPausableAndQueryable {
     using LibPRNG for LibPRNG.LazyShuffler;
@@ -50,7 +53,7 @@ contract RetroPunks is IRetroPunksTypes, ERC721SeaDropPausableAndQueryable {
 
     uint8 public mintIsClosed = 0;
 
-    uint8 internal revealMetaGenSet = 0;
+    uint8 internal metaGenRevealed = 0;
 
     LibPRNG.LazyShuffler internal _tokenIdSeedShuffler;
 
@@ -85,12 +88,14 @@ contract RetroPunks is IRetroPunksTypes, ERC721SeaDropPausableAndQueryable {
         _maxSupply = _maxSupplyParam;
     }
 
-    function setMetaGen(IMetaGen _metaGen, bool _isRevealMetaGen) external onlyOwner {
-        metaGen = _metaGen;
-        if (_isRevealMetaGen) revealMetaGenSet = 1;
-        if (totalSupply() != 0) emit BatchMetadataUpdate(1, _nextTokenId() - 1);
-
-        emit MetaGenUpdated(address(metaGen), _isRevealMetaGen);
+    function revealMetaGen() external onlyOwner {
+        if (globalSeed == 0) {
+            revert GlobalSeedNotRevealedYet();
+        } else {
+            metaGenRevealed = 1;
+            if (totalSupply() != 0) emit BatchMetadataUpdate(1, _nextTokenId() - 1);
+            emit MetaGenRevealed();
+        }
     }
 
     function revealGlobalSeed(uint256 _seed, uint256 _nonce) external onlyOwner {
@@ -128,36 +133,67 @@ contract RetroPunks is IRetroPunksTypes, ERC721SeaDropPausableAndQueryable {
         uint256 totalRequested = 0;
 
         // Calculate total once to check supply and limits efficiently
-        for (uint256 i = 0; i < _amounts.length; i++) {
+        for (uint256 i = 0; i < _amounts.length;) {
             totalRequested += _amounts[i];
+            unchecked {
+                ++i;
+            }
         }
 
         _checkMaxSupply(totalRequested);
 
         // Mint to each address
-        for (uint256 i = 0; i < _toAddresses.length; i++) {
+        for (uint256 i = 0; i < _toAddresses.length;) {
             _addInternalMintMetadata(_amounts[i]);
             _safeMint(_toAddresses[i], _amounts[i]);
+            unchecked {
+                ++i;
+            }
         }
     }
 
     function setTokenMetadata(uint256 _tokenId, bytes32 _name, string calldata _bio, uint8 _backgroundIndex) external onlyTokenOwner(_tokenId) {
-        if (revealMetaGenSet == 0) revert MetadataNotRevealedYet();
+        if (metaGenRevealed == 0) revert MetadataNotRevealedYet();
         if (_backgroundIndex >= NUM_BACKGROUND) revert InvalidBackgroundIndex();
         if (bytes(_bio).length > 160) revert BioIsTooLong();
 
         if (globalTokenMetadata[_tokenId].tokenIdSeed < NUM_PRE_RENDERED_SPECIALS) {
             if (_backgroundIndex != globalTokenMetadata[_tokenId].backgroundIndex) {
-                revert("Special Punks cannot change background");
+                revert CannotSetBackgroundForPreRenderedSpecialPunks();
             }
         }
 
-        for (uint256 i = 0; i < 32; i++) {
-            bytes1 c = _name[i];
-            if (c == 0) break; // End of string
-            if (!((c >= 0x30 && c <= 0x39) || (c >= 0x41 && c <= 0x5A) || (c >= 0x61 && c <= 0x7A)
-                        || (c == 0x20 || c == 0x21 || c == 0x2D || c == 0x2E || c == 0x5F || c == 0x27))) {
-                revert InvalidCharacterInName();
+        assembly {
+            let _nameBytes := _name
+            let invalidSelector := 0xa23ef83b // InvalidCharacterInName()
+
+            for { let i := 0 } lt(i, 32) { i := add(i, 1) } {
+                let c := byte(i, _nameBytes)
+                if iszero(c) { break }
+
+                let isAlphanumeric :=
+                    or(
+                        and(gt(c, 0x2f), lt(c, 0x3a)), // 0-9
+                        or(
+                            and(gt(c, 0x40), lt(c, 0x5b)), // A-Z
+                            and(gt(c, 0x60), lt(c, 0x7b)) // a-z
+                        )
+                    )
+
+                if isAlphanumeric { continue }
+
+                switch c
+                case 0x20 { }
+                case 0x21 { }
+                case 0x27 { }
+                case 0x2d { }
+                case 0x2e { }
+                case 0x23 { }
+                case 0x5f { }
+                default {
+                    mstore(0x00, invalidSelector)
+                    revert(0x00, 0x04)
+                }
             }
         }
 
@@ -173,15 +209,65 @@ contract RetroPunks is IRetroPunksTypes, ERC721SeaDropPausableAndQueryable {
         if (_remaining == 0) revert NoRemainingTokens();
 
         uint256 numShuffled = _tokenIdSeedShuffler.numShuffled();
-        uint256 randomness = uint256(keccak256(abi.encodePacked(shufflerSeed, numShuffled)));
+        uint256 randomness;
+
+        assembly {
+            let sSeed := sload(shufflerSeed.slot)
+            mstore(0x00, sSeed)
+            mstore(0x20, numShuffled)
+            randomness := keccak256(0x00, 0x40)
+        }
+
         uint256 newTokenIdSeed = _tokenIdSeedShuffler.next(randomness);
 
-        globalTokenMetadata[_tokenId] = TokenMetadata({
-            tokenIdSeed: uint16(newTokenIdSeed),
-            backgroundIndex: 0, // default background index
-            name: bytes32(abi.encodePacked("#", Utils.toString(_tokenId))), // default name
-            bio: "A RetroPunk living on-chain." // default bio
-        });
+        assembly {
+            /**
+             * 3. FAST NAME GENERATION ("#123")
+             * Instead of Utils.toString(), we calculate the ASCII bytes directly.
+             */
+            let nameBytes := 0
+            let tempId := _tokenId
+            let charPos := 31 // Start from the end of the 32-byte word
+
+            // Convert ID to ASCII digits backwards
+            for { } gt(tempId, 0) { } {
+                // Get last digit (tempId % 10) and add 48 (ASCII for '0')
+                let digit := add(mod(tempId, 10), 48)
+                // Store digit in the correct byte position
+                nameBytes := or(nameBytes, shl(mul(sub(31, charPos), 8), digit))
+                tempId := div(tempId, 10)
+                charPos := sub(charPos, 1)
+            }
+
+            // Add the "#" prefix (ASCII 0x23)
+            nameBytes := or(nameBytes, shl(mul(sub(31, charPos), 8), 0x23))
+
+            // Shift the string to the "left" so it reads correctly in bytes32
+            nameBytes := shl(mul(charPos, 8), nameBytes)
+
+            /**
+             * 4. OPTIMIZED STORAGE WRITES
+             * Mapping slot = keccak256(key, mapping_slot)
+             */
+            mstore(0x00, _tokenId)
+            mstore(0x20, globalTokenMetadata.slot)
+            let slot := keccak256(0x00, 0x40)
+
+            // Slot 0: Pack [tokenIdSeed (16 bits) | backgroundIndex (8 bits)]
+            // backgroundIndex is 0, so we just shift the seed.
+            let packed := shl(8, and(newTokenIdSeed, 0xFFFF))
+            sstore(slot, packed)
+
+            // Slot 1: Name (bytes32)
+            sstore(add(slot, 1), nameBytes)
+
+            // Slot 2: Bio (Short string optimization)
+            // "A RetroPunk living on-chain." is 27 chars.
+            // For strings < 31 bytes: [data bytes...][length * 2]
+            let bioData := "A RetroPunk living on-chain."
+            let bioLen := 27
+            sstore(add(slot, 2), or(bioData, mul(bioLen, 2)))
+        }
     }
 
     function _addInternalMintMetadata(uint256 _quantity) internal {
@@ -189,14 +275,19 @@ contract RetroPunks is IRetroPunksTypes, ERC721SeaDropPausableAndQueryable {
 
         uint256 currentMintCount = _totalMinted();
 
-        for (uint256 i = 0; i < _quantity; i++) {
+        for (uint256 i = 0; i < _quantity;) {
             _saveNewSeed(currentMintCount + i + 1, _maxSupply - (currentMintCount + i));
+            unchecked {
+                ++i;
+            }
         }
     }
 
     function _checkMaxSupply(uint256 _quantity) internal view {
-        if (_totalMinted() + _quantity > maxSupply()) {
-            revert MintQuantityExceedsMaxSupply(_totalMinted() + _quantity, maxSupply());
+        uint256 minted = _totalMinted();
+        uint256 max = maxSupply();
+        if (minted + _quantity > max) {
+            revert MintQuantityExceedsMaxSupply(minted + _quantity, max);
         }
     }
 
@@ -223,31 +314,18 @@ contract RetroPunks is IRetroPunksTypes, ERC721SeaDropPausableAndQueryable {
         string memory attributes;
         string memory svg;
 
-        if (revealMetaGenSet == 0) {
-            // Pre-reveal: use placeholder values
-            (svg,) = metaGen.generateMetadata(_tokenIdSeed, _backgroundIndex, _globalSeed);
+        if (metaGenRevealed == 0) {
+            (svg, attributes) = metaGen.generateMetadata(_tokenIdSeed, _backgroundIndex, _globalSeed, 0);
             finalName = "#???";
             finalBio = "Wait for the reveal...";
-            attributes = '"attributes":[{"trait_type":"Status","value":"Unrevealed"}]';
         } else {
-            // Post-reveal: use actual metaGen output
-            (svg, attributes) = metaGen.generateMetadata(_tokenIdSeed, _backgroundIndex, _globalSeed);
+            (svg, attributes) = metaGen.generateMetadata(_tokenIdSeed, _backgroundIndex, _globalSeed, 1);
 
-            if (_tokenIdSeed < NUM_SPECIAL_1S) {
-                string memory defaultName = string.concat("#", Utils.toString(_tokenId));
-                bool isDefaultName = keccak256(bytes(_name)) == keccak256(bytes(defaultName));
+            string memory defaultName = string.concat("#", Utils.toString(_tokenId));
+            bool isDefaultName = keccak256(bytes(_name)) == keccak256(bytes(defaultName));
 
-                if (isDefaultName) {
-                    finalName = string.concat("1 of 1: ", Utils.toString(SPECIAL_NAMES[_tokenIdSeed]));
-                } else {
-                    finalName = _name;
-                }
-            } else {
-                string memory defaultName = string.concat("#", Utils.toString(_tokenId));
-                bool isDefaultName = keccak256(bytes(_name)) == keccak256(bytes(defaultName));
-
-                finalName = isDefaultName ? _name : string.concat(defaultName, ": ", _name);
-            }
+            if (_tokenIdSeed < NUM_SPECIAL_1S) finalName = (isDefaultName ? string.concat("1 of 1: ", Utils.toString(SPECIAL_NAMES[_tokenIdSeed])) : _name);
+            else finalName = isDefaultName ? _name : string.concat(defaultName, ": ", _name);
 
             finalBio = _bio;
         }

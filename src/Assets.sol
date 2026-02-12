@@ -17,7 +17,7 @@ contract Assets is Ownable, IAssets {
     error AssetKeyLengthMismatch();
     error AssetDoesNotExist();
 
-    mapping(uint256 => address) private _assets;
+    mapping(uint256 => address) private _assetsStorage;
 
     constructor() Ownable(msg.sender) { }
 
@@ -28,7 +28,7 @@ contract Assets is Ownable, IAssets {
         for (uint256 i = 0; i < length;) {
             if (assets[i].length == 0) revert EmptyAssetInBatch();
 
-            _assets[keys[i]] = SSTORE2.write(assets[i]);
+            _assetsStorage[keys[i]] = SSTORE2.write(assets[i]);
 
             unchecked {
                 ++i;
@@ -39,7 +39,7 @@ contract Assets is Ownable, IAssets {
     function removeAssetsBatch(uint256[] calldata keys) external onlyOwner {
         uint256 length = keys.length;
         for (uint256 i = 0; i < length;) {
-            delete _assets[keys[i]];
+            delete _assetsStorage[keys[i]];
             unchecked {
                 ++i;
             }
@@ -47,7 +47,7 @@ contract Assets is Ownable, IAssets {
     }
 
     function loadAsset(uint256 key, bool decompress) external view returns (bytes memory) {
-        address pointer = _assets[key];
+        address pointer = _assetsStorage[key];
 
         if (pointer == address(0)) revert AssetDoesNotExist();
 

@@ -82,19 +82,29 @@ library LibBitmap {
 
     function _packScanLines(BitMap memory bmp) private pure returns (bytes memory raw) {
         raw = new bytes(48 * (1 + 48 * 4));
-        uint256 k;
 
-        unchecked {
-            for (uint256 y; y < 48; ++y) {
-                raw[k++] = 0x00;
+        assembly {
+            let rawPtr := add(raw, 0x20)
+            let k := 0
+            let bmpPtr := bmp // Get bitmap base pointer
 
-                for (uint256 x; x < 48; ++x) {
-                    uint32 p = bmp.pixels[x][y];
+            for { let y := 0 } lt(y, 48) { y := add(y, 1) } {
+                // Filter byte (0x00 = None)
+                mstore8(add(rawPtr, k), 0)
+                k := add(k, 1)
 
-                    raw[k++] = bytes1(uint8(p >> 24)); // R
-                    raw[k++] = bytes1(uint8(p >> 16)); // G
-                    raw[k++] = bytes1(uint8(p >> 8)); // B
-                    raw[k++] = bytes1(uint8(p)); // A
+                for { let x := 0 } lt(x, 48) { x := add(x, 1) } {
+                    // Calculate bitmap slot
+                    // pixels[x][y] layout in memory
+                    let pixelSlot := add(bmpPtr, add(mul(x, mul(48, 32)), mul(y, 32)))
+                    let p := mload(pixelSlot)
+
+                    // Pack RGBA
+                    mstore8(add(rawPtr, k), shr(24, p)) // R
+                    mstore8(add(rawPtr, add(k, 1)), shr(16, p)) // G
+                    mstore8(add(rawPtr, add(k, 2)), shr(8, p)) // B
+                    mstore8(add(rawPtr, add(k, 3)), p) // A
+                    k := add(k, 4)
                 }
             }
         }

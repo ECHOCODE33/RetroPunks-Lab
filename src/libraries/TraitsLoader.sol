@@ -21,7 +21,7 @@ library TraitsLoader {
         traitGroup.traitGroupIndex = _traitGroupIndex;
 
         bytes memory traitGroupData = _assetsContract.loadAsset(_traitGroupIndex, true);
-        uint256 dataLength = traitGroupData.length;
+        // uint256 dataLength = traitGroupData.length;
 
         uint256 index = 0;
 

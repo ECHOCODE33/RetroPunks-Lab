@@ -6,7 +6,7 @@ import { console } from "forge-std/console.sol";
 
 import { Assets } from "../src/Assets.sol";
 import { MetaGen } from "../src/MetaGen.sol";
-import { PreviewMetaGen } from "../src/PreviewMetaGen.sol";
+// import { PreviewMetaGen } from "../src/PreviewMetaGen.sol";
 import { RetroPunks } from "../src/RetroPunks.sol";
 import { Traits } from "../src/Traits.sol";
 import { IMetaGen } from "../src/interfaces/IMetaGen.sol";
@@ -140,7 +140,7 @@ contract RetroPunksScript is HelperContract {
 
     address public ASSETS = vm.envAddress("ASSETS");
     address public TRAITS = vm.envAddress("TRAITS");
-    address public PREVIEW_META_GEN = vm.envAddress("PREVIEW_META_GEN");
+    // address public PREVIEW_META_GEN = vm.envAddress("PREVIEW_META_GEN");
     address public META_GEN = vm.envAddress("META_GEN");
     address public RETROPUNKS = vm.envAddress("RETROPUNKS");
 
@@ -182,13 +182,14 @@ contract RetroPunksScript is HelperContract {
 
         Assets assets = new Assets();
         Traits traits = new Traits();
-        PreviewMetaGen previewMetaGen = new PreviewMetaGen(Assets(address(assets)));
+        // PreviewMetaGen previewMetaGen = new PreviewMetaGen(Assets(address(assets)));
         MetaGen metaGen = new MetaGen(Assets(address(assets)), Traits(address(traits)));
-        RetroPunks retroPunks = new RetroPunks(PreviewMetaGen(address(previewMetaGen)), GLOBAL_SEED_HASH, SHUFFLER_SEED_HASH, MAX_SUPPLY, allowedSeaDrop);
+        // RetroPunks retroPunks = new RetroPunks(PreviewMetaGen(address(previewMetaGen)), GLOBAL_SEED_HASH, SHUFFLER_SEED_HASH, MAX_SUPPLY, allowedSeaDrop);
+        RetroPunks retroPunks = new RetroPunks(MetaGen(address(metaGen)), GLOBAL_SEED_HASH, SHUFFLER_SEED_HASH, MAX_SUPPLY, allowedSeaDrop);
 
         console.log("Assets::", address(assets));
         console.log("Traits:", address(traits));
-        console.log("PreviewMetaGen:", address(previewMetaGen));
+        // console.log("PreviewMetaGen:", address(previewMetaGen));
         console.log("MetaGen:", address(metaGen));
         console.log("RetroPunks:", address(retroPunks));
 
@@ -205,8 +206,8 @@ contract RetroPunksScript is HelperContract {
         address[] memory allowedSeaDrop = new address[](1);
         allowedSeaDrop[0] = 0x00005EA00Ac477B1030CE78506496e8C2dE24bf5;
 
-        RetroPunks retroPunks =
-            new RetroPunks(PreviewMetaGen(0x36733D835Bcd02d59FF29532D0975aBa3Ae232f1), GLOBAL_SEED_HASH, SHUFFLER_SEED_HASH, MAX_SUPPLY, allowedSeaDrop);
+        RetroPunks retroPunks = new RetroPunks(MetaGen(0x36733D835Bcd02d59FF29532D0975aBa3Ae232f1), GLOBAL_SEED_HASH, SHUFFLER_SEED_HASH, MAX_SUPPLY, allowedSeaDrop);
+        // new RetroPunks(PreviewMetaGen(0x36733D835Bcd02d59FF29532D0975aBa3Ae232f1), GLOBAL_SEED_HASH, SHUFFLER_SEED_HASH, MAX_SUPPLY, allowedSeaDrop);
 
         console.log("RetroPunks:", address(retroPunks));
 
@@ -224,7 +225,7 @@ contract RetroPunksScript is HelperContract {
         inputs[2] = "script/AddAssetsBatch.s.sol:AddAssetsBatch";
         inputs[3] = "--rpc-url";
         // inputs[4] = vm.envString("LOCAL_HOST_RPC");
-        inputs[4] = vm.envString("BASE_MAINNET_RPC");
+        inputs[4] = vm.envString("BASE_SEPOLIA_RPC");
         inputs[5] = "--private-key";
         inputs[6] = vm.envString("PRIVATE_KEY");
         inputs[7] = "--broadcast";
@@ -245,7 +246,7 @@ contract RetroPunksScript is HelperContract {
         inputs[2] = "script/VerifyAssets.s.sol:VerifyAssets";
         inputs[3] = "--rpc-url";
         // inputs[4] = vm.envString("LOCAL_HOST_RPC");
-        inputs[4] = vm.envString("BASE_MAINNET_RPC");
+        inputs[4] = vm.envString("BASE_SEPOLIA_RPC");
         inputs[5] = "--private-key";
         inputs[6] = vm.envString("PRIVATE_KEY");
         inputs[7] = "--broadcast";
@@ -401,14 +402,14 @@ contract RetroPunksScript is HelperContract {
 
         vm.startBroadcast(PRIVATE_KEY);
 
-        retroPunksContract.setMetaGen(IMetaGen(META_GEN), true);
+        retroPunksContract.revealMetaGen();
 
         vm.stopBroadcast();
 
         console.log("Reveal contract MetaGen set successfully!");
         console.log("New MetaGen:", address(retroPunksContract.metaGen()));
     }
-    
+
     /**
      * 10. Close minting permanently (irreversible). Optional, when done.
      */

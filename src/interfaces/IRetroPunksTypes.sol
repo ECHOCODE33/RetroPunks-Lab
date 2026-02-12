@@ -24,23 +24,23 @@ interface IRetroPunksTypes {
     event MetadataUpdate(uint256 _tokenId);
     event GlobalSeedRevealed(uint256 seed);
     event ShufflerSeedRevealed(uint256 seed);
-    event MetaGenUpdated(address indexed newMetaGen, bool isRevealMetaGen);
+    event MetaGenRevealed();
     event MintClosed();
 
-
-    error MintIsClosed();
+    error ArrayLengthMismatch();
     error BioIsTooLong();
-    error InvalidCharacterInName();
-    error InvalidBackgroundIndex();
-    error PreRenderedSpecialCannotBeCustomized();
+    error CallerIsNotTokenOwner();
+    error CannotSetBackgroundForPreRenderedSpecialPunks();
     error GlobalSeedAlreadyRevealed();
+    error GlobalSeedNotRevealedYet();
+    error InvalidBackgroundIndex();
+    error InvalidCharacterInName();
     error InvalidGlobalSeedReveal();
-    error ShufflerSeedAlreadyRevealed();
     error InvalidShufflerSeedReveal();
-    error ShufflerSeedNotRevealedYet();
+    error MetadataNotRevealedYet();
+    error MintIsClosed();
     error NoRemainingTokens();
     error NonExistentToken();
-    error CallerIsNotTokenOwner();
-    error MetadataNotRevealedYet();
-    error ArrayLengthMismatch();
+    error ShufflerSeedAlreadyRevealed();
+    error ShufflerSeedNotRevealedYet();
 }

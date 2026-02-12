@@ -115,22 +115,20 @@ contract Rarities {
 
         m.skin = selectMaleSkin(prng);
 
-        TraitsContext memory tempCtx = ctx;
+        ctx.maleSkin = m.skin; // Select skin first and then the rest using updated context
 
-        tempCtx.maleSkin = m.skin; // Select skin first and then the rest using updated context
-
-        m.eyes = selectMaleEyes(tempCtx, prng);
-        m.face = selectMaleFace(tempCtx, prng);
+        m.eyes = selectMaleEyes(ctx, prng);
+        m.face = selectMaleFace(ctx, prng);
         m.chain = selectMaleChain(prng);
         m.earring = selectMaleEarring(prng);
-        m.facialHair = selectMaleFacialHair(tempCtx, prng);
+        m.facialHair = selectMaleFacialHair(ctx, prng);
         m.mask = selectMaleMask(prng);
         m.scarf = selectMaleScarf(prng);
-        m.hair = selectMaleHair(tempCtx, prng);
-        m.hatHair = selectMaleHatHair(tempCtx, prng);
+        m.hair = selectMaleHair(ctx, prng);
+        m.hatHair = selectMaleHatHair(ctx, prng);
         m.headwear = selectMaleHeadwear(prng);
         m.eyeWear = selectMaleEyeWear(prng);
-        m.mouth = selectMouth(tempCtx, prng);
+        m.mouth = selectMouth(ctx, prng);
 
         return m;
     }
@@ -140,47 +138,42 @@ contract Rarities {
 
         f.skin = selectFemaleSkin(prng);
 
-        TraitsContext memory tempCtx = ctx;
+        ctx.femaleSkin = f.skin; // Select skin first and then the rest using updated context
 
-        tempCtx.femaleSkin = f.skin; // Select skin first and then the rest using updated context
-
-        f.eyes = selectFemaleEyes(tempCtx, prng);
-        f.face = selectFemaleFace(tempCtx, prng);
+        f.eyes = selectFemaleEyes(ctx, prng);
+        f.face = selectFemaleFace(ctx, prng);
         f.chain = selectFemaleChain(prng);
         f.earring = selectFemaleEarring(prng);
         f.mask = selectFemaleMask(prng);
         f.scarf = selectFemaleScarf(prng);
-        f.hair = selectFemaleHair(tempCtx, prng);
-        f.hatHair = selectFemaleHatHair(tempCtx, prng);
+        f.hair = selectFemaleHair(ctx, prng);
+        f.hatHair = selectFemaleHatHair(ctx, prng);
         f.headwear = selectFemaleHeadwear(prng);
         f.eyeWear = selectFemaleEyeWear(prng);
-        f.mouth = selectMouth(tempCtx, prng);
+        f.mouth = selectMouth(ctx, prng);
 
         return f;
     }
 
-    function selectRandomTrait(LibPRNG.PRNG memory prng, bytes memory packedWeights, uint256 totalWeight) internal pure returns (uint256) {
+    function selectRandomTrait(LibPRNG.PRNG memory prng, bytes memory packedWeights, uint256 totalWeight) internal pure returns (uint256 idx) {
         uint256 r = LibPRNG.uniform(prng, totalWeight);
-
-        uint256 currentSum = 0;
-        uint256 len = packedWeights.length;
-
-        // Each weight is 2 bytes (uint16)
-        unchecked {
-            for (uint256 i = 0; i < len; i += 2) {
-                uint16 weight;
-
-                assembly {
-                    // Load 2 bytes from packedWeights at index i. Skip 32 bytes length prefix.
-                    weight := shr(240, mload(add(add(packedWeights, 32), i)))
+        bool found;
+        assembly {
+            let base := add(packedWeights, 32) // skip length word
+            let dataPtr := base
+            let endPtr := add(base, mload(packedWeights))
+            let cumSum := 0
+            for { } lt(dataPtr, endPtr) { dataPtr := add(dataPtr, 2) } {
+                cumSum := add(cumSum, shr(240, mload(dataPtr)))
+                if lt(r, cumSum) {
+                    // index = (ptr - base) / 2; ptr hasn't been incremented yet
+                    idx := shr(1, sub(dataPtr, base))
+                    found := 1
+                    dataPtr := endPtr // break
                 }
-
-                currentSum += weight;
-                if (r < currentSum) return i / 2;
             }
         }
-
-        revert TraitSelectionFailed();
+        if (!found) revert TraitSelectionFailed();
     }
 
     function selectMaleSkin(LibPRNG.PRNG memory prng) internal pure returns (E_Male_Skin) {
@@ -266,7 +259,7 @@ contract Rarities {
 
         uint256 total = 9579 + noneWeight;
 
-        if (1 + LibPRNG.uniform(prng, total) <= noneWeight) return E_Male_Hair.None;
+        if (LibPRNG.uniform(prng, total) < noneWeight) return E_Male_Hair.None;
 
         return E_Male_Hair(selectRandomTrait(prng, M_HAIR, 9579));
     }
@@ -280,7 +273,7 @@ contract Rarities {
 
         uint256 total = 7580 + noneWeight;
 
-        if (1 + LibPRNG.uniform(prng, total) <= noneWeight) return E_Male_Hat_Hair.None;
+        if (LibPRNG.uniform(prng, total) < noneWeight) return E_Male_Hat_Hair.None;
 
         return E_Male_Hat_Hair(selectRandomTrait(prng, M_HAT_HAIR, 7580));
     }
@@ -354,7 +347,7 @@ contract Rarities {
 
         uint256 total = 9595 + noneWeight;
 
-        if (1 + LibPRNG.uniform(prng, total) <= noneWeight) return E_Female_Hair.None;
+        if (LibPRNG.uniform(prng, total) < noneWeight) return E_Female_Hair.None;
 
         return E_Female_Hair(selectRandomTrait(prng, F_HAIR, 9595));
     }
@@ -368,7 +361,7 @@ contract Rarities {
 
         uint256 total = 7000 + noneWeight;
 
-        if (1 + LibPRNG.uniform(prng, total) <= noneWeight) return E_Female_Hat_Hair.None;
+        if (LibPRNG.uniform(prng, total) < noneWeight) return E_Female_Hat_Hair.None;
 
         return E_Female_Hat_Hair(selectRandomTrait(prng, F_HAT_HAIR, 7000));
     }
@@ -383,8 +376,7 @@ contract Rarities {
 
     function selectMouth(TraitsContext memory ctx, LibPRNG.PRNG memory prng) internal pure returns (E_Mouth) {
         if (LibTraits.isFemale(ctx)) {
-            bytes memory packed = MOUTH_A;
-            return E_Mouth(selectRandomTrait(prng, packed, 10000));
+            return E_Mouth(selectRandomTrait(prng, MOUTH_A, 10000));
         } else if (LibTraits.maleHasBlackFacialHair(ctx)) {
             return E_Mouth(selectRandomTrait(prng, MOUTH_B, 9900));
         } else {

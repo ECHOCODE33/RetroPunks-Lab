@@ -2,7 +2,7 @@
 
  forge script script/RetroPunks.s.sol:RetroPunksScript \
   --sig "batchQueryTokenURI(uint256, uint256)" 1 5 \
-  --rpc-url $BASE_MAINNET_RPC \
+  --rpc-url $BASE_SEPOLIA_RPC \
   --private-key $PRIVATE_KEY \
   --broadcast \
   --verify \
@@ -28,4 +28,4 @@
   
 
 ## Cast
- cast call $RETROPUNKS "totalSupply()(uint256)" --rpc-url $BASE_MAINNET_RPC
+ cast call $RETROPUNKS "totalSupply()(uint256)" --rpc-url $BASE_SEPOLIA_RPC

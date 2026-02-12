@@ -39,8 +39,14 @@ enum E_TraitsGroup {
     Filler_Traits_Group
 }
 
+/**
+ * S = Smooth
+ * P = Pixelated
+ * Down = Diagonal (top left --> bottom right)
+ * Up = Diagonal (bottom left --> top right)
+ */
 enum E_Background_Type {
-    None, // not a background
+    None,
     Background_Image,
     Solid,
 
@@ -58,31 +64,49 @@ enum E_Background_Type {
     Radial
 }
 
+/**
+ * S = Smooth
+ * P = Pixelated
+ * I = Inverse
+ * V = Vertical
+ * H = Horizontal
+ * D = Down (top left --> bottom right)
+ * U = Up (bottom left --> top right)
+ */
 enum E_Background {
-    Default,
     Black,
+    Grey_1,
+    Grey_2,
+    Grey_3,
+    Grey_4,
+    Grey_5,
+    Grey_6,
+    Grey_7,
+    Grey_8,
+    Grey_9,
+    White,
 
-    Smooth_Vertical,
-    Pixelated_Vertical,
-    Smooth_Vertical_Inverse,
-    Pixelated_Vertical_Inverse,
+    Greyscale_SV,
+    Greyscale_PV,
+    Greyscale_SVI,
+    Greyscale_PVI,
 
-    Smooth_Horizontal,
-    Pixelated_Horizontal,
-    Smooth_Horizontal_Inverse,
-    Pixelated_Horizontal_Inverse,
+    Greyscale_SH,
+    Greyscale_PH,
+    Greyscale_SHI,
+    Greyscale_PHI,
 
-    Smooth_Down,
-    Pixelated_Down,
-    Smooth_Down_Inverse,
-    Pixelated_Down_Inverse,
+    Greyscale_SD,
+    Greyscale_PD,
+    Greyscale_SDI,
+    Greyscale_PDI,
 
-    Smooth_Up,
-    Pixelated_Up,
-    Smooth_Up_Inverse,
-    Pixelated_Up_Inverse,
+    Greyscale_SU,
+    Greyscale_PU,
+    Greyscale_SUI,
+    Greyscale_PUI,
 
-    Radial
+    Greyscale_Radial
 }
 
 enum E_Special_1s {

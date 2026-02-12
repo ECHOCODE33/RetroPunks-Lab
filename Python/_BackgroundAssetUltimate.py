@@ -25,27 +25,60 @@ BG_TYPE_NAMES = {v: k for k, v in BG_TYPES.items()}
 
 BACKGROUNDS = [
     {
-        'name': 'Default',
-        'layerType': 2,
-        'palette': ["#e8eded"]
-    },
-    {
-        'name': 'Ancient',
-        'layerType': 2,
-        'palette': ["#b6aba1"]
-    },
-    {
-        'name': 'Solid White',
-        'layerType': 2,
-        'palette': ["#ffffff"]
-    },
-
-    {
-        'name': 'Solid Black',
+        'name': 'Black',
         'layerType': 2,
         'palette': ["#000000"]
     },
-
+    {
+        'name': 'Grey 1',
+        'layerType': 2,
+        'palette': ["#1a1a1a"]
+    },
+    {
+        'name': 'Grey 2',
+        'layerType': 2,
+        'palette': ["#333333"]
+    },
+    {
+        'name': 'Grey 3',
+        'layerType': 2,
+        'palette': ["#4d4d4d"]
+    },
+    {
+        'name': 'Grey 4',
+        'layerType': 2,
+        'palette': ["#666666"]
+    },
+    {
+        'name': 'Grey 5',
+        'layerType': 2,
+        'palette': ["#808080"]
+    },
+    {
+        'name': 'Grey 6',
+        'layerType': 2,
+        'palette': ["#999999"]
+    },
+    {
+        'name': 'Grey 7',
+        'layerType': 2,
+        'palette': ["#b3b3b3"]
+    },
+    {
+        'name': 'Grey 8',
+        'layerType': 2,
+        'palette': ["#cccccc"]
+    },
+    {
+        'name': 'Grey 9',
+        'layerType': 2,
+        'palette': ["#e6e6e6"]
+    },
+    {
+        'name': 'White',
+        'layerType': 2,
+        'palette': ["#ffffff"]
+    },
     {
         'name': 'Smooth Vertical',
         'layerType': 3,
