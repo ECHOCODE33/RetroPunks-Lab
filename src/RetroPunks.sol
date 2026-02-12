@@ -1,23 +1,23 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.32;
 
-import { NUM_BACKGROUND, NUM_PRE_RENDERED_SPECIALS, NUM_SPECIAL_1S } from "./common/Enums.sol";
+import { ERC721SeaDropPausableAndQueryable } from "./seadrop/extensions/ERC721SeaDropPausableAndQueryable.sol";
+import { NUM_BACKGROUND, NUM_PRE_RENDERED_SPECIALS, NUM_SPECIAL_1S } from "./global/Enums.sol";
 import { IMetaGen } from "./interfaces/IMetaGen.sol";
-import { IRetroPunks } from "./interfaces/IRetroPunks.sol";
+import { IRetroPunksTypes } from "./interfaces/IRetroPunksTypes.sol";
 import { LibPRNG } from "./libraries/LibPRNG.sol";
 import { Utils } from "./libraries/Utils.sol";
-import { ERC721SeaDropPausableAndQueryable } from "./seadrop/extensions/ERC721SeaDropPausableAndQueryable.sol";
 
 /**
  * @title RetroPunks
  * @author ECHO (echomatrix.eth)
  * @notice The main contract for the RetroPunks collection
- * @dev Uses ERC721SeaDropPausableAndQueryable for pausable and queryable functionality.
- *      Uses IMetaGen for metadata generation.
- *      Uses LibPRNG for random number generation.
- *      Uses Utils for utility functions.
+ * @dev Inherits ERC721SeaDropPausableAndQueryable for pausable and queryable functionality.
+ *      Uses IMetaGen interface for metadata generation.
+ *      Uses LibPRNG library for random number generation.
+ *      Uses Utils library for utility functions.
  */
-contract RetroPunks is IRetroPunks, ERC721SeaDropPausableAndQueryable {
+contract RetroPunks is IRetroPunksTypes, ERC721SeaDropPausableAndQueryable {
     using LibPRNG for LibPRNG.LazyShuffler;
 
     IMetaGen public metaGen;
@@ -48,8 +48,6 @@ contract RetroPunks is IRetroPunks, ERC721SeaDropPausableAndQueryable {
     uint256 public globalSeed;
     uint256 public shufflerSeed;
 
-    uint8 public defaultBackgroundIndex = 0;
-
     uint8 public mintIsClosed = 0;
 
     uint8 internal revealMetaGenSet = 0;
@@ -68,11 +66,11 @@ contract RetroPunks is IRetroPunks, ERC721SeaDropPausableAndQueryable {
 
     /**
      * @notice Constructor for the RetroPunks contract.
-     * @param _metaGenParam The IMetaGen (metadata generator) contract address.
-     * @param _committedGlobalSeedHashParam The committed global seed hash.
-     * @param _committedShufflerSeedHashParam The committed shuffler seed hash.
-     * @param _maxSupplyParam The maximum supply of the collection.
-     * @param allowedSeaDropParam The allowed SeaDrop contract addresses.
+     * @param _metaGenParam                     The IMetaGen (metadata generator) contract address.
+     * @param _committedGlobalSeedHashParam     The committed global seed hash.
+     * @param _committedShufflerSeedHashParam   The committed shuffler seed hash.
+     * @param _maxSupplyParam                   The maximum supply of the collection.
+     * @param allowedSeaDropParam               The allowed SeaDrop contract addresses.
      */
     constructor(
         IMetaGen _metaGenParam,
@@ -91,14 +89,8 @@ contract RetroPunks is IRetroPunks, ERC721SeaDropPausableAndQueryable {
         metaGen = _metaGen;
         if (_isRevealMetaGen) revealMetaGenSet = 1;
         if (totalSupply() != 0) emit BatchMetadataUpdate(1, _nextTokenId() - 1);
-    }
 
-    function setDefaultBackgroundIndex(uint8 _defaultBackgroundIndex) external onlyOwner {
-        defaultBackgroundIndex = _defaultBackgroundIndex;
-    }
-
-    function closeMint() external onlyOwner {
-        mintIsClosed = 1;
+        emit MetaGenUpdated(address(metaGen), _isRevealMetaGen);
     }
 
     function revealGlobalSeed(uint256 _seed, uint256 _nonce) external onlyOwner {
@@ -107,6 +99,8 @@ contract RetroPunks is IRetroPunks, ERC721SeaDropPausableAndQueryable {
         if (keccak256(abi.encodePacked(_seed, _nonce)) != COMMITTED_GLOBAL_SEED_HASH) revert InvalidGlobalSeedReveal();
 
         globalSeed = _seed;
+
+        emit GlobalSeedRevealed(_seed);
 
         if (totalSupply() != 0) emit BatchMetadataUpdate(1, _nextTokenId() - 1);
     }
@@ -118,7 +112,14 @@ contract RetroPunks is IRetroPunks, ERC721SeaDropPausableAndQueryable {
 
         shufflerSeed = _seed;
 
+        emit ShufflerSeedRevealed(_seed);
+
         _tokenIdSeedShuffler.initialize(_maxSupply > 1000 ? _maxSupply : _maxSupply * 2);
+    }
+
+    function closeMint() external onlyOwner {
+        mintIsClosed = 1;
+        emit MintClosed();
     }
 
     function batchOwnerMint(address[] calldata _toAddresses, uint256[] calldata _amounts) external onlyOwner nonReentrant {
@@ -177,9 +178,9 @@ contract RetroPunks is IRetroPunks, ERC721SeaDropPausableAndQueryable {
 
         globalTokenMetadata[_tokenId] = TokenMetadata({
             tokenIdSeed: uint16(newTokenIdSeed),
-            backgroundIndex: defaultBackgroundIndex,
-            name: bytes32(abi.encodePacked("#", Utils.toString(_tokenId))),
-            bio: "A RetroPunk living on-chain."
+            backgroundIndex: 0, // default background index
+            name: bytes32(abi.encodePacked("#", Utils.toString(_tokenId))), // default name
+            bio: "A RetroPunk living on-chain." // default bio
         });
     }
 

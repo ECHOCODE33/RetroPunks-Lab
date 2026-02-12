@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.32;
 
-import { E_TraitsGroup } from "../common/Enums.sol";
-import { CachedTraitGroups, TraitGroup, TraitInfo } from "../common/Structs.sol";
+import { E_TraitsGroup } from "../global/Enums.sol";
+import { CachedTraitGroups, TraitGroup, TraitInfo } from "../global/Structs.sol";
 import { IAssets } from "../interfaces/IAssets.sol";
 
 library TraitsLoader {

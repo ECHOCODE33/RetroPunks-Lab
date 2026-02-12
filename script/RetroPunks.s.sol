@@ -408,22 +408,7 @@ contract RetroPunksScript is HelperContract {
         console.log("Reveal contract MetaGen set successfully!");
         console.log("New MetaGen:", address(retroPunksContract.metaGen()));
     }
-
-    /**
-     * 10. Set the default background index
-     */
-    function setDefaultBackgroundIndex(uint8 _defaultBackgroundIndex) external {
-        console.log("=== Setting Default Background Index ===");
-        console.log("RetroPunks:", RETROPUNKS);
-        console.log("Default Background Index:", retroPunksContract.defaultBackgroundIndex());
-
-        vm.startBroadcast(PRIVATE_KEY);
-        retroPunksContract.setDefaultBackgroundIndex(_defaultBackgroundIndex);
-        vm.stopBroadcast();
-
-        console.log("Default background index set to", _defaultBackgroundIndex, "successfully!");
-    }
-
+    
     /**
      * 10. Close minting permanently (irreversible). Optional, when done.
      */

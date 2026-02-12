@@ -2,8 +2,8 @@
 pragma solidity ^0.8.32;
 
 import { Rarities } from "./Rarities.sol";
-import { E_Background, E_Female_Skin, E_Filler_Traits, E_Male_Skin, E_Sex, E_TraitsGroup, NUM_SPECIAL_1S } from "./common/Enums.sol";
-import { FemaleTraits, MaleTraits, TraitToRender, TraitsContext } from "./common/Structs.sol";
+import { E_Background, E_Female_Skin, E_Filler_Traits, E_Male_Skin, E_Sex, E_TraitsGroup, NUM_SPECIAL_1S } from "./global/Enums.sol";
+import { FemaleTraits, MaleTraits, TraitToRender, TraitsContext } from "./global/Structs.sol";
 import { ITraits } from "./interfaces/ITraits.sol";
 import { LibPRNG } from "./libraries/LibPRNG.sol";
 import { LibTraits } from "./libraries/LibTraits.sol";

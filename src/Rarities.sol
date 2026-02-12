@@ -26,8 +26,8 @@ import {
     E_Male_Scarf,
     E_Male_Skin,
     E_Mouth
-} from "./common/Enums.sol";
-import { FemaleTraits, MaleTraits, TraitsContext } from "./common/Structs.sol";
+} from "./global/Enums.sol";
+import { FemaleTraits, MaleTraits, TraitsContext } from "./global/Structs.sol";
 import { LibPRNG } from "./libraries/LibPRNG.sol";
 import { LibTraits } from "./libraries/LibTraits.sol";
 

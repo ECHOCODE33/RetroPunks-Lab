@@ -5,11 +5,7 @@ import { ERC721SeaDropPausable } from "./ERC721SeaDropPausable.sol";
 
 /**
  * @title ERC721SeaDropPausableAndQueryable
- * @author SeaDrop
- * @notice Extends ERC721SeaDropPausable with off-chain querying capabilities for ownership data.
- *
- *         This contract provides gas-efficient methods to query token ownership information,
- *         enumerate tokens by owner, and handle edge cases like burned tokens and spot mints.
+ * @notice Extends ERC721SeaDropPausable with convenience query functions.
  */
 contract ERC721SeaDropPausableAndQueryable is ERC721SeaDropPausable {
     /**

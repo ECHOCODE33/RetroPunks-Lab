@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.32;
 
 interface ITransferValidator721 {
     /// @notice Ensure that a transfer has been authorized for a specific tokenId

@@ -9,7 +9,6 @@ uint16 constant NUM_SPECIAL_1S = uint16(type(E_Special_1s).max) + 1;
 
 uint16 constant NUM_PRE_RENDERED_SPECIALS = 7;
 
-
 enum E_TraitsGroup {
     Background_Group,
     Special_1s_Group,

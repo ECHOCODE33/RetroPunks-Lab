@@ -12,8 +12,8 @@ import {
     E_Male_Mask,
     E_Male_Skin,
     E_Sex
-} from "../common/Enums.sol";
-import { TraitsContext } from "../common/Structs.sol";
+} from "../global/Enums.sol";
+import { TraitsContext } from "../global/Structs.sol";
 
 /**
  * @title LibTraits

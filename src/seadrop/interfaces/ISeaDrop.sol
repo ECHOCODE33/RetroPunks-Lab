@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.32;
 
 import { AllowListData, MintParams, PublicDrop, SignedMintValidationParams, TokenGatedDropStage, TokenGatedMintParams } from "../lib/SeaDropStructs.sol";
 

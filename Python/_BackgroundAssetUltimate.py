@@ -29,6 +29,16 @@ BACKGROUNDS = [
         'layerType': 2,
         'palette': ["#e8eded"]
     },
+    {
+        'name': 'Ancient',
+        'layerType': 2,
+        'palette': ["#b6aba1"]
+    },
+    {
+        'name': 'Solid White',
+        'layerType': 2,
+        'palette': ["#ffffff"]
+    },
 
     {
         'name': 'Solid Black',

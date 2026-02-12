@@ -2,10 +2,10 @@
 pragma solidity ^0.8.32;
 
 /**
- * @title IRetroPunks
+ * @title IRetroPunksTypes
  * @notice Interface containing structs, events, and errors for the RetroPunks collection
  */
-interface IRetroPunks {
+interface IRetroPunksTypes {
     /**
      * @notice A struct defining token metadata.
      *
@@ -22,11 +22,17 @@ interface IRetroPunks {
     }
 
     event MetadataUpdate(uint256 _tokenId);
+    event GlobalSeedRevealed(uint256 seed);
+    event ShufflerSeedRevealed(uint256 seed);
+    event MetaGenUpdated(address indexed newMetaGen, bool isRevealMetaGen);
+    event MintClosed();
+
 
     error MintIsClosed();
-    error PreRenderedSpecialCannotBeCustomized();
     error BioIsTooLong();
     error InvalidCharacterInName();
+    error InvalidBackgroundIndex();
+    error PreRenderedSpecialCannotBeCustomized();
     error GlobalSeedAlreadyRevealed();
     error InvalidGlobalSeedReveal();
     error ShufflerSeedAlreadyRevealed();
@@ -35,7 +41,6 @@ interface IRetroPunks {
     error NoRemainingTokens();
     error NonExistentToken();
     error CallerIsNotTokenOwner();
-    error InvalidBackgroundIndex();
     error MetadataNotRevealedYet();
     error ArrayLengthMismatch();
 }
