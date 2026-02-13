@@ -8,7 +8,7 @@ import { Assets } from "../src/Assets.sol";
 contract AddAssetsBatch is Script {
     address assetsAddress = vm.envAddress("ASSETS");
 
-    uint256 constant BATCH_LIMIT = 5;
+    uint256 constant BATCH_LIMIT = 12;
 
     // ====================== ASSETS ======================
 

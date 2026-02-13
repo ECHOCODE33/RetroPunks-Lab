@@ -1,7 +1,7 @@
 ## Script
 
  forge script script/RetroPunks.s.sol:RetroPunksScript \
-  --sig "batchQueryTokenURI(uint256, uint256)" 1 5 \
+  --sig "deploy" \
   --rpc-url $BASE_SEPOLIA_RPC \
   --private-key $PRIVATE_KEY \
   --broadcast \
