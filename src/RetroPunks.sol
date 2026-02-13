@@ -211,6 +211,7 @@ contract RetroPunks is IRetroPunksTypes, ERC721SeaDropPausableAndQueryable {
         uint256 numShuffled = _tokenIdSeedShuffler.numShuffled();
         uint256 randomness;
 
+        // 1. Generate Randomness (Kept your logic)
         assembly {
             let sSeed := sload(shufflerSeed.slot)
             mstore(0x00, sSeed)
@@ -222,18 +223,15 @@ contract RetroPunks is IRetroPunksTypes, ERC721SeaDropPausableAndQueryable {
 
         assembly {
             /**
-             * 3. FAST NAME GENERATION ("#123")
-             * Instead of Utils.toString(), we calculate the ASCII bytes directly.
+             * 2. OPTIMIZED NAME GENERATION ("#123")
              */
             let nameBytes := 0
             let tempId := _tokenId
-            let charPos := 31 // Start from the end of the 32-byte word
+            let charPos := 31
 
             // Convert ID to ASCII digits backwards
             for { } gt(tempId, 0) { } {
-                // Get last digit (tempId % 10) and add 48 (ASCII for '0')
                 let digit := add(mod(tempId, 10), 48)
-                // Store digit in the correct byte position
                 nameBytes := or(nameBytes, shl(mul(sub(31, charPos), 8), digit))
                 tempId := div(tempId, 10)
                 charPos := sub(charPos, 1)
@@ -241,31 +239,36 @@ contract RetroPunks is IRetroPunksTypes, ERC721SeaDropPausableAndQueryable {
 
             // Add the "#" prefix (ASCII 0x23)
             nameBytes := or(nameBytes, shl(mul(sub(31, charPos), 8), 0x23))
-
-            // Shift the string to the "left" so it reads correctly in bytes32
+            // Shift to the left so it's a valid "string" or "bytes32" starting from the first byte
             nameBytes := shl(mul(charPos, 8), nameBytes)
 
             /**
-             * 4. OPTIMIZED STORAGE WRITES
-             * Mapping slot = keccak256(key, mapping_slot)
+             * 3. STORAGE PACKING
              */
             mstore(0x00, _tokenId)
             mstore(0x20, globalTokenMetadata.slot)
             let slot := keccak256(0x00, 0x40)
 
-            // Slot 0: Pack [tokenIdSeed (16 bits) | backgroundIndex (8 bits)]
-            // backgroundIndex is 0, so we just shift the seed.
-            let packed := shl(8, and(newTokenIdSeed, 0xFFFF))
-            sstore(slot, packed)
+            /* FIX: Solidity packs from right-to-left.
+               If your struct is: { uint16 seed; uint8 backgroundIndex; }
+               - Seed goes in bits 0-15
+               - backgroundIndex goes in bits 16-23
+            */
+            let seedPart := and(newTokenIdSeed, 0xFFFF) // Bits 0-15
+            let bgPart := shl(16, 1) // Bits 16-23 (default background index is 1)
+            let packed := or(seedPart, bgPart)
 
-            // Slot 1: Name (bytes32)
-            sstore(add(slot, 1), nameBytes)
+            sstore(slot, packed) // Slot 0: Seed & BG Index
+            sstore(add(slot, 1), nameBytes) // Slot 1: Name
 
-            // Slot 2: Bio (Short string optimization)
-            // "A RetroPunk living on-chain." is 27 chars.
-            // For strings < 31 bytes: [data bytes...][length * 2]
+            /**
+             * 4. BIO STORAGE
+             */
+            // "A RetroPunk living on-chain." (27 chars)
+            // We must ensure the string is left-aligned in the 32-byte word.
             let bioData := "A RetroPunk living on-chain."
             let bioLen := 27
+            // Solidity short string format: [data][length * 2]
             sstore(add(slot, 2), or(bioData, mul(bioLen, 2)))
         }
     }
@@ -301,10 +304,10 @@ contract RetroPunks is IRetroPunksTypes, ERC721SeaDropPausableAndQueryable {
 
     function tokenURI(uint256 tokenId) public view override tokenExists(tokenId) returns (string memory) {
         TokenMetadata memory meta = globalTokenMetadata[tokenId];
-        return renderDataURI(tokenId, meta.tokenIdSeed, meta.backgroundIndex, Utils.toString(meta.name), meta.bio, globalSeed);
+        return generateDataURI(tokenId, meta.tokenIdSeed, meta.backgroundIndex, Utils.toString(meta.name), meta.bio, globalSeed);
     }
 
-    function renderDataURI(uint256 _tokenId, uint16 _tokenIdSeed, uint8 _backgroundIndex, string memory _name, string memory _bio, uint256 _globalSeed)
+    function generateDataURI(uint256 _tokenId, uint16 _tokenIdSeed, uint8 _backgroundIndex, string memory _name, string memory _bio, uint256 _globalSeed)
         internal
         view
         returns (string memory)

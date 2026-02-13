@@ -29,64 +29,75 @@ BACKGROUNDS = [
         'layerType': 2,
         'palette': ["#000000"]
     },
+
     {
         'name': 'Grey 1',
         'layerType': 2,
         'palette': ["#1a1a1a"]
     },
+
     {
         'name': 'Grey 2',
         'layerType': 2,
         'palette': ["#333333"]
     },
+
     {
         'name': 'Grey 3',
         'layerType': 2,
         'palette': ["#4d4d4d"]
     },
+
     {
         'name': 'Grey 4',
         'layerType': 2,
         'palette': ["#666666"]
     },
+
     {
         'name': 'Grey 5',
         'layerType': 2,
         'palette': ["#808080"]
     },
+
     {
         'name': 'Grey 6',
         'layerType': 2,
         'palette': ["#999999"]
     },
+
     {
         'name': 'Grey 7',
         'layerType': 2,
         'palette': ["#b3b3b3"]
     },
+
     {
         'name': 'Grey 8',
         'layerType': 2,
         'palette': ["#cccccc"]
     },
+
     {
         'name': 'Grey 9',
         'layerType': 2,
         'palette': ["#e6e6e6"]
     },
+
     {
         'name': 'White',
         'layerType': 2,
         'palette': ["#ffffff"]
     },
+
     {
-        'name': 'Smooth Vertical',
+        'name': 'Greyscale_SV',
         'layerType': 3,
         'palette': ["#000000", "#ffffff"]
     },
 
     {
-        'name': 'Pixelated Vertical',
+        'name': 'Greyscale_PV',
         'layerType': 4,
         'palette': [
             "#000000ff",
@@ -117,13 +128,13 @@ BACKGROUNDS = [
     },
 
     {
-        'name': 'Smooth Vertical Inverse',
+        'name': 'Greyscale_SVI',
         'layerType': 3,
         'palette': ["#ffffff", "#000000"]
     },
 
     {
-        'name': 'Pixelated Vertical Inverse',
+        'name': 'Greyscale_PVI',
         'layerType': 4,
         'palette': [
             "#ffffffff",
@@ -154,13 +165,13 @@ BACKGROUNDS = [
     },
 
     {
-        'name': 'Smooth Horizontal',
+        'name': 'Greyscale_SH',
         'layerType': 5,
         'palette': ["#000000", "#ffffff"]
     },
 
     {
-        'name': 'Pixelated Horizontal',
+        'name': 'Greyscale_PH',
         'layerType': 6,
         'palette': [
             "#000000ff",
@@ -191,13 +202,13 @@ BACKGROUNDS = [
     },
 
     {
-        'name': 'Smooth Horizontal Inverse',
+        'name': 'Greyscale_SHI',
         'layerType': 5,
         'palette': ["#ffffff", "#000000"]
     },
 
     {
-        'name': 'Pixelated Horizontal Inverse',
+        'name': 'Greyscale_PHI',
         'layerType': 6,
         'palette': [
             "#ffffffff",
@@ -228,13 +239,13 @@ BACKGROUNDS = [
     },
 
     {
-        'name': 'Smooth Diagonal',
+        'name': 'Greyscale_SD',
         'layerType': 7,
         'palette': ["#000000", "#ffffff"]
     },
 
     {
-        'name': 'Pixel Diagonal',
+        'name': 'Greyscale_PD',
         'layerType': 8,
         'palette': [
             "#000000ff",
@@ -265,13 +276,13 @@ BACKGROUNDS = [
     },
 
     {
-        'name': 'Smooth Diagonal Inverse',
+        'name': 'Greyscale_SDI',
         'layerType': 7,
         'palette': ["#ffffff", "#000000"]
     },
 
     {
-        'name': 'Pixel Diagonal Inverse',
+        'name': 'Greyscale_PDI',
         'layerType': 8,
         'palette': [
             "#ffffffff",
@@ -302,13 +313,13 @@ BACKGROUNDS = [
     },
 
     {
-        'name': 'Smooth Reverse Diagonal',
+        'name': 'Greyscale_SU',
         'layerType': 9,
         'palette': ["#000000", "#ffffff"]
     },
 
     {
-        'name': 'Pixel Reverse Diagonal',
+        'name': 'Greyscale_PU',
         'layerType': 10,
         'palette': [
             "#000000ff",
@@ -339,13 +350,13 @@ BACKGROUNDS = [
     },
 
     {
-        'name': 'Smooth Reverse Diagonal Inverse',
+        'name': 'Greyscale_SUI',
         'layerType': 9,
         'palette': ["#ffffff", "#000000"]
     },
 
     {
-        'name': 'Pixel Reverse Diagonal Inverse',
+        'name': 'Greyscale_PUI',
         'layerType': 10,
         'palette': [
             "#ffffffff",
@@ -376,11 +387,17 @@ BACKGROUNDS = [
     },
 
     {
-        'name': 'Radial',
+        'name': 'Greyscale_Radial_1',
         'layerType': 11,
         'palette': ["#ffffff", "#000000"]
     },
+    {
+        'name': 'Greyscale_Radial_2',
+        'layerType': 11,
+        'palette': ["#000000", "#ffffff"]
+    },
 ]
+
 
 def parse_color(c):
     """Convert #rrggbb, #rrggbbaa, 0xRRGGBBAA → integer 0xRRGGBBAA"""
@@ -393,6 +410,7 @@ def parse_color(c):
         if len(c) == 8:
             return int(c, 16)
     raise ValueError(f"Invalid color format: {c!r}")
+
 
 def get_gradient_coords(layer_type):
     """Returns (x1,y1,x2,y2) in range 0-1 (normalized SVG style) like the first script"""
@@ -409,6 +427,7 @@ def get_gradient_coords(layer_type):
         BG_TYPES["Radial"]:       (0, 0, 0, 0),
     }
     return mapping.get(layer_type, (0, 0, 0, 0))
+
 
 def encode_background_group():
     output = bytearray()
@@ -482,6 +501,7 @@ def encode_background_group():
 
     return bytes(output)
 
+
 def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     print("Generating Background Asset Group...")
@@ -516,6 +536,7 @@ def main():
         print(f"  Group name length: {namelen} → should be {len(GROUP_NAME)}")
         if namelen == len(GROUP_NAME):
             print("  ✓ Name length looks correct")
+
 
 if __name__ == '__main__':
     main()

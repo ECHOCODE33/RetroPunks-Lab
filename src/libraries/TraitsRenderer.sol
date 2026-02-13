@@ -4,7 +4,7 @@ pragma solidity ^0.8.32;
 import { E_Background_Type, E_TraitsGroup } from "../global/Enums.sol";
 import { CachedTraitGroups, TraitGroup, TraitInfo, TraitsContext } from "../global/Structs.sol";
 import { IAssets } from "../interfaces/IAssets.sol";
-import { BitMap, LibBitmap } from "./LibBitmap.sol";
+import { BitMap, PNGBuilder } from "./PNGBuilder.sol";
 import { Utils } from "./Utils.sol";
 
 library TraitsRenderer {
@@ -28,7 +28,7 @@ library TraitsRenderer {
             }
         }
 
-        string memory urlEncodedPNG = LibBitmap.toURLEncodedPNG(bitMap);
+        string memory urlEncodedPNG = PNGBuilder.toURLEncodedPNG(bitMap);
         Utils.concat(buffer, '<g id="GeneratedImage">');
         Utils.concat(buffer, '<foreignObject width="48" height="48"><img xmlns="http://www.w3.org/1999/xhtml" src="');
         Utils.concat(buffer, bytes(urlEncodedPNG));
@@ -102,125 +102,38 @@ library TraitsRenderer {
 
     function _renderTraitGroup(BitMap memory bitMap, CachedTraitGroups memory cachedTraitGroups, uint8 traitGroupIndex, uint8 traitIndex) internal pure {
         TraitGroup memory group = cachedTraitGroups.traitGroups[traitGroupIndex];
+
         TraitInfo memory trait = group.traits[traitIndex];
 
+        uint256 traitDataLength = trait.traitData.length;
+
         bytes memory data = trait.traitData;
-        uint32[] memory palette = group.paletteRgba;
+        uint256 ptr = 0;
+        uint256 totalData = data.length;
 
-        uint256 x = trait.x1;
-        uint256 y = trait.y1;
-        uint256 maxX = trait.x2;
-        uint256 width = maxX - x + 1;
+        uint256 currX = trait.x1;
+        uint256 currY = trait.y1;
 
-        uint256 ptr;
-        uint256 dataLen = data.length;
+        while (ptr < totalData) {
+            uint8 run = uint8(data[ptr++]);
+            uint16 colorIdx;
 
-        unchecked {
-            while (ptr < dataLen) {
-                uint8 run;
-                uint16 colorIdx;
+            if (group.paletteIndexByteSize == 1) colorIdx = uint16(uint8(data[ptr++]));
+            else colorIdx = (uint16(uint8(data[ptr++])) << 8) | uint16(uint8(data[ptr++]));
 
-                assembly {
-                    let dataPtr := add(data, 0x20)
-                    run := byte(0, mload(add(dataPtr, ptr)))
-                }
-                ptr++;
+            uint32 rgba = group.paletteRgba[colorIdx];
 
-                // Read color index
-                if (group.paletteIndexByteSize == 1) {
-                    assembly {
-                        let dataPtr := add(data, 0x20)
-                        colorIdx := byte(0, mload(add(dataPtr, ptr)))
-                    }
-                    ptr++;
-                } else {
-                    assembly {
-                        let dataPtr := add(data, 0x20)
-                        let b1 := byte(0, mload(add(dataPtr, ptr)))
-                        let b2 := byte(0, mload(add(dataPtr, add(ptr, 1))))
-                        colorIdx := or(shl(8, b1), b2)
-                    }
-                    ptr += 2;
-                }
+            for (uint8 i = 0; i < run; i++) {
+                uint8 alpha = uint8(rgba); // or rgba & 0xFF
+                if (alpha > 0) PNGBuilder.renderPixelToBitMap(bitMap, uint8(currX), uint8(currY), rgba);
 
-                uint32 rgba = palette[colorIdx];
-                uint8 alpha = uint8(rgba);
-
-                // Skip if fully transparent
-                if (alpha == 0) {
-                    x += run;
-                    while (x > maxX) {
-                        x -= width;
-                        y++;
-                    }
-                    continue;
-                }
-
-                if (alpha == 255) {
-                    if (run > 1 && x + run - 1 <= maxX) {
-                        // ✅ CORRECT
-                        // batch write in same row
-                        assembly {
-                            let bmpBase := bitMap
-                            for { let i := 0 } lt(i, run) { i := add(i, 1) } {
-                                let pixelSlot := add(bmpBase, add(mul(add(x, i), mul(48, 32)), mul(y, 32)))
-                                mstore(pixelSlot, rgba)
-                            }
-                        }
-                        x += run;
-                        continue;
-                    }
-                }
-
-                // Optimized pixel rendering
-                for (uint8 i = 0; i < run; i++) {
-                    _renderPixelInline(bitMap, x, y, rgba, alpha);
-
-                    x++;
-                    if (x > maxX) {
-                        x = trait.x1;
-                        y++;
-                    }
+                currX++;
+                if (currX > trait.x2) {
+                    currX = trait.x1;
+                    currY++;
                 }
             }
         }
-    }
-
-    function _renderPixelInline(BitMap memory bitMap, uint256 x, uint256 y, uint32 src, uint8 srcA) private pure {
-        if (srcA == 0) return;
-
-        uint32 dst = bitMap.pixels[x][y];
-
-        // Fast paths
-        if (dst == 0 || srcA == 255) {
-            bitMap.pixels[x][y] = src;
-            return;
-        }
-
-        // Full alpha blending (already optimized in your code)
-        uint32 blended;
-        assembly {
-            let srcR := and(shr(24, src), 0xFF)
-            let srcG := and(shr(16, src), 0xFF)
-            let srcB := and(shr(8, src), 0xFF)
-
-            let dstA := and(dst, 0xFF)
-            let dstR := and(shr(24, dst), 0xFF)
-            let dstG := and(shr(16, dst), 0xFF)
-            let dstB := and(shr(8, dst), 0xFF)
-
-            let invA := sub(255, srcA)
-            let outA := add(srcA, div(add(mul(dstA, invA), 127), 255))
-            if iszero(outA) { outA := 1 }
-
-            let outR := div(add(mul(srcR, srcA), div(mul(mul(dstR, dstA), invA), 255)), outA)
-            let outG := div(add(mul(srcG, srcA), div(mul(mul(dstG, dstA), invA), 255)), outA)
-            let outB := div(add(mul(srcB, srcA), div(mul(mul(dstB, dstA), invA), 255)), outA)
-
-            blended := or(or(or(shl(24, outR), shl(16, outG)), shl(8, outB)), outA)
-        }
-
-        bitMap.pixels[x][y] = blended;
     }
 
     function _renderPixelGradientStops(bytes memory buffer, CachedTraitGroups memory cachedTraitGroups, uint256 traitGroupIndex, TraitInfo memory trait)

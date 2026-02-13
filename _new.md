@@ -1,4 +1,4 @@
-## Script 
+## Script
 
  forge script script/RetroPunks.s.sol:RetroPunksScript \
   --sig "batchQueryTokenURI(uint256, uint256)" 1 5 \
@@ -19,8 +19,7 @@
   --sig "mintAsUser" \
 
   --sig "revealGlobalSeed" \
-  --sig "setRevealMetaGen" \
-  --sig "setDefaultBackgroundIndex(uint8) 2 " \
+  --sig "revealMetaGen" \
 
   --sig "customizeToken" \
 

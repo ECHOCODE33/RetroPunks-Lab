@@ -395,7 +395,7 @@ contract RetroPunksScript is HelperContract {
     /**
      * 9. Set the reveal MetaGen (makes metadata visible). Optional, call when you want to reveal.
      */
-    function setRevealMetaGen() external {
+    function revealMetaGen() external {
         console.log("=== Setting Reveal MetaGen ===");
         console.log("RetroPunks:", RETROPUNKS);
         console.log("New MetaGen:", META_GEN);
@@ -439,7 +439,7 @@ contract RetroPunksScript is HelperContract {
         uint256 tokenId = 5;
         string memory name = "Vivaldi";
         string memory bio = "Legendary violin musician & composer of the Baroque era.";
-        uint8 backgroundIndex = 11;
+        uint8 backgroundIndex = 18;
 
         console.log("=== Customizing Token ===");
         console.log("Token ID:", tokenId);

@@ -106,7 +106,8 @@ enum E_Background {
     Greyscale_SUI,
     Greyscale_PUI,
 
-    Greyscale_Radial
+    Greyscale_Radial_1,
+    Greyscale_Radial_2
 }
 
 enum E_Special_1s {
