@@ -144,7 +144,9 @@ library DynamicBuffer {
     function appendSafeBase64(bytes memory buffer, bytes memory data, bool fileSafe, bool noPadding) internal pure {
         uint256 dataLength = data.length;
 
-        if (data.length == 0) return;
+        if (data.length == 0) {
+            return;
+        }
 
         uint256 encodedLength;
         uint256 r;
@@ -229,6 +231,8 @@ library DynamicBuffer {
     function checkOverflow(bytes memory buffer, uint256 addedLength) internal pure {
         uint256 cap = capacity(buffer);
         uint256 newLength = buffer.length + addedLength;
-        if (cap < newLength) revert("DynamicBuffer: Appending out of bounds.");
+        if (cap < newLength) {
+            revert("DynamicBuffer: Appending out of bounds.");
+        }
     }
 }

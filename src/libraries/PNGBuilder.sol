@@ -12,7 +12,9 @@ library PNGBuilder {
 
     function renderPixelToBitMap(BitMap memory bitMap, uint256 x, uint256 y, uint32 src) internal pure {
         uint32 srcA = src & 0xFF;
-        if (srcA == 0) return;
+        if (srcA == 0) {
+            return;
+        }
 
         uint32 srcR = (src >> 24) & 0xFF;
         uint32 srcG = (src >> 16) & 0xFF;
@@ -61,7 +63,9 @@ library PNGBuilder {
         unchecked {
             for (uint256 x = 0; x < 48; ++x) {
                 for (uint256 y = 0; y < 48; ++y) {
-                    if (bmp.pixels[x][y] == MAGIC_TRANSPARENT) bmp.pixels[x][y] = 0x00000000;
+                    if (bmp.pixels[x][y] == MAGIC_TRANSPARENT) {
+                        bmp.pixels[x][y] = 0x00000000;
+                    }
                 }
             }
         }
@@ -121,9 +125,13 @@ library PNGBuilder {
         unchecked {
             for (uint256 i; i < buf.length; ++i) {
                 a += uint8(buf[i]);
-                if (a >= 65521) a -= 65521;
+                if (a >= 65521) {
+                    a -= 65521;
+                }
                 b += a;
-                if (b >= 65521) b -= 65521;
+                if (b >= 65521) {
+                    b -= 65521;
+                }
             }
         }
 

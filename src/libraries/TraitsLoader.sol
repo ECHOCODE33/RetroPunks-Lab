@@ -15,7 +15,9 @@ library TraitsLoader {
         view
         returns (TraitGroup memory)
     {
-        if (_cachedTraitGroups.traitGroupsLoaded[_traitGroupIndex]) return _cachedTraitGroups.traitGroups[_traitGroupIndex];
+        if (_cachedTraitGroups.traitGroupsLoaded[_traitGroupIndex]) {
+            return _cachedTraitGroups.traitGroups[_traitGroupIndex];
+        }
 
         TraitGroup memory traitGroup;
         traitGroup.traitGroupIndex = _traitGroupIndex;
@@ -87,7 +89,9 @@ library TraitsLoader {
                 uint256 dataLen = index - startOfData;
                 t.traitData = new bytes(dataLen);
 
-                if (dataLen > 0) _memoryCopy(t.traitData, 0, traitGroupData, startOfData, dataLen);
+                if (dataLen > 0) {
+                    _memoryCopy(t.traitData, 0, traitGroupData, startOfData, dataLen);
+                }
 
                 traitGroup.traits[i] = t;
             }
@@ -110,7 +114,9 @@ library TraitsLoader {
     function _decodeTraitGroupPalette(bytes memory traitGroupData, uint256 startIndex) internal pure returns (uint32[] memory paletteRgba, uint256 nextIndex) {
         uint16 paletteSize = uint16(uint8(traitGroupData[startIndex])) << 8 | uint16(uint8(traitGroupData[startIndex + 1]));
 
-        if (paletteSize == 0) return (new uint32[](0), startIndex + 2);
+        if (paletteSize == 0) {
+            return (new uint32[](0), startIndex + 2);
+        }
 
         paletteRgba = new uint32[](paletteSize);
         uint256 cursor = startIndex + 2;
@@ -128,7 +134,9 @@ library TraitsLoader {
     }
 
     function _memoryCopy(bytes memory dest, uint256 destOffset, bytes memory src, uint256 srcOffset, uint256 len) internal pure {
-        if (len == 0) return;
+        if (len == 0) {
+            return;
+        }
         assembly {
             let destPtr := add(add(dest, 32), destOffset)
             let srcPtr := add(add(src, 32), srcOffset)

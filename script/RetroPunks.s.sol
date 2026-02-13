@@ -44,7 +44,9 @@ contract HelperContract is Script {
                                     count = 3;
                                     if (a3 == address(0)) {
                                         count = 2;
-                                        if (a2 == address(0)) count = 1;
+                                        if (a2 == address(0)) {
+                                            count = 1;
+                                        }
                                     }
                                 }
                             }
@@ -55,16 +57,36 @@ contract HelperContract is Script {
         }
 
         arr = new address[](count);
-        if (count >= 1) arr[0] = a1;
-        if (count >= 2) arr[1] = a2;
-        if (count >= 3) arr[2] = a3;
-        if (count >= 4) arr[3] = a4;
-        if (count >= 5) arr[4] = a5;
-        if (count >= 6) arr[5] = a6;
-        if (count >= 7) arr[6] = a7;
-        if (count >= 8) arr[7] = a8;
-        if (count >= 9) arr[8] = a9;
-        if (count >= 10) arr[9] = a10;
+        if (count >= 1) {
+            arr[0] = a1;
+        }
+        if (count >= 2) {
+            arr[1] = a2;
+        }
+        if (count >= 3) {
+            arr[2] = a3;
+        }
+        if (count >= 4) {
+            arr[3] = a4;
+        }
+        if (count >= 5) {
+            arr[4] = a5;
+        }
+        if (count >= 6) {
+            arr[5] = a6;
+        }
+        if (count >= 7) {
+            arr[6] = a7;
+        }
+        if (count >= 8) {
+            arr[7] = a8;
+        }
+        if (count >= 9) {
+            arr[8] = a9;
+        }
+        if (count >= 10) {
+            arr[9] = a10;
+        }
     }
 
     /// @dev Convenience wrapper for single address
@@ -97,7 +119,9 @@ contract HelperContract is Script {
                                     count = 3;
                                     if (u3 == 0) {
                                         count = 2;
-                                        if (u2 == 0) count = 1;
+                                        if (u2 == 0) {
+                                            count = 1;
+                                        }
                                     }
                                 }
                             }
@@ -108,16 +132,36 @@ contract HelperContract is Script {
         }
 
         arr = new uint256[](count);
-        if (count >= 1) arr[0] = u1;
-        if (count >= 2) arr[1] = u2;
-        if (count >= 3) arr[2] = u3;
-        if (count >= 4) arr[3] = u4;
-        if (count >= 5) arr[4] = u5;
-        if (count >= 6) arr[5] = u6;
-        if (count >= 7) arr[6] = u7;
-        if (count >= 8) arr[7] = u8;
-        if (count >= 9) arr[8] = u9;
-        if (count >= 10) arr[9] = u10;
+        if (count >= 1) {
+            arr[0] = u1;
+        }
+        if (count >= 2) {
+            arr[1] = u2;
+        }
+        if (count >= 3) {
+            arr[2] = u3;
+        }
+        if (count >= 4) {
+            arr[3] = u4;
+        }
+        if (count >= 5) {
+            arr[4] = u5;
+        }
+        if (count >= 6) {
+            arr[5] = u6;
+        }
+        if (count >= 7) {
+            arr[6] = u7;
+        }
+        if (count >= 8) {
+            arr[7] = u8;
+        }
+        if (count >= 9) {
+            arr[8] = u9;
+        }
+        if (count >= 10) {
+            arr[9] = u10;
+        }
     }
 
     /// @dev Convenience wrapper for single uint

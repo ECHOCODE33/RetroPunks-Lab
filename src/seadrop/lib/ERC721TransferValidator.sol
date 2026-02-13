@@ -24,7 +24,9 @@ abstract contract ERC721TransferValidator is ICreatorToken {
     ///         The external method that uses this must include access control.
     function _setTransferValidator(address newValidator) internal {
         address oldValidator = _transferValidator;
-        if (oldValidator == newValidator) revert SameTransferValidator();
+        if (oldValidator == newValidator) {
+            revert SameTransferValidator();
+        }
         _transferValidator = newValidator;
         emit TransferValidatorUpdated(oldValidator, newValidator);
     }

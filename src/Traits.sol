@@ -11,8 +11,12 @@ import { LibTraits } from "./libraries/LibTraits.sol";
 /**
  * @title Traits
  * @author ECHO (echomatrix.eth)
- * @notice Generates traits for the RetroPunks collection, optimized for gas efficiency
- * @dev Inherits rarity values from Rarities contract and selects / generates traits using a PRNG for gas efficiency
+ *
+ * @notice Generates traits context for tokens in the RetroPunks contract,
+ *         optimized for gas efficiency.
+ *
+ * @dev Inherits rarity values from Rarities contract.
+ *      Selects / generates traits using a PRNG for gas efficiency.
  */
 contract Traits is ITraits, Rarities {
     uint32 private constant MIN_DATE = 4102444800;
@@ -32,7 +36,9 @@ contract Traits is ITraits, Rarities {
         if (_tokenIdSeed < NUM_SPECIAL_1S) {
             traits.specialId = _tokenIdSeed + 1;
 
-            if (_tokenIdSeed < 7) return traits;
+            if (_tokenIdSeed < 7) {
+                return traits;
+            }
 
             traits.traitsToRender = new TraitToRender[](2);
             traits.background = E_Background(_backgroundIndex);
@@ -72,27 +78,43 @@ contract Traits is ITraits, Rarities {
             _addOptionalTrait(traits, E_TraitsGroup.Male_Chain_Group, uint8(m.chain));
             _addOptionalTrait(traits, E_TraitsGroup.Male_Earring_Group, uint8(m.earring));
 
-            if (LibTraits.maleHasFacialHair(traits)) _addOptionalTrait(traits, E_TraitsGroup.Male_Facial_Hair_Group, uint8(m.facialHair));
-            else _addOptionalTrait(traits, E_TraitsGroup.Male_Mask_Group, uint8(m.mask));
+            if (LibTraits.maleHasFacialHair(traits)) {
+                _addOptionalTrait(traits, E_TraitsGroup.Male_Facial_Hair_Group, uint8(m.facialHair));
+            } else {
+                _addOptionalTrait(traits, E_TraitsGroup.Male_Mask_Group, uint8(m.mask));
+            }
 
             _addOptionalTrait(traits, E_TraitsGroup.Male_Scarf_Group, uint8(m.scarf));
 
             // Add eye patch early (before hair/headwear) if applicable
-            if (LibTraits.maleEyeWearIsEyePatch(traits)) _addOptionalTrait(traits, E_TraitsGroup.Male_Eye_Wear_Group, uint8(m.eyeWear));
+            if (LibTraits.maleEyeWearIsEyePatch(traits)) {
+                _addOptionalTrait(traits, E_TraitsGroup.Male_Eye_Wear_Group, uint8(m.eyeWear));
+            }
 
-            if (LibTraits.maleHasHeadwear(traits)) _addOptionalTrait(traits, E_TraitsGroup.Male_Hat_Hair_Group, uint8(m.hatHair));
-            else _addOptionalTrait(traits, E_TraitsGroup.Male_Hair_Group, uint8(m.hair));
+            if (LibTraits.maleHasHeadwear(traits)) {
+                _addOptionalTrait(traits, E_TraitsGroup.Male_Hat_Hair_Group, uint8(m.hatHair));
+            } else {
+                _addOptionalTrait(traits, E_TraitsGroup.Male_Hair_Group, uint8(m.hair));
+            }
 
             // Add headwear only if NOT Cloak/Hoodie
-            if (LibTraits.maleHasHeadwear(traits) && !LibTraits.maleHeadwearIsCloakOrHoodie(traits)) _addMaleHeadwear(traits);
+            if (LibTraits.maleHasHeadwear(traits) && !LibTraits.maleHeadwearIsCloakOrHoodie(traits)) {
+                _addMaleHeadwear(traits);
+            }
 
             // Add regular eye wear (excluding eye patches)
-            if (!LibTraits.maleEyeWearIsEyePatch(traits)) _addOptionalTrait(traits, E_TraitsGroup.Male_Eye_Wear_Group, uint8(m.eyeWear));
+            if (!LibTraits.maleEyeWearIsEyePatch(traits)) {
+                _addOptionalTrait(traits, E_TraitsGroup.Male_Eye_Wear_Group, uint8(m.eyeWear));
+            }
 
             // Add Cloak/Hoodie headwear after eye wear
-            if (LibTraits.maleHasHeadwear(traits) && LibTraits.maleHeadwearIsCloakOrHoodie(traits)) _addMaleHeadwear(traits);
+            if (LibTraits.maleHasHeadwear(traits) && LibTraits.maleHeadwearIsCloakOrHoodie(traits)) {
+                _addMaleHeadwear(traits);
+            }
 
-            if (!LibTraits.maleHasMask(traits)) _addOptionalTrait(traits, E_TraitsGroup.Mouth_Group, uint8(m.mouth));
+            if (!LibTraits.maleHasMask(traits)) {
+                _addOptionalTrait(traits, E_TraitsGroup.Mouth_Group, uint8(m.mouth));
+            }
         } else {
             FemaleTraits memory f = selectAllFemaleTraits(traits, prng);
 
@@ -118,34 +140,51 @@ contract Traits is ITraits, Rarities {
             _addOptionalTrait(traits, E_TraitsGroup.Female_Scarf_Group, uint8(f.scarf));
 
             // Add eye patch early (before hair/headwear) if applicable
-            if (LibTraits.femaleEyeWearIsEyePatch(traits)) _addOptionalTrait(traits, E_TraitsGroup.Female_Eye_Wear_Group, uint8(f.eyeWear));
+            if (LibTraits.femaleEyeWearIsEyePatch(traits)) {
+                _addOptionalTrait(traits, E_TraitsGroup.Female_Eye_Wear_Group, uint8(f.eyeWear));
+            }
 
-            if (LibTraits.femaleHasHeadwear(traits)) _addOptionalTrait(traits, E_TraitsGroup.Female_Hat_Hair_Group, uint8(f.hatHair));
-            else _addOptionalTrait(traits, E_TraitsGroup.Female_Hair_Group, uint8(f.hair));
+            if (LibTraits.femaleHasHeadwear(traits)) {
+                _addOptionalTrait(traits, E_TraitsGroup.Female_Hat_Hair_Group, uint8(f.hatHair));
+            } else {
+                _addOptionalTrait(traits, E_TraitsGroup.Female_Hair_Group, uint8(f.hair));
+            }
 
             // Add headwear only if NOT Cloak/Hoodie
-            if (LibTraits.femaleHasHeadwear(traits) && !LibTraits.femaleHeadwearIsCloakOrHoodie(traits)) _addFemaleHeadwear(traits);
+            if (LibTraits.femaleHasHeadwear(traits) && !LibTraits.femaleHeadwearIsCloakOrHoodie(traits)) {
+                _addFemaleHeadwear(traits);
+            }
 
             // Add regular eye wear (excluding eye patches)
-            if (!LibTraits.femaleEyeWearIsEyePatch(traits)) _addOptionalTrait(traits, E_TraitsGroup.Female_Eye_Wear_Group, uint8(f.eyeWear));
+            if (!LibTraits.femaleEyeWearIsEyePatch(traits)) {
+                _addOptionalTrait(traits, E_TraitsGroup.Female_Eye_Wear_Group, uint8(f.eyeWear));
+            }
 
             // Add Cloak/Hoodie headwear after eye wear
-            if (LibTraits.femaleHasHeadwear(traits) && LibTraits.femaleHeadwearIsCloakOrHoodie(traits)) _addFemaleHeadwear(traits);
+            if (LibTraits.femaleHasHeadwear(traits) && LibTraits.femaleHeadwearIsCloakOrHoodie(traits)) {
+                _addFemaleHeadwear(traits);
+            }
 
-            if (!LibTraits.femaleHasMask(traits)) _addOptionalTrait(traits, E_TraitsGroup.Mouth_Group, uint8(f.mouth));
+            if (!LibTraits.femaleHasMask(traits)) {
+                _addOptionalTrait(traits, E_TraitsGroup.Mouth_Group, uint8(f.mouth));
+            }
         }
 
         return traits;
     }
 
     function _addOptionalTrait(TraitsContext memory _traits, E_TraitsGroup _group, uint8 _index) internal pure {
-        if (_index == 0) return; // index 0 is always 'None'
+        if (_index == 0) {
+            return; // index 0 is always 'None'
+        }
         _addTraitToRender(_traits, _group, _index);
     }
 
     function _addMaleHeadwear(TraitsContext memory traits) internal pure {
         uint8 headwear = uint8(traits.maleHeadwear);
-        if (headwear == 0) return;
+        if (headwear == 0) {
+            return;
+        }
 
         _addTraitToRender(traits, E_TraitsGroup.Male_Headwear_Group, headwear);
 
@@ -159,7 +198,9 @@ contract Traits is ITraits, Rarities {
 
     function _addFemaleHeadwear(TraitsContext memory traits) internal pure {
         uint8 headwear = uint8(traits.femaleHeadwear);
-        if (headwear == 0) return;
+        if (headwear == 0) {
+            return;
+        }
 
         _addTraitToRender(traits, E_TraitsGroup.Female_Headwear_Group, headwear);
 

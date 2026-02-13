@@ -51,7 +51,9 @@ contract ERC721ContractMetadata is ERC721AConduitPreapproved, ERC721TransferVali
      *      to save contract space from being inlined N times.
      */
     function _onlyOwnerOrSelf() internal view {
-        if (_cast(msg.sender == owner()) | _cast(msg.sender == address(this)) == 0) revert OnlyOwner();
+        if (_cast(msg.sender == owner()) | _cast(msg.sender == address(this)) == 0) {
+            revert OnlyOwner();
+        }
     }
 
     /**
@@ -72,7 +74,9 @@ contract ERC721ContractMetadata is ERC721AConduitPreapproved, ERC721TransferVali
         _tokenBaseURI = newBaseURI;
 
         // Emit an event with the update.
-        if (totalSupply() != 0) emit BatchMetadataUpdate(1, _nextTokenId() - 1);
+        if (totalSupply() != 0) {
+            emit BatchMetadataUpdate(1, _nextTokenId() - 1);
+        }
     }
 
     /**
@@ -116,10 +120,14 @@ contract ERC721ContractMetadata is ERC721AConduitPreapproved, ERC721TransferVali
         _onlyOwnerOrSelf();
 
         // Ensure the max supply does not exceed the maximum value of uint64.
-        if (newMaxSupply > 2 ** 64 - 1) revert CannotExceedMaxSupplyOfUint64(newMaxSupply);
+        if (newMaxSupply > 2 ** 64 - 1) {
+            revert CannotExceedMaxSupplyOfUint64(newMaxSupply);
+        }
 
         // Ensure the max supply does not exceed the total minted.
-        if (newMaxSupply < _totalMinted()) revert NewMaxSupplyCannotBeLessThenTotalMinted(newMaxSupply, _totalMinted());
+        if (newMaxSupply < _totalMinted()) {
+            revert NewMaxSupplyCannotBeLessThenTotalMinted(newMaxSupply, _totalMinted());
+        }
 
         // Set the new max supply.
         _maxSupply = newMaxSupply;
@@ -144,7 +152,9 @@ contract ERC721ContractMetadata is ERC721AConduitPreapproved, ERC721TransferVali
         _onlyOwnerOrSelf();
 
         // Revert if any items have been minted.
-        if (_totalMinted() > 0) revert ProvenanceHashCannotBeSetAfterMintStarted();
+        if (_totalMinted() > 0) {
+            revert ProvenanceHashCannotBeSetAfterMintStarted();
+        }
 
         // Keep track of the old provenance hash for emitting with the event.
         bytes32 oldProvenanceHash = _provenanceHash;
@@ -166,10 +176,14 @@ contract ERC721ContractMetadata is ERC721AConduitPreapproved, ERC721TransferVali
         _onlyOwnerOrSelf();
 
         // Revert if the new royalty address is the zero address.
-        if (newInfo.royaltyAddress == address(0)) revert RoyaltyAddressCannotBeZeroAddress();
+        if (newInfo.royaltyAddress == address(0)) {
+            revert RoyaltyAddressCannotBeZeroAddress();
+        }
 
         // Revert if the new basis points is greater than 10_000.
-        if (newInfo.royaltyBps > 10_000) revert InvalidRoyaltyBasisPoints(newInfo.royaltyBps);
+        if (newInfo.royaltyBps > 10000) {
+            revert InvalidRoyaltyBasisPoints(newInfo.royaltyBps);
+        }
 
         // Set the new royalty info.
         _royaltyInfo = newInfo;
@@ -256,7 +270,7 @@ contract ERC721ContractMetadata is ERC721AConduitPreapproved, ERC721TransferVali
 
         // Set the royalty amount to the sale price times the royalty basis
         // points divided by 10_000.
-        royaltyAmount = (_salePrice * info.royaltyBps) / 10_000;
+        royaltyAmount = (_salePrice * info.royaltyBps) / 10000;
 
         // Set the receiver of the royalty.
         receiver = info.royaltyAddress;
@@ -295,7 +309,9 @@ contract ERC721ContractMetadata is ERC721AConduitPreapproved, ERC721TransferVali
         if (from != address(0) && to != address(0)) {
             // Call the transfer validator if one is set.
             address transferValidator = _transferValidator;
-            if (transferValidator != address(0)) ITransferValidator721(transferValidator).validateTransfer(msg.sender, from, to, startTokenId);
+            if (transferValidator != address(0)) {
+                ITransferValidator721(transferValidator).validateTransfer(msg.sender, from, to, startTokenId);
+            }
         }
     }
 

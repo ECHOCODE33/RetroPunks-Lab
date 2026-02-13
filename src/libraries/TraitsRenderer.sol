@@ -19,7 +19,9 @@ library TraitsRenderer {
         BitMap memory bitMap;
 
         for (uint256 i = 0; i < traits.traitsToRenderLength; i++) {
-            if (traits.traitsToRender[i].traitGroup == E_TraitsGroup.Background_Group) continue;
+            if (traits.traitsToRender[i].traitGroup == E_TraitsGroup.Background_Group) {
+                continue;
+            }
 
             _renderTraitGroup(bitMap, cachedTraitGroups, uint8(traits.traitsToRender[i].traitGroup), traits.traitsToRender[i].traitIndex);
 
@@ -89,8 +91,11 @@ library TraitsRenderer {
             bool isPixelated =
                 bg == E_Background_Type.P_Vertical || bg == E_Background_Type.P_Horizontal || bg == E_Background_Type.P_Down || bg == E_Background_Type.P_Up;
 
-            if (isPixelated) _renderPixelGradientStops(buffer, cachedTraitGroups, bgGroupIndex, trait);
-            else _renderSmoothGradientStops(buffer, cachedTraitGroups, bgGroupIndex, trait);
+            if (isPixelated) {
+                _renderPixelGradientStops(buffer, cachedTraitGroups, bgGroupIndex, trait);
+            } else {
+                _renderSmoothGradientStops(buffer, cachedTraitGroups, bgGroupIndex, trait);
+            }
 
             Utils.concat(buffer, '</linearGradient></defs><rect width="48" height="48" fill="url(#bg-');
             Utils.concat(buffer, gradientIdx);
@@ -118,14 +123,19 @@ library TraitsRenderer {
             uint8 run = uint8(data[ptr++]);
             uint16 colorIdx;
 
-            if (group.paletteIndexByteSize == 1) colorIdx = uint16(uint8(data[ptr++]));
-            else colorIdx = (uint16(uint8(data[ptr++])) << 8) | uint16(uint8(data[ptr++]));
+            if (group.paletteIndexByteSize == 1) {
+                colorIdx = uint16(uint8(data[ptr++]));
+            } else {
+                colorIdx = (uint16(uint8(data[ptr++])) << 8) | uint16(uint8(data[ptr++]));
+            }
 
             uint32 rgba = group.paletteRgba[colorIdx];
 
             for (uint8 i = 0; i < run; i++) {
                 uint8 alpha = uint8(rgba); // or rgba & 0xFF
-                if (alpha > 0) PNGBuilder.renderPixelToBitMap(bitMap, uint8(currX), uint8(currY), rgba);
+                if (alpha > 0) {
+                    PNGBuilder.renderPixelToBitMap(bitMap, uint8(currX), uint8(currY), rgba);
+                }
 
                 currX++;
                 if (currX > trait.x2) {
@@ -145,7 +155,7 @@ library TraitsRenderer {
 
         uint256 numStops = trait.traitData.length / traitGroup.paletteIndexByteSize;
 
-        int256 scale = 1_000_000;
+        int256 scale = 1000000;
 
         for (uint256 i = 0; i < numStops; i++) {
             uint16 idx = _decodePaletteIndex(trait.traitData, i * traitGroup.paletteIndexByteSize, traitGroup.paletteIndexByteSize);
@@ -176,7 +186,7 @@ library TraitsRenderer {
 
         uint256 numStops = trait.traitData.length / traitGroup.paletteIndexByteSize;
 
-        int256 scale = 1_000_000;
+        int256 scale = 1000000;
 
         for (uint256 i = 0; i < numStops; i++) {
             uint16 idx = _decodePaletteIndex(trait.traitData, i * traitGroup.paletteIndexByteSize, traitGroup.paletteIndexByteSize);
@@ -194,7 +204,9 @@ library TraitsRenderer {
     }
 
     function _decodePaletteIndex(bytes memory data, uint256 offset, uint8 byteSize) internal pure returns (uint16) {
-        if (byteSize == 1) return uint16(uint8(data[offset]));
+        if (byteSize == 1) {
+            return uint16(uint8(data[offset]));
+        }
         // Big-endian (high byte first)
         return (uint16(uint8(data[offset])) << 8) | uint16(uint8(data[offset + 1]));
     }

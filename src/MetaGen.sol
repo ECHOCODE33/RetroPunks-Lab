@@ -14,8 +14,14 @@ import { Utils } from "./libraries/Utils.sol";
 /**
  * @title MetaGen (Metadata Generator)
  * @author ECHO (echomatrix.eth)
- * @notice Generates rendered SVG & JSON attributes for the RetroPunks collection, optimized for gas efficiency
- * @dev Uses TraitsLoader & TraitsRenderer libraries to efficiently generate base64 encoded SVG
+ * @notice Generates rendered SVG & JSON attributes for the RetroPunks
+ *         collection, optimized for gas efficiency.
+ *
+ *         Note: Before metadata is revealed, preview metadata is
+ *         generated and used for all tokens
+ *
+ * @dev Uses TraitsLoader, TraitsRenderer, and PNGBuilder libraries to
+ *      effectively load RLE data and generate base64 encoded SVGs.
  */
 contract MetaGen is IMetaGen {
     IAssets private immutable ASSETS_CONTRACT;
@@ -32,18 +38,21 @@ contract MetaGen is IMetaGen {
         TRAITS_CONTRACT = _traitsContract;
     }
 
-    function generateMetadata(uint16 _tokenIdSeed, uint8 _backgroundIndex, uint256 _globalSeed, uint8 _revealCollection)
+    function generateMetadata(uint16 _tokenIdSeed, uint8 _backgroundIndex, uint256 _globalSeed, uint8 _revealMetadata)
         public
         view
         returns (string memory svg, string memory attributes)
     {
         bytes memory buffer = DynamicBuffer.allocate(18000);
 
-        if (_revealCollection == 0) (svg, attributes) = generatePreviewMetadata(buffer);
-        else (svg, attributes) = generateRevealedMetadata(_tokenIdSeed, _backgroundIndex, _globalSeed, buffer);
+        if (_revealMetadata == 0) {
+            (svg, attributes) = _generatePreviewMetadata(buffer);
+        } else {
+            (svg, attributes) = _generateRevealedMetadata(_tokenIdSeed, _backgroundIndex, _globalSeed, buffer);
+        }
     }
 
-    function generateRevealedMetadata(uint16 _tokenIdSeed, uint8 _backgroundIndex, uint256 _globalSeed, bytes memory _buffer)
+    function _generateRevealedMetadata(uint16 _tokenIdSeed, uint8 _backgroundIndex, uint256 _globalSeed, bytes memory _buffer)
         public
         view
         returns (string memory svg, string memory attributes)
@@ -53,7 +62,9 @@ contract MetaGen is IMetaGen {
 
         _prepareCache(cachedTraitGroups, traits);
 
-        if (traits.specialId > 0 && traits.specialId <= 7) return _renderPreRenderedSpecial(_buffer, traits, cachedTraitGroups);
+        if (traits.specialId > 0 && traits.specialId <= 7) {
+            return _renderPreRenderedSpecial(_buffer, traits, cachedTraitGroups);
+        }
 
         TraitsRenderer.renderGridToSvg(ASSETS_CONTRACT, _buffer, cachedTraitGroups, traits);
 
@@ -61,7 +72,7 @@ contract MetaGen is IMetaGen {
         svg = string(_buffer);
     }
 
-    function generatePreviewMetadata(bytes memory _buffer) public view returns (string memory svg, string memory attributes) {
+    function _generatePreviewMetadata(bytes memory _buffer) public view returns (string memory svg, string memory attributes) {
         bytes memory gifContent = ASSETS_CONTRACT.loadAsset(333, false);
 
         Utils.concat(_buffer, PREVIEW_SVG_HEADER);

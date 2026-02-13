@@ -34,13 +34,15 @@ import { LibTraits } from "./libraries/LibTraits.sol";
 /**
  * @title Rarities
  * @author ECHO (echomatrix.eth)
- * @notice Rarities for the RetroPunks collection, optimized for gas efficiency
- * @dev Rarity values are stored in bytes arrays and selected using a PRNG for gas efficiency
+ *
+ * @notice Gas-optimized rarity weight system for the RetroPunks collection
+ *
+ * @dev This contract handles trait selection using weighted randomness for both male and female punks.
+ *      Rarity weights are stored as packed bytes arrays (uint16 values) for maximum gas efficiency.
+ *      Each trait category has different weight distributions based on skin type and gender.
  */
 contract Rarities {
     error TraitSelectionFailed();
-
-    // ---------- Male Rarities ---------- //
 
     bytes private constant M_SKIN = hex"0000002300AF000C002D0037000E02EE02EE02EE02EE02EE02EE02EE02EE02EE02EE02EE02EE000800160010003C0012001E000A0050012C0078";
 
@@ -56,6 +58,7 @@ contract Rarities {
 
     bytes private constant M_FACIAL_HAIR_A =
         hex"13880000000000000000006000000000002A0000002A001900000000000000000000000000000000000000000000000000190000000000000000001B0000000000000000000000000000000000000000000000000000000000000000001E00000000000000000000000000000000001400000000000000000000000000000000000000000000000000000000000000000023000000000000000000190000000000000000000000000000000000140000";
+
     bytes private constant M_FACIAL_HAIR_B =
         hex"1388005A0041002D00190060004B003C002A0032002A00190023006900500032001E009B00730050002800640055003C0019002D006B00570043001B002F00460032002300140028001E0014000A008C0069004600280078005F004B001E0032004B003C00230014005A004B003700140028005F004B003200190037002D0019000F002D00230019000F00820069005000230037005F004B003C0019002D003C002D001E00140041003700280014001E";
 
@@ -78,8 +81,6 @@ contract Rarities {
     bytes private constant MOUTH_A = hex"1FDB007D001E00C800320096009600FA0032000F0014000F001E0014002300320064000A001900640064012C0014";
     bytes private constant MOUTH_B = hex"1FDB007D001E00C800320096009600FA0032000F0014000000000000000000320064000A001900640064012C0014";
     bytes private constant MOUTH_C = hex"1FDB007D001E00C800320096009600FA0032000F0014000000000000000000320064000A001900000000012C0014";
-
-    // ---------- Female Rarities ---------- //
 
     bytes private constant F_SKIN = hex"0000001900E1000F002D0041001402EE02EE02EE02EE02EE02EE02EE02EE02EE02EE02EE02EE00080019005A0016000A012C0096";
 
@@ -173,7 +174,9 @@ contract Rarities {
                 }
             }
         }
-        if (!found) revert TraitSelectionFailed();
+        if (!found) {
+            revert TraitSelectionFailed();
+        }
     }
 
     function selectMaleSkin(LibPRNG.PRNG memory prng) internal pure returns (E_Male_Skin) {
@@ -224,7 +227,9 @@ contract Rarities {
     }
 
     function selectMaleFacialHair(TraitsContext memory ctx, LibPRNG.PRNG memory prng) internal pure returns (E_Male_Facial_Hair) {
-        if (!LibTraits.maleIsHuman(ctx) && !LibTraits.maleIsZombie(ctx) && !LibTraits.maleIsGhost(ctx)) return E_Male_Facial_Hair.None;
+        if (!LibTraits.maleIsHuman(ctx) && !LibTraits.maleIsZombie(ctx) && !LibTraits.maleIsGhost(ctx)) {
+            return E_Male_Facial_Hair.None;
+        }
 
         bytes memory packed;
         uint256 totalWeight;
@@ -253,13 +258,19 @@ contract Rarities {
     function selectMaleHair(TraitsContext memory ctx, LibPRNG.PRNG memory prng) internal pure returns (E_Male_Hair) {
         uint256 noneWeight;
 
-        if (LibTraits.maleIsRobot(ctx) || LibTraits.maleIsMummy(ctx) || LibTraits.maleIsVampire(ctx)) return E_Male_Hair.None;
-        else if (LibTraits.maleIsHuman(ctx) || LibTraits.maleIsZombie(ctx)) noneWeight = 400;
-        else noneWeight = 1200;
+        if (LibTraits.maleIsRobot(ctx) || LibTraits.maleIsMummy(ctx) || LibTraits.maleIsVampire(ctx)) {
+            return E_Male_Hair.None;
+        } else if (LibTraits.maleIsHuman(ctx) || LibTraits.maleIsZombie(ctx)) {
+            noneWeight = 400;
+        } else {
+            noneWeight = 1200;
+        }
 
         uint256 total = 9579 + noneWeight;
 
-        if (LibPRNG.uniform(prng, total) < noneWeight) return E_Male_Hair.None;
+        if (LibPRNG.uniform(prng, total) < noneWeight) {
+            return E_Male_Hair.None;
+        }
 
         return E_Male_Hair(selectRandomTrait(prng, M_HAIR, 9579));
     }
@@ -267,13 +278,19 @@ contract Rarities {
     function selectMaleHatHair(TraitsContext memory ctx, LibPRNG.PRNG memory prng) internal pure returns (E_Male_Hat_Hair) {
         uint256 noneWeight;
 
-        if (LibTraits.maleIsRobot(ctx) || LibTraits.maleIsMummy(ctx) || LibTraits.maleIsVampire(ctx)) return E_Male_Hat_Hair.None;
-        else if (LibTraits.maleIsHuman(ctx) || LibTraits.maleIsZombie(ctx)) noneWeight = 400;
-        else noneWeight = 800;
+        if (LibTraits.maleIsRobot(ctx) || LibTraits.maleIsMummy(ctx) || LibTraits.maleIsVampire(ctx)) {
+            return E_Male_Hat_Hair.None;
+        } else if (LibTraits.maleIsHuman(ctx) || LibTraits.maleIsZombie(ctx)) {
+            noneWeight = 400;
+        } else {
+            noneWeight = 800;
+        }
 
         uint256 total = 7580 + noneWeight;
 
-        if (LibPRNG.uniform(prng, total) < noneWeight) return E_Male_Hat_Hair.None;
+        if (LibPRNG.uniform(prng, total) < noneWeight) {
+            return E_Male_Hat_Hair.None;
+        }
 
         return E_Male_Hat_Hair(selectRandomTrait(prng, M_HAT_HAIR, 7580));
     }
@@ -291,7 +308,9 @@ contract Rarities {
     }
 
     function selectFemaleEyes(TraitsContext memory ctx, LibPRNG.PRNG memory prng) internal pure returns (E_Female_Eyes) {
-        if (LibTraits.femaleIsGhost(ctx)) return LibPRNG.uniform(prng, 10000) < 5000 ? E_Female_Eyes.Ghost_Left : E_Female_Eyes.Ghost_Right;
+        if (LibTraits.femaleIsGhost(ctx)) {
+            return LibPRNG.uniform(prng, 10000) < 5000 ? E_Female_Eyes.Ghost_Left : E_Female_Eyes.Ghost_Right;
+        }
 
         return E_Female_Eyes(selectRandomTrait(prng, F_EYES, 10239));
     }
@@ -341,13 +360,19 @@ contract Rarities {
     function selectFemaleHair(TraitsContext memory ctx, LibPRNG.PRNG memory prng) internal pure returns (E_Female_Hair) {
         uint256 noneWeight;
 
-        if (LibTraits.femaleIsRobot(ctx) || LibTraits.femaleIsMummy(ctx) || LibTraits.femaleIsVampire(ctx)) return E_Female_Hair.None;
-        else if (LibTraits.femaleIsHuman(ctx) || LibTraits.femaleIsZombie(ctx)) noneWeight = 400;
-        else noneWeight = 1200;
+        if (LibTraits.femaleIsRobot(ctx) || LibTraits.femaleIsMummy(ctx) || LibTraits.femaleIsVampire(ctx)) {
+            return E_Female_Hair.None;
+        } else if (LibTraits.femaleIsHuman(ctx) || LibTraits.femaleIsZombie(ctx)) {
+            noneWeight = 400;
+        } else {
+            noneWeight = 1200;
+        }
 
         uint256 total = 9595 + noneWeight;
 
-        if (LibPRNG.uniform(prng, total) < noneWeight) return E_Female_Hair.None;
+        if (LibPRNG.uniform(prng, total) < noneWeight) {
+            return E_Female_Hair.None;
+        }
 
         return E_Female_Hair(selectRandomTrait(prng, F_HAIR, 9595));
     }
@@ -355,13 +380,19 @@ contract Rarities {
     function selectFemaleHatHair(TraitsContext memory ctx, LibPRNG.PRNG memory prng) internal pure returns (E_Female_Hat_Hair) {
         uint256 noneWeight;
 
-        if (LibTraits.femaleIsRobot(ctx) || LibTraits.femaleIsMummy(ctx) || LibTraits.femaleIsVampire(ctx)) return E_Female_Hat_Hair.None;
-        else if (LibTraits.femaleIsHuman(ctx) || LibTraits.femaleIsZombie(ctx)) noneWeight = 400;
-        else noneWeight = 1200;
+        if (LibTraits.femaleIsRobot(ctx) || LibTraits.femaleIsMummy(ctx) || LibTraits.femaleIsVampire(ctx)) {
+            return E_Female_Hat_Hair.None;
+        } else if (LibTraits.femaleIsHuman(ctx) || LibTraits.femaleIsZombie(ctx)) {
+            noneWeight = 400;
+        } else {
+            noneWeight = 1200;
+        }
 
         uint256 total = 7000 + noneWeight;
 
-        if (LibPRNG.uniform(prng, total) < noneWeight) return E_Female_Hat_Hair.None;
+        if (LibPRNG.uniform(prng, total) < noneWeight) {
+            return E_Female_Hat_Hair.None;
+        }
 
         return E_Female_Hat_Hair(selectRandomTrait(prng, F_HAT_HAIR, 7000));
     }

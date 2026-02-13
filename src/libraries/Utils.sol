@@ -47,7 +47,9 @@ library Utils {
     }
 
     function toString(int256 value) internal pure returns (string memory str) {
-        if (value >= 0) return toString(uint256(value));
+        if (value >= 0) {
+            return toString(uint256(value));
+        }
         unchecked {
             str = toString(uint256(-value));
         }
@@ -64,7 +66,9 @@ library Utils {
 
     function toByteArray(bytes32 _bytes32) internal pure returns (bytes memory) {
         uint8 i = 0;
-        while (i < 32 && _bytes32[i] != 0) i++;
+        while (i < 32 && _bytes32[i] != 0) {
+            i++;
+        }
         bytes memory bytesArray = new bytes(i);
         for (i = 0; i < 32 && _bytes32[i] != 0; i++) {
             bytesArray[i] = _bytes32[i];
@@ -145,10 +149,14 @@ library Utils {
         uint256 last = b.length - 1;
 
         // Loop backwards to find the last non-zero character
-        while (last > 0 && b[last] == "0") last--;
+        while (last > 0 && b[last] == "0") {
+            last--;
+        }
 
         // If we stopped at the decimal point, trim that too
-        if (b[last] == ".") last--;
+        if (b[last] == ".") {
+            last--;
+        }
 
         return LibString.slice(result, 0, last + 1);
     }
@@ -159,15 +167,21 @@ library Utils {
             quotient = numerator / denominator;
             bool rounding = 2 * ((numerator * factor) % denominator) >= denominator;
             remainder = ((numerator * factor) / denominator) % factor;
-            if (rounding) remainder += 1;
-            if (remainder < 0) remainder = -remainder;
+            if (rounding) {
+                remainder += 1;
+            }
+            if (remainder < 0) {
+                remainder = -remainder;
+            }
             result = string(abi.encodePacked(toString(quotient), ".", _numToFixedLengthStr(decimalPlaces, remainder)));
         }
     }
 
     function _numToFixedLengthStr(uint256 decimalPlaces, int256 num) internal pure returns (string memory result) {
         unchecked {
-            if (num < 0) num = -num;
+            if (num < 0) {
+                num = -num;
+            }
 
             bytes memory byteString;
             for (uint256 i = 0; i < decimalPlaces; i++) {
@@ -176,7 +190,9 @@ library Utils {
                 num = num / 10;
             }
             // Pad with leading zeros if the number was smaller than decimalPlaces
-            while (byteString.length < decimalPlaces) byteString = abi.encodePacked("0", byteString);
+            while (byteString.length < decimalPlaces) {
+                byteString = abi.encodePacked("0", byteString);
+            }
             result = string(byteString);
         }
     }

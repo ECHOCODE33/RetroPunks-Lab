@@ -40,11 +40,24 @@ exclude_lints = [
 
 [fmt]
 line_length = 165
+tab_width = 4
+style = "space"
 bracket_spacing = true
+int_types = "long"
+multiline_func_header = "attributes_first"
+quote_style = "double"
+number_underscore = "remove"
+hex_underscore = "remove"
+single_line_statement_blocks = "multi"
+override_spacing = false
+wrap_comments = false
+docs_style = "preserve"
+ignore = ["script/AddAssetsBatch.s.sol"]
+contract_new_lines = false
 sort_imports = true
-ignore = [
-    "script/AddAssetsBatch.s.sol",
-]
+pow_no_space = false
+prefer_compact = "all"
+single_line_imports = false
 
 [rpc_endpoints]
 localhost = "${LOCAL_RPC}"

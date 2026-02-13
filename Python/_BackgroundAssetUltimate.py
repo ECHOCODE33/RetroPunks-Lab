@@ -25,6 +25,12 @@ BG_TYPE_NAMES = {v: k for k, v in BG_TYPES.items()}
 
 BACKGROUNDS = [
     {
+        'name': 'White',
+        'layerType': 2,
+        'palette': ["#ffffff"]
+    },
+    
+    {
         'name': 'Black',
         'layerType': 2,
         'palette': ["#000000"]
@@ -82,12 +88,6 @@ BACKGROUNDS = [
         'name': 'Grey 9',
         'layerType': 2,
         'palette': ["#e6e6e6"]
-    },
-
-    {
-        'name': 'White',
-        'layerType': 2,
-        'palette': ["#ffffff"]
     },
 
     {

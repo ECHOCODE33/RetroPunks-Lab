@@ -23,10 +23,14 @@ contract Assets is Ownable, IAssets {
 
     function addAssetsBatch(uint256[] calldata keys, bytes[] calldata assets) external onlyOwner {
         uint256 length = keys.length;
-        if (length != assets.length) revert AssetKeyLengthMismatch();
+        if (length != assets.length) {
+            revert AssetKeyLengthMismatch();
+        }
 
         for (uint256 i = 0; i < length;) {
-            if (assets[i].length == 0) revert EmptyAssetInBatch();
+            if (assets[i].length == 0) {
+                revert EmptyAssetInBatch();
+            }
 
             _assetsStorage[keys[i]] = SSTORE2.write(assets[i]);
 
@@ -49,11 +53,15 @@ contract Assets is Ownable, IAssets {
     function loadAsset(uint256 key, bool decompress) external view returns (bytes memory) {
         address pointer = _assetsStorage[key];
 
-        if (pointer == address(0)) revert AssetDoesNotExist();
+        if (pointer == address(0)) {
+            revert AssetDoesNotExist();
+        }
 
         bytes memory asset = SSTORE2.read(pointer);
 
-        if (decompress) asset = LibZip.flzDecompress(asset);
+        if (decompress) {
+            asset = LibZip.flzDecompress(asset);
+        }
 
         return asset;
     }

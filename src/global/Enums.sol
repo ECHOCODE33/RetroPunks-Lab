@@ -74,6 +74,7 @@ enum E_Background_Type {
  * U = Up (bottom left --> top right)
  */
 enum E_Background {
+    White,
     Black,
     Grey_1,
     Grey_2,
@@ -84,7 +85,6 @@ enum E_Background {
     Grey_7,
     Grey_8,
     Grey_9,
-    White,
 
     Greyscale_SV,
     Greyscale_PV,

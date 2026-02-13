@@ -42,12 +42,16 @@ contract ERC721SeaDropPausableAndQueryable is ERC721SeaDropPausable {
     function explicitOwnershipOf(uint256 tokenId) public view virtual returns (TokenOwnership memory ownership) {
         unchecked {
             if (tokenId >= _startTokenId()) {
-                if (tokenId > _sequentialUpTo()) return _ownershipAt(tokenId);
+                if (tokenId > _sequentialUpTo()) {
+                    return _ownershipAt(tokenId);
+                }
 
                 if (tokenId < _nextTokenId()) {
                     // If the `tokenId` is within bounds,
                     // scan backwards for the initialized ownership slot.
-                    while (!_ownershipIsInitialized(tokenId)) --tokenId;
+                    while (!_ownershipIsInitialized(tokenId)) {
+                        --tokenId;
+                    }
                     return _ownershipAt(tokenId);
                 }
             }
@@ -114,11 +118,15 @@ contract ERC721SeaDropPausableAndQueryable is ERC721SeaDropPausable {
      */
     function tokensOfOwner(address owner) external view virtual returns (uint256[] memory) {
         // If spot mints are enabled, full-range scan is disabled.
-        if (_sequentialUpTo() != type(uint256).max) _revert(NotCompatibleWithSpotMints.selector);
+        if (_sequentialUpTo() != type(uint256).max) {
+            _revert(NotCompatibleWithSpotMints.selector);
+        }
         uint256 start = _startTokenId();
         uint256 stop = _nextTokenId();
         uint256[] memory tokenIds;
-        if (start != stop) tokenIds = _tokensOfOwnerIn(owner, start, stop);
+        if (start != stop) {
+            tokenIds = _tokensOfOwnerIn(owner, start, stop);
+        }
         return tokenIds;
     }
 
@@ -130,22 +138,32 @@ contract ERC721SeaDropPausableAndQueryable is ERC721SeaDropPausable {
      */
     function _tokensOfOwnerIn(address owner, uint256 start, uint256 stop) private view returns (uint256[] memory tokenIds) {
         unchecked {
-            if (start >= stop) revert InvalidQueryRange();
+            if (start >= stop) {
+                revert InvalidQueryRange();
+            }
             // Set `start = max(start, _startTokenId())`.
-            if (start < _startTokenId()) start = _startTokenId();
+            if (start < _startTokenId()) {
+                start = _startTokenId();
+            }
             uint256 nextTokenId = _nextTokenId();
             // If spot mints are enabled, scan all the way until the specified `stop`.
             uint256 stopLimit = _sequentialUpTo() != type(uint256).max ? stop : nextTokenId;
             // Set `stop = min(stop, stopLimit)`.
-            if (stop >= stopLimit) stop = stopLimit;
+            if (stop >= stopLimit) {
+                stop = stopLimit;
+            }
             // Number of tokens to scan.
             uint256 tokenIdsMaxLength = balanceOf(owner);
             // Set `tokenIdsMaxLength` to zero if the range contains no tokens.
-            if (start >= stop) tokenIdsMaxLength = 0;
+            if (start >= stop) {
+                tokenIdsMaxLength = 0;
+            }
             // If there are one or more tokens to scan.
             if (tokenIdsMaxLength != 0) {
                 // Set `tokenIdsMaxLength = min(balanceOf(owner), tokenIdsMaxLength)`.
-                if (stop - start <= tokenIdsMaxLength) tokenIdsMaxLength = stop - start;
+                if (stop - start <= tokenIdsMaxLength) {
+                    tokenIdsMaxLength = stop - start;
+                }
                 uint256 m; // Start of available memory.
                 assembly {
                     // Grab the free memory pointer.
@@ -163,16 +181,22 @@ contract ERC721SeaDropPausableAndQueryable is ERC721SeaDropPausable {
                 // initialize `currOwnershipAddr`.
                 // `ownership.address` will not be zero,
                 // as `start` is clamped to the valid token ID range.
-                if (!ownership.burned) currOwnershipAddr = ownership.addr;
+                if (!ownership.burned) {
+                    currOwnershipAddr = ownership.addr;
+                }
                 uint256 tokenIdsIdx;
                 // Use a do-while, which is slightly more efficient for this case,
                 // as the array will at least contain one element.
                 do {
                     if (_sequentialUpTo() != type(uint256).max) {
                         // Skip the remaining unused sequential slots.
-                        if (start == nextTokenId) start = _sequentialUpTo() + 1;
+                        if (start == nextTokenId) {
+                            start = _sequentialUpTo() + 1;
+                        }
                         // Reset `currOwnershipAddr`, as each spot-minted token is a batch of one.
-                        if (start > _sequentialUpTo()) currOwnershipAddr = address(0);
+                        if (start > _sequentialUpTo()) {
+                            currOwnershipAddr = address(0);
+                        }
                     }
                     ownership = _ownershipAt(start); // This implicitly allocates memory.
                     assembly {

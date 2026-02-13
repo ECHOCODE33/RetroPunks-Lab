@@ -24,7 +24,9 @@ abstract contract ERC721AConduitPreapproved is ERC721A {
      *      assets of `owner`. Always returns true for the conduit.
      */
     function isApprovedForAll(address owner, address operator) public view virtual override returns (bool) {
-        if (operator == _CONDUIT) return true;
+        if (operator == _CONDUIT) {
+            return true;
+        }
         return ERC721A.isApprovedForAll(owner, operator);
     }
 }

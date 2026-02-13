@@ -135,7 +135,10 @@ contract VerifyAssets is Script {
         }
 
         console.log("==========================================");
-        if (failureCount == 0) console.log("ALL %s ASSETS VERIFIED SUCCESSFULLY!", successCount);
-        else console.log("VERIFICATION COMPLETE: %s SUCCESS | %s FAILED", successCount, failureCount);
+        if (failureCount == 0) {
+            console.log("ALL %s ASSETS VERIFIED SUCCESSFULLY!", successCount);
+        } else {
+            console.log("VERIFICATION COMPLETE: %s SUCCESS | %s FAILED", successCount, failureCount);
+        }
     }
 }

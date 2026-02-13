@@ -42,7 +42,9 @@ contract ERC721SeaDrop is ERC721ContractMetadata, INonFungibleSeaDropToken, ERC7
      * @param seaDrop The SeaDrop address to check if allowed.
      */
     function _onlyAllowedSeaDrop(address seaDrop) internal view {
-        if (_allowedSeaDrop[seaDrop] != true) revert OnlyAllowedSeaDrop();
+        if (_allowedSeaDrop[seaDrop] != true) {
+            revert OnlyAllowedSeaDrop();
+        }
     }
 
     /**
@@ -141,15 +143,21 @@ contract ERC721SeaDrop is ERC721ContractMetadata, INonFungibleSeaDropToken, ERC7
      *      is desired for each token, such as when the tokenURI is 'unrevealed'.
      */
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        if (!_exists(tokenId)) revert URIQueryForNonexistentToken();
+        if (!_exists(tokenId)) {
+            revert URIQueryForNonexistentToken();
+        }
 
         string memory baseURI = _baseURI();
 
         // Exit early if the baseURI is empty.
-        if (bytes(baseURI).length == 0) return "";
+        if (bytes(baseURI).length == 0) {
+            return "";
+        }
 
         // Check if the last character in baseURI is a slash.
-        if (bytes(baseURI)[bytes(baseURI).length - 1] != bytes("/")[0]) return baseURI;
+        if (bytes(baseURI)[bytes(baseURI).length - 1] != bytes("/")[0]) {
+            return baseURI;
+        }
 
         return string(abi.encodePacked(baseURI, _toString(tokenId)));
     }
@@ -181,7 +189,9 @@ contract ERC721SeaDrop is ERC721ContractMetadata, INonFungibleSeaDropToken, ERC7
         _onlyAllowedSeaDrop(msg.sender);
 
         // Extra safety check to ensure the max supply is not exceeded.
-        if (_totalMinted() + quantity > maxSupply()) revert MintQuantityExceedsMaxSupply(_totalMinted() + quantity, maxSupply());
+        if (_totalMinted() + quantity > maxSupply()) {
+            revert MintQuantityExceedsMaxSupply(_totalMinted() + quantity, maxSupply());
+        }
 
         // Mint the quantity of tokens to the minter.
         _safeMint(minter, quantity);
@@ -392,16 +402,30 @@ contract ERC721SeaDrop is ERC721ContractMetadata, INonFungibleSeaDropToken, ERC7
      * @param config The configuration struct.
      */
     function multiConfigure(MultiConfigureStruct calldata config) external onlyOwner {
-        if (config.maxSupply > 0) this.setMaxSupply(config.maxSupply);
-        if (bytes(config.baseURI).length != 0) this.setBaseURI(config.baseURI);
-        if (bytes(config.contractURI).length != 0) this.setContractURI(config.contractURI);
+        if (config.maxSupply > 0) {
+            this.setMaxSupply(config.maxSupply);
+        }
+        if (bytes(config.baseURI).length != 0) {
+            this.setBaseURI(config.baseURI);
+        }
+        if (bytes(config.contractURI).length != 0) {
+            this.setContractURI(config.contractURI);
+        }
         if (_cast(config.publicDrop.startTime != 0) | _cast(config.publicDrop.endTime != 0) == 1) {
             this.updatePublicDrop(config.seaDropImpl, config.publicDrop);
         }
-        if (bytes(config.dropURI).length != 0) this.updateDropURI(config.seaDropImpl, config.dropURI);
-        if (config.allowListData.merkleRoot != bytes32(0)) this.updateAllowList(config.seaDropImpl, config.allowListData);
-        if (config.creatorPayoutAddress != address(0)) this.updateCreatorPayoutAddress(config.seaDropImpl, config.creatorPayoutAddress);
-        if (config.provenanceHash != bytes32(0)) this.setProvenanceHash(config.provenanceHash);
+        if (bytes(config.dropURI).length != 0) {
+            this.updateDropURI(config.seaDropImpl, config.dropURI);
+        }
+        if (config.allowListData.merkleRoot != bytes32(0)) {
+            this.updateAllowList(config.seaDropImpl, config.allowListData);
+        }
+        if (config.creatorPayoutAddress != address(0)) {
+            this.updateCreatorPayoutAddress(config.seaDropImpl, config.creatorPayoutAddress);
+        }
+        if (config.provenanceHash != bytes32(0)) {
+            this.setProvenanceHash(config.provenanceHash);
+        }
         if (config.allowedFeeRecipients.length > 0) {
             for (uint256 i = 0; i < config.allowedFeeRecipients.length;) {
                 this.updateAllowedFeeRecipient(config.seaDropImpl, config.allowedFeeRecipients[i], true);
@@ -435,7 +459,9 @@ contract ERC721SeaDrop is ERC721ContractMetadata, INonFungibleSeaDropToken, ERC7
             }
         }
         if (config.tokenGatedDropStages.length > 0) {
-            if (config.tokenGatedDropStages.length != config.tokenGatedAllowedNftTokens.length) revert TokenGatedMismatch();
+            if (config.tokenGatedDropStages.length != config.tokenGatedAllowedNftTokens.length) {
+                revert TokenGatedMismatch();
+            }
             for (uint256 i = 0; i < config.tokenGatedDropStages.length;) {
                 this.updateTokenGatedDrop(config.seaDropImpl, config.tokenGatedAllowedNftTokens[i], config.tokenGatedDropStages[i]);
                 unchecked {
@@ -453,7 +479,9 @@ contract ERC721SeaDrop is ERC721ContractMetadata, INonFungibleSeaDropToken, ERC7
             }
         }
         if (config.signedMintValidationParams.length > 0) {
-            if (config.signedMintValidationParams.length != config.signers.length) revert SignersMismatch();
+            if (config.signedMintValidationParams.length != config.signers.length) {
+                revert SignersMismatch();
+            }
             for (uint256 i = 0; i < config.signedMintValidationParams.length;) {
                 this.updateSignedMintValidationParams(config.seaDropImpl, config.signers[i], config.signedMintValidationParams[i]);
                 unchecked {

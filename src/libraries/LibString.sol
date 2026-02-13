@@ -157,7 +157,9 @@ library LibString {
 
     /// @dev Returns the base 10 decimal representation of `value`.
     function toString(int256 value) internal pure returns (string memory result) {
-        if (value >= 0) return toString(uint256(value));
+        if (value >= 0) {
+            return toString(uint256(value));
+        }
         unchecked {
             result = toString(~uint256(value) + 1);
         }
