@@ -35,7 +35,7 @@ contract RetroPunks is IRetroPunksTypes, ERC721SeaDropPausableAndQueryable {
     /// @notice Mapping from token ID to its customizable TokenMetadata struct
     mapping(uint256 => TokenMetadata) public globalTokenMetadata;
 
-    /// @notice Names of the 16 special 1-of-1 tokens (indices 0-15)
+    /// @notice Names of the 16 special 1-of-1 tokens (tokenIDSeeds 0-15)
     bytes32[16] internal SPECIAL_NAMES = [
         bytes32("Predator Blue"),
         bytes32("Predator Green"),
@@ -108,16 +108,27 @@ contract RetroPunks is IRetroPunksTypes, ERC721SeaDropPausableAndQueryable {
      * @param _metaGen The IMetaGen (metadata generator) contract address
      * @param _globalHash The keccak256 hash of the committed global seed
      * @param _shufflerHash The keccak256 hash of the committed shuffler seed
-     * @param _maxSupply The maximum supply of the collection
+     * @param _maxSupplyParam The maximum supply of the collection
      * @param _allowedSeaDrop Array of allowed SeaDrop contract addresses for minting
      */
-    constructor(IMetaGen _metaGen, bytes32 _globalHash, bytes32 _shufflerHash, uint256 _maxSupply, address[] memory _allowedSeaDrop)
+    constructor(IMetaGen _metaGen, bytes32 _globalHash, bytes32 _shufflerHash, uint256 _maxSupplyParam, address[] memory _allowedSeaDrop)
         ERC721SeaDropPausableAndQueryable("RetroPunks", "RPNKS", _allowedSeaDrop)
     {
         COMMITTED_GLOBAL_SEED_HASH = _globalHash;
         COMMITTED_SHUFFLER_SEED_HASH = _shufflerHash;
         metaGen = _metaGen;
-        _maxSupply = _maxSupply;
+        _maxSupply = _maxSupplyParam;
+    }
+
+    /**
+     * @notice Admin function for setting IMetaGen 
+     *         (Metadata Generator) contract
+     *
+     * @param _metaGen The new IMetaGen contract address
+     */
+    function setMetaGen(IMetaGen _metaGen) external onlyOwner {
+        metaGen = _metaGen;
+        emit BatchMetadataUpdate(1, _nextTokenId() - 1);
     }
 
     /**
@@ -454,17 +465,9 @@ contract RetroPunks is IRetroPunksTypes, ERC721SeaDropPausableAndQueryable {
 
             sstore(slot, packed) // Slot 0: tokenIdSeed & backgroundIndex
             sstore(add(slot, 1), nameBytes) // Slot 1: name (bytes32)
-
-            /*
-             * BIO STORAGE
-             * Store default bio: "A RetroPunk living on-chain." (27 characters)
-             * Uses Solidity's short string format: [data][length * 2]
-             */
-            let bioData := "A RetroPunk living on-chain."
-            let bioLen := 27
-            // Combine bio data with encoded length (length * 2 for short strings)
-            sstore(add(slot, 2), or(bioData, mul(bioLen, 2)))
         }
+
+        globalTokenMetadata[_tokenId].bio = "A RetroPunk living on-chain.";
     }
 
     /**

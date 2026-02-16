@@ -53,7 +53,7 @@ contract Traits is ITraits, Rarities {
         traits.background = E_Background(_backgroundIndex);
         _addTraitToRender(traits, E_TraitsGroup.Background_Group, uint8(traits.background));
 
-        traits.sex = LibPRNG.uniform(prng, 10000) < 7500 ? E_Sex.Male : E_Sex.Female;
+        traits.sex = LibPRNG.uniform(prng, 10000) < 7000 ? E_Sex.Male : E_Sex.Female;
 
         if (traits.sex == E_Sex.Male) {
             MaleTraits memory m = selectAllMaleTraits(traits, prng);

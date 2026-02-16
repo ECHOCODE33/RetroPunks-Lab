@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.32;
 
-import { Script } from "forge-std/Script.sol";
-import { console } from "forge-std/console.sol";
-
 import { Assets } from "../src/Assets.sol";
 import { MetaGen } from "../src/MetaGen.sol";
 import { RetroPunks } from "../src/RetroPunks.sol";
@@ -11,15 +8,12 @@ import { Traits } from "../src/Traits.sol";
 import { IMetaGen } from "../src/interfaces/IMetaGen.sol";
 import { ISeaDrop } from "../src/seadrop/interfaces/ISeaDrop.sol";
 import { PublicDrop } from "../src/seadrop/lib/SeaDropStructs.sol";
+import { AddAssetsBatch } from "./AddAssetsBatch.s.sol";
+import { VerifyAssets } from "./VerifyAssets.s.sol";
+import { Script } from "forge-std/Script.sol";
+import { console } from "forge-std/console.sol";
 
-/**
- * @title HelperContract
- * @notice Consolidated helper functions for deployment scripts
- * @dev Optimized: Single variadic-style helper using assembly instead of 20+ overloaded functions
- */
 contract HelperContract is Script {
-    /// @dev Creates address array from 1-10 addresses. Pass address(0) for unused slots.
-    /// @notice Gas optimized: single function replaces 10 overloads
     function _toAddressArray(address a1, address a2, address a3, address a4, address a5, address a6, address a7, address a8, address a9, address a10)
         internal
         pure
@@ -88,13 +82,10 @@ contract HelperContract is Script {
         }
     }
 
-    /// @dev Convenience wrapper for single address
     function _toAddressArray(address a1) internal pure returns (address[] memory) {
         return _toAddressArray(a1, address(0), address(0), address(0), address(0), address(0), address(0), address(0), address(0), address(0));
     }
 
-    /// @dev Creates uint256 array from 1-10 values. Pass 0 for unused slots (but be careful if 0 is a valid value).
-    /// @notice For cases where 0 is valid, use the explicit count version
     function _toUintArray(uint256 u1, uint256 u2, uint256 u3, uint256 u4, uint256 u5, uint256 u6, uint256 u7, uint256 u8, uint256 u9, uint256 u10)
         internal
         pure
@@ -163,17 +154,52 @@ contract HelperContract is Script {
         }
     }
 
-    /// @dev Convenience wrapper for single uint
     function _toUintArray(uint256 u1) internal pure returns (uint256[] memory) {
         return _toUintArray(u1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
 
-    /// @dev Creates uint array with explicit count (use when 0 is a valid value)
     function _toUintArrayExplicit(uint256 count, uint256[] memory values) internal pure returns (uint256[] memory arr) {
         arr = new uint256[](count);
         for (uint256 i = 0; i < count; i++) {
             arr[i] = values[i];
         }
+    }
+
+    function _escapeJSON(string memory str) internal pure returns (string memory) {
+        bytes memory strBytes = bytes(str);
+        bytes memory escaped = new bytes(strBytes.length * 2); // Allocate extra space for escapes
+        uint256 escapeIndex = 0;
+
+        for (uint256 i = 0; i < strBytes.length; i++) {
+            bytes1 char = strBytes[i];
+
+            if (char == '"') {
+                escaped[escapeIndex++] = "\\";
+                escaped[escapeIndex++] = '"';
+            } else if (char == "\\") {
+                escaped[escapeIndex++] = "\\";
+                escaped[escapeIndex++] = "\\";
+            } else if (char == "\n") {
+                escaped[escapeIndex++] = "\\";
+                escaped[escapeIndex++] = "n";
+            } else if (char == "\r") {
+                escaped[escapeIndex++] = "\\";
+                escaped[escapeIndex++] = "r";
+            } else if (char == "\t") {
+                escaped[escapeIndex++] = "\\";
+                escaped[escapeIndex++] = "t";
+            } else {
+                escaped[escapeIndex++] = char;
+            }
+        }
+
+        // Trim to actual length
+        bytes memory result = new bytes(escapeIndex);
+        for (uint256 i = 0; i < escapeIndex; i++) {
+            result[i] = escaped[i];
+        }
+
+        return string(result);
     }
 }
 
@@ -199,7 +225,7 @@ contract RetroPunksScript is HelperContract {
     uint256 public SHUFFLER_NONCE = 3929615063;
     bytes32 public SHUFFLER_SEED_HASH = keccak256(abi.encodePacked(SHUFFLER_SEED, SHUFFLER_NONCE));
 
-    /**
+    /*
      *     ======================== CALL ORDER (run in sequence) ========================
      *     1. deploy()
      *     2. addAssetsBatch()
@@ -212,9 +238,9 @@ contract RetroPunksScript is HelperContract {
      *     9. setRevealMetaGen()       <- when ready (metadata reveal)
      *     10. closeMint()             <- when done (irreversible)
      *     =============================================================================
-     */
+    */
 
-    function deploy() external {
+    function deploy() public {
         vm.startBroadcast();
 
         address[] memory allowedSeaDrop = new address[](1);
@@ -233,7 +259,7 @@ contract RetroPunksScript is HelperContract {
         vm.stopBroadcast();
     }
 
-    function deployContract() external {
+    function deployContract() public {
         vm.startBroadcast();
 
         address[] memory allowedSeaDrop = new address[](1);
@@ -246,45 +272,19 @@ contract RetroPunksScript is HelperContract {
         vm.stopBroadcast();
     }
 
-    function addAssetsBatch() external {
-        string[] memory inputs = new string[](9);
-
-        inputs[0] = "forge";
-        inputs[1] = "script";
-        inputs[2] = "script/AddAssetsBatch.s.sol:AddAssetsBatch";
-        inputs[3] = "--rpc-url";
-
-        inputs[4] = vm.envString("BASE_SEPOLIA_RPC");
-
-        inputs[5] = "--private-key";
-        inputs[6] = vm.envString("PRIVATE_KEY");
-        inputs[7] = "--broadcast";
-        inputs[8] = "-vvv";
-
-        bytes memory res = vm.ffi(inputs);
-        console.log(string(res));
+    function addAssetsBatch() public {
+        AddAssetsBatch assetsBatchScript = new AddAssetsBatch();
+        assetsBatchScript.setUp();
+        assetsBatchScript.run();
     }
 
-    function verifyAssets() external {
-        string[] memory inputs = new string[](9);
-
-        inputs[0] = "forge";
-        inputs[1] = "script";
-        inputs[2] = "script/VerifyAssets.s.sol:VerifyAssets";
-        inputs[3] = "--rpc-url";
-
-        inputs[4] = vm.envString("BASE_SEPOLIA_RPC");
-
-        inputs[5] = "--private-key";
-        inputs[6] = vm.envString("PRIVATE_KEY");
-        inputs[7] = "--broadcast";
-        inputs[8] = "-vvv";
-
-        bytes memory res = vm.ffi(inputs);
-        console.log(string(res));
+    function verifyAssets() public {
+        VerifyAssets verifyAssetsScript = new VerifyAssets();
+        verifyAssetsScript.setUp();
+        verifyAssetsScript.run();
     }
 
-    function revealShufflerSeed() external {
+    function revealShufflerSeed() public {
         console.log("=== Revealing Shuffler Seed ===", "\n");
         console.log("RetroPunks:", RETROPUNKS, "\n");
         console.log("Shuffler Seed:", SHUFFLER_SEED, "\n");
@@ -300,7 +300,7 @@ contract RetroPunksScript is HelperContract {
         console.log("New shuffler seed value:", retroPunksContract.shufflerSeed());
     }
 
-    function setupSeaDrop() external {
+    function setupSeaDrop() public {
         uint256 mintPriceWei = vm.envOr("PUBLIC_MINT_PRICE", uint256(0));
         uint256 maxPerWallet = vm.envOr("PUBLIC_MAX_PER_WALLET", uint256(10));
 
@@ -331,7 +331,7 @@ contract RetroPunksScript is HelperContract {
         console.log("\n", "SeaDrop configured. You can now call mintAsUser().");
     }
 
-    function batchOwnerMint() external {
+    function batchOwnerMint() public {
         address[] memory recipients = _toAddressArray(OWNER);
         uint256[] memory quantities = _toUintArray(5);
 
@@ -356,7 +356,7 @@ contract RetroPunksScript is HelperContract {
         console.log("Total supply:", retroPunksContract.totalSupply());
     }
 
-    function mintAsUser() external {
+    function mintAsUser() public {
         uint256 minterKey = PRIVATE_KEY;
         uint256 quantity = uint256(5);
 
@@ -386,7 +386,7 @@ contract RetroPunksScript is HelperContract {
         console.log("\n", "Mint complete! Total supply:", retroPunksContract.totalSupply());
     }
 
-    function revealGlobalSeed() external {
+    function revealGlobalSeed() public {
         console.log("=== Revealing Global Seed ===", "\n");
         console.log("RetroPunks:", RETROPUNKS);
         console.log("Global Seed:", GLOBAL_SEED);
@@ -402,7 +402,7 @@ contract RetroPunksScript is HelperContract {
         console.log("New global seed value:", retroPunksContract.globalSeed());
     }
 
-    function revealMetaGen() external {
+    function revealMetaGen() public {
         console.log("=== Setting Reveal MetaGen ===", "\n");
         console.log("RetroPunks:", RETROPUNKS);
         console.log("New MetaGen:", META_GEN);
@@ -417,7 +417,7 @@ contract RetroPunksScript is HelperContract {
         console.log("New MetaGen:", address(retroPunksContract.metaGen()));
     }
 
-    function closeMint() external {
+    function closeMint() public {
         console.log("=== Closing Mint ===", "\n");
         console.log("RetroPunks:", RETROPUNKS);
         console.log("Current total supply:", retroPunksContract.totalSupply());
@@ -433,13 +433,13 @@ contract RetroPunksScript is HelperContract {
         console.log("Mint status:", retroPunksContract.mintIsClosed());
     }
 
-    function customizeToken() external {
+    function customizeToken() public {
         address tokenOwner = vm.addr(PRIVATE_KEY);
 
         uint256 tokenId = 5;
-        string memory name = "Vivaldi";
-        string memory bio = "Legendary violin musician & composer of the Baroque era.";
-        uint8 backgroundIndex = 18;
+        string memory name = "Mozart";
+        string memory bio = "Legendary pianist & composer.";
+        uint8 backgroundIndex = 25;
 
         console.log("=== Customizing Token ===", "\n");
         console.log("Token ID:", tokenId);
@@ -465,17 +465,20 @@ contract RetroPunksScript is HelperContract {
         console.log("Bio:", storedBio);
     }
 
-    function queryTokenURI(uint256 _tokenId) external {
+    function queryTokenURI(uint256 _tokenId) public {
         string memory uri = retroPunksContract.tokenURI(_tokenId);
         console.log("\n", uri, "\n");
     }
 
-    function batchQueryTokenURI(uint256 _startTokenId, uint256 _endTokenId) external {
-        string memory fileName = "tokenUriBatch.txt";
+    function batchQueryTokenURI() public {
+        string memory fileName = "export/tokenUriBatch.txt";
 
         vm.writeFile(fileName, "");
 
-        for (uint256 i = _startTokenId; i <= _endTokenId; i++) {
+        uint256 totalSupply = retroPunksContract.totalSupply();
+        uint256 startTokenID = 1;
+
+        for (uint256 i = startTokenID; i <= totalSupply; i++) {
             string memory line = string.concat("Token ", vm.toString(i), ":\n", retroPunksContract.tokenURI(i), "\n");
 
             vm.writeLine(fileName, line);
@@ -484,162 +487,150 @@ contract RetroPunksScript is HelperContract {
         console.log(string.concat("Token URIs written to file: ", fileName));
     }
 
-    // =============================== EXTRA / QUERY FUNCTIONS =============================== //
+    function batchQueryTokenURIJSON() public {
+        string memory fileName = "./export/tokenURIBatch.json";
 
-    function queryTokenDetails(uint256 _tokenId) external {
-        console.log("=== Token Information ===");
-        console.log("Token ID:", _tokenId);
+        string memory jsonArray = "[";
 
-        try retroPunksContract.ownerOf(_tokenId) returns (address owner) {
-            console.log("Owner:", owner);
-
-            // Get metadata
-            (, uint8 bg, bytes32 name, string memory bio) = retroPunksContract.globalTokenMetadata(_tokenId);
-
-            console.log("Background Index:", bg);
-            console.logBytes32(name);
-            console.log("Bio:", bio);
-
-            string memory uri = retroPunksContract.tokenURI(_tokenId);
-            console.log("Token URI length:", bytes(uri).length);
-        } catch {
-            console.log("Token does not exist");
-        }
-    }
-
-    function queryContractDetails() external {
-        console.log("=== Contract State ===");
-        console.log("Contract:", RETROPUNKS);
-        console.log("Name:", retroPunksContract.name());
-        console.log("Symbol:", retroPunksContract.symbol());
-        console.log("Max Supply:", retroPunksContract.maxSupply());
-        console.log("Total Supply:", retroPunksContract.totalSupply());
-        console.log("Global Seed:", retroPunksContract.globalSeed());
-        console.log("Shuffler Seed:", retroPunksContract.shufflerSeed());
-        console.log("MetaGen:", address(retroPunksContract.metaGen()));
-        console.log("Mint Is Closed:", retroPunksContract.mintIsClosed());
-    }
-
-    function queryOwnerTokens() external {
-        console.log("=== Owner Tokens ===");
-        console.log("Owner:", OWNER);
-        console.log("Balance:", retroPunksContract.balanceOf(OWNER));
-
-        try retroPunksContract.tokensOfOwner(OWNER) returns (uint256[] memory tokenIds) {
-            console.log("Token IDs owned:");
-            for (uint256 i = 0; i < tokenIds.length; i++) {
-                console.log("  -", tokenIds[i]);
-            }
-        } catch {
-            console.log("Cannot query all tokens (may need to use tokensOfOwnerIn)");
-        }
-    }
-
-    function analyzeSpecialTokens() external {
         uint256 totalSupply = retroPunksContract.totalSupply();
+        uint256 startTokenID = 1;
 
-        console.log("=== Special Tokens Analysis ===");
-        console.log("Total Supply:", totalSupply);
+        for (uint256 i = startTokenID; i <= totalSupply; i++) {
+            string memory uri = retroPunksContract.tokenURI(i);
+            bytes memory uriBytes = bytes(uri);
+            string memory jsonContent = uri;
 
-        uint256 preRenderedCount = 0; // Seeds 0-6
-        uint256 specialCount = 0; // Seeds 7-15
-        uint256 regularCount = 0; // Seeds 16+
+            // Check if it's a data URI (data:application/json;base64,...)
+            if (uriBytes.length > 29) {
+                // Extract first 29 characters to check prefix
+                bytes memory prefixBytes = new bytes(29);
+                for (uint256 j = 0; j < 29; j++) {
+                    prefixBytes[j] = uriBytes[j];
+                }
 
-        for (uint256 i = 1; i <= totalSupply; i++) {
-            (uint16 seed,,,) = retroPunksContract.globalTokenMetadata(i);
+                if (keccak256(prefixBytes) == keccak256("data:application/json;base64,")) {
+                    // Extract base64 part (everything after character 29)
+                    bytes memory base64Bytes = new bytes(uriBytes.length - 29);
+                    for (uint256 j = 29; j < uriBytes.length; j++) {
+                        base64Bytes[j - 29] = uriBytes[j];
+                    }
+                    string memory base64Part = string(base64Bytes);
 
-            if (seed < 7) {
-                preRenderedCount++;
-                console.log(string.concat("Token ", vm.toString(i), " - Pre-rendered Special (Seed: ", vm.toString(seed), ")"));
-            } else if (seed < 16) {
-                specialCount++;
-                console.log(string.concat("Token ", vm.toString(i), " - Special (Seed: ", vm.toString(seed), ")"));
-            } else {
-                regularCount++;
+                    // Decode base64 using FFI
+                    string[] memory inputs = new string[](3);
+                    inputs[0] = "bash";
+                    inputs[1] = "-c";
+                    inputs[2] = string.concat("echo -n '", base64Part, "' | base64 -d");
+
+                    bytes memory result = vm.ffi(inputs);
+                    jsonContent = string(result);
+                }
             }
+
+            // Add comma separator (except for first element)
+            if (i > startTokenID) {
+                jsonArray = string.concat(jsonArray, ",");
+            }
+
+            jsonArray = string.concat(jsonArray, jsonContent);
         }
 
-        console.log("=== Summary ===");
-        console.log("Pre-rendered Specials (0-6):", preRenderedCount);
-        console.log("Specials (7-15):", specialCount);
-        console.log("Regular tokens:", regularCount);
+        jsonArray = string.concat(jsonArray, "]");
+
+        // Write to file
+        vm.writeFile(fileName, jsonArray);
+
+        console.log(string.concat("Token URIs written to JSON file: ", fileName));
     }
 
-    function fullProcess() external {
-        console.log("=== INITIATING FULL PROCESS ===\n");
+    function batchQueryTokenMetadataJSON() public {
+        string memory fileName = "./export/tokenMetadataBatch.json";
 
-        console.log("Contracts deployed already\n");
+        string memory jsonArray = "[";
 
-        console.log("2. Adding assets batch...");
-        this.addAssetsBatch();
-        console.log("SUCCESS: Assets added\n");
+        uint256 totalSupply = retroPunksContract.totalSupply();
+        uint256 startTokenID = 1;
 
-        console.log("3. Revealing Shuffler Seed...");
-        this.revealShufflerSeed();
-        console.log("SUCCESS: Shuffler seed revealed\n");
+        for (uint256 i = startTokenID; i <= totalSupply; i++) {
+            // Get token metadata
+            (uint16 seed, uint8 bg, bytes32 nameBytes, string memory bio) = retroPunksContract.globalTokenMetadata(i);
 
-        console.log("4. Batch Owner Minting...");
-        this.batchOwnerMint();
-        console.log("SUCCESS: Tokens minted\n");
+            // Convert bytes32 name to string (remove null bytes)
+            bytes memory nameBytesMem = new bytes(32);
+            for (uint256 j = 0; j < 32; j++) {
+                nameBytesMem[j] = nameBytes[j];
+            }
+            uint256 nameLength = 0;
+            for (uint256 j = 0; j < 32; j++) {
+                if (nameBytesMem[j] != 0) {
+                    nameLength = j + 1;
+                }
+            }
+            bytes memory nameActual = new bytes(nameLength);
+            for (uint256 j = 0; j < nameLength; j++) {
+                nameActual[j] = nameBytesMem[j];
+            }
+            string memory name = string(nameActual);
 
-        console.log("5. Revealing Global Seed...");
-        this.revealGlobalSeed();
-        console.log("SUCCESS: Global seed revealed\n");
+            // Escape special characters in bio for JSON
+            string memory escapedBio = _escapeJSON(bio);
 
-        console.log("6. Revealing MetaGen...");
-        this.revealMetaGen();
-        console.log("SUCCESS: MetaGen revealed\n");
+            // Build JSON object
+            string memory jsonObject = string.concat(
+                "{",
+                '"tokenId":',
+                vm.toString(i),
+                ",",
+                '"tokenIDSeed":',
+                vm.toString(seed),
+                ",",
+                '"background":',
+                vm.toString(bg),
+                ",",
+                '"name":"',
+                name,
+                '",',
+                '"bio":"',
+                escapedBio,
+                '"',
+                "}"
+            );
 
-        console.log("7. Customizing Token...");
-        this.customizeToken();
-        console.log("SUCCESS: Token customized\n");
+            // Add comma separator (except for first element)
+            if (i > startTokenID) {
+                jsonArray = string.concat(jsonArray, ",");
+            }
 
-        console.log("8. Batch Query Token URI...");
-        this.batchQueryTokenURI(1, 5);
-        console.log("SUCCESS: Token URIs queried\n");
+            jsonArray = string.concat(jsonArray, jsonObject);
+        }
 
-        console.log("=== FULL PROCESS COMPLETE ===");
+        jsonArray = string.concat(jsonArray, "]");
+
+        // Write to file
+        vm.writeFile(fileName, jsonArray);
+
+        console.log(string.concat("Token metadata written to JSON file: ", fileName));
     }
 
-    function _verifyDeployment() internal view {
-        console.log("\n=== Deployment Verification ===");
+    function queryContractDetails() public {
+        string memory name = retroPunksContract.name();
+        string memory symbol = retroPunksContract.symbol();
+        uint256 maxSupply = retroPunksContract.maxSupply();
+        uint256 totalSupply = retroPunksContract.totalSupply();
+        uint256 globalSeed = retroPunksContract.globalSeed();
+        uint256 shufflerSeed = retroPunksContract.shufflerSeed();
+        address metaGen = address(retroPunksContract.metaGen());
+        uint256 _mintIsClosed = retroPunksContract.mintIsClosed();
+        bool mintIsClosed = _mintIsClosed == 1 ? true : false;
 
-        require(address(retroPunksContract) != address(0), "Deployment failed");
-        require(retroPunksContract.maxSupply() == MAX_SUPPLY, "Max supply mismatch");
-        require(retroPunksContract.COMMITTED_GLOBAL_SEED_HASH() == GLOBAL_SEED_HASH, "Global seed hash mismatch");
-        require(retroPunksContract.COMMITTED_SHUFFLER_SEED_HASH() == SHUFFLER_SEED_HASH, "Shuffler seed hash mismatch");
-
-        console.log("All deployment checks passed!");
-    }
-
-    function _saveDeploymentInfo() internal {
-        string memory deploymentInfo = string(
-            abi.encodePacked(
-                "RetroPunks Deployment\n",
-                "=====================\n",
-                "Contract Address: ",
-                vm.toString(address(retroPunksContract)),
-                "\n",
-                "MetaGen: ",
-                vm.toString(address(retroPunksContract.metaGen())),
-                "\n",
-                "Max Supply: ",
-                vm.toString(retroPunksContract.maxSupply()),
-                "\n",
-                "\n",
-                "IMPORTANT - SAVE THESE SEEDS SECURELY:\n",
-                "Global Seed: ",
-                vm.toString(retroPunksContract.globalSeed()),
-                "\n",
-                "Shuffler Seed: ",
-                vm.toString(retroPunksContract.shufflerSeed()),
-                "\n"
-            )
-        );
-
-        console.log("\n", deploymentInfo);
-
-        // Optionally write to file
-        // vm.writeFile("deployment.txt", deploymentInfo);
+        console.log("=== Contract State ===", "\n");
+        console.log("Contract:", RETROPUNKS);
+        console.log("Name:", name);
+        console.log("Symbol:", symbol);
+        console.log("Minted Supply:", totalSupply, "/", maxSupply);
+        console.log("Global Seed:", globalSeed);
+        console.log("Shuffler Seed:", shufflerSeed);
+        console.log("MetaGen:", metaGen);
+        console.log("Mint Is Closed:", mintIsClosed);
     }
 }

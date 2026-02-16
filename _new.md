@@ -1,9 +1,9 @@
 ## Script
 
  forge script script/RetroPunks.s.sol:RetroPunksScript \
-  --sig "deploy" \
-  --rpc-url $BASE_SEPOLIA_RPC \
-  --private-key $PRIVATE_KEY \
+  --sig "verifyAssets" \
+  --rpc-url $BASE_MAINNET_RPC \
+  --private-key =$PRIVATE_KEY \
   --broadcast \
   --verify \
   --ffi \
@@ -23,8 +23,15 @@
 
   --sig "customizeToken" \
 
-  --sig "batchQueryTokenURI(uint256, uint256)" 1 5 \
+  --sig "batchQueryTokenURI" \
   
 
 ## Cast
- cast call $RETROPUNKS "totalSupply()(uint256)" --rpc-url $BASE_SEPOLIA_RPC
+ cast call $RETROPUNKS "totalSupply()(uint256)" --rpc-url $BASE_MAINNET_RPC
+
+ forge verify-contract \
+  0x35a9bF0DbdcF7Dbb714739bFDb685830C8Be76a4 \
+  src/RetroPunks.sol:RetroPunks \
+  --chain-id 84532 \
+  --etherscan-api-key $ETHERSCAN_API_KEY \
+  --watch
