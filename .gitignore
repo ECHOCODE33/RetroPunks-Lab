@@ -7,7 +7,6 @@ export/
 out/
 output/
 docs/
-traits/
 
 # Also match at any depth
 **/archive/
@@ -17,7 +16,6 @@ traits/
 **/docs/
 **/out/
 **/output/
-**/traits/
 
 # Environment and secrets
 .env
