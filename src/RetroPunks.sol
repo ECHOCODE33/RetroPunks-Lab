@@ -2,11 +2,12 @@
 pragma solidity ^0.8.32;
 
 import { NUM_BACKGROUND, NUM_PRE_RENDERED_SPECIALS, NUM_SPECIAL_1S } from "./global/Enums.sol";
-import { IMetaGen } from "./interfaces/IMetaGen.sol";
+import { IRenderer } from "./interfaces/IRenderer.sol";
 import { IRetroPunksTypes } from "./interfaces/IRetroPunksTypes.sol";
+import { DynamicBuffer } from "./libraries/DynamicBuffer.sol"; // NEW: Gas optimization - efficient memory buffer
 import { LibPRNG } from "./libraries/LibPRNG.sol";
 import { Utils } from "./libraries/Utils.sol";
-import { ERC721SeaDropPausableAndQueryable } from "./seadrop/extensions/ERC721SeaDropPausableAndQueryable.sol";
+import { ERC721SeaDropPausable } from "./seadrop/extensions/ERC721SeaDropPausable.sol";
 
 /**
  * @title RetroPunks
@@ -26,54 +27,53 @@ import { ERC721SeaDropPausableAndQueryable } from "./seadrop/extensions/ERC721Se
  * ╚═╝  ╚═╝ ╚══════╝    ╚═╝    ╚═╝  ╚═╝  ╚═════╝  ╚═╝       ╚═════╝  ╚═╝  ╚═══╝ ╚═╝  ╚═╝ ╚══════╝
  *
  */
-contract RetroPunks is IRetroPunksTypes, ERC721SeaDropPausableAndQueryable {
+contract RetroPunks is IRetroPunksTypes, ERC721SeaDropPausable {
+    using Utils for *;
     using LibPRNG for LibPRNG.LazyShuffler;
 
-    /// @notice The metadata generator contract responsible for creating on-chain SVG and attributes
-    IMetaGen public metaGen;
+    /**
+     * @notice The renderer contract responsible for creating on-chain SVG and attributes
+     */
+    IRenderer public renderer;
 
-    /// @notice Mapping from token ID to its customizable TokenMetadata struct
+    /**
+     * @notice Mapping from token ID to its customizable TokenMetadata struct
+     */
     mapping(uint256 => TokenMetadata) public globalTokenMetadata;
 
-    /// @notice Names of the 16 special 1-of-1 tokens (tokenIDSeeds 0-15)
-    bytes32[16] internal SPECIAL_NAMES = [
-        bytes32("Predator Blue"),
-        bytes32("Predator Green"),
-        bytes32("Predator Red"),
-        bytes32("Santa Claus"),
-        bytes32("Shadow Ninja"),
-        bytes32("The Devil"),
-        bytes32("The Portrait"),
-        bytes32("Ancient Mummy"),
-        bytes32("CyberApe"),
-        bytes32("Ancient Skeleton"),
-        bytes32("Pig"),
-        bytes32("Slenderman"),
-        bytes32("The Clown"),
-        bytes32("The Pirate"),
-        bytes32("The Witch"),
-        bytes32("The Wizard")
-    ];
-
-    /// @notice Keccak256 hash of the committed global seed
+    /**
+     * @notice Keccak256 hash of the committed global seed
+     */
     bytes32 public immutable COMMITTED_GLOBAL_SEED_HASH;
 
-    /// @notice Keccak256 hash of the committed shuffler seed
+    /**
+     * @notice Keccak256 hash of the committed shuffler seed
+     */
     bytes32 public immutable COMMITTED_SHUFFLER_SEED_HASH;
 
-    /// @notice The revealed global seed used for generating token metadata randomness
+    /**
+     * @notice The revealed global seed used for generating token metadata randomness
+     */
     uint256 public globalSeed;
 
-    /// @notice The revealed shuffler seed used for random token ID assignment
+    /**
+     * @notice The revealed shuffler seed used for random token ID assignment
+     */
     uint256 public shufflerSeed;
 
-    /// @notice Flag indicating whether minting is permanently closed (1 = closed, 0 = open)
+    /**
+     * @notice Flag indicating whether minting is permanently closed (1 = closed, 0 = open)
+     */
     uint8 public mintIsClosed = 0;
 
-    /// @notice Flag indicating whether metadata has been revealed (1 = revealed, 0 = hidden)
+    /**
+     * @notice Flag indicating whether metadata has been revealed (1 = revealed, 0 = hidden)
+     */
     uint8 internal metaGenRevealed = 0;
 
-    /// @notice Lazy shuffler for assigning random tokenIdSeeds to minted tokens
+    /**
+     * @notice Lazy shuffler for assigning random tokenIdSeeds to minted tokens
+     */
     LibPRNG.LazyShuffler internal _tokenIdSeedShuffler;
 
     /**
@@ -105,29 +105,26 @@ contract RetroPunks is IRetroPunksTypes, ERC721SeaDropPausableAndQueryable {
      *
      * @dev Initializes the ERC721A contract via SeaDrop with collection name and symbol
      *
-     * @param _metaGen The IMetaGen (metadata generator) contract address
+     * @param _renderer The IRenderer (metadata + rendering) contract address
      * @param _globalHash The keccak256 hash of the committed global seed
      * @param _shufflerHash The keccak256 hash of the committed shuffler seed
-     * @param _maxSupplyParam The maximum supply of the collection
+     * @param _maximumSupply The maximum supply of the collection
      * @param _allowedSeaDrop Array of allowed SeaDrop contract addresses for minting
      */
-    constructor(IMetaGen _metaGen, bytes32 _globalHash, bytes32 _shufflerHash, uint256 _maxSupplyParam, address[] memory _allowedSeaDrop)
-        ERC721SeaDropPausableAndQueryable("RetroPunks", "RPNKS", _allowedSeaDrop)
-    {
+    constructor(IRenderer _renderer, bytes32 _globalHash, bytes32 _shufflerHash, uint256 _maximumSupply, address[] memory _allowedSeaDrop) ERC721SeaDropPausable("RetroPunks", "RPNKS", _allowedSeaDrop) {
         COMMITTED_GLOBAL_SEED_HASH = _globalHash;
         COMMITTED_SHUFFLER_SEED_HASH = _shufflerHash;
-        metaGen = _metaGen;
-        _maxSupply = _maxSupplyParam;
+        renderer = _renderer;
+        _maxSupply = _maximumSupply;
     }
 
     /**
-     * @notice Admin function for setting IMetaGen 
-     *         (Metadata Generator) contract
+     * @notice Admin function for setting the Renderer contract
      *
-     * @param _metaGen The new IMetaGen contract address
+     * @param _renderer The new IRenderer contract address
      */
-    function setMetaGen(IMetaGen _metaGen) external onlyOwner {
-        metaGen = _metaGen;
+    function setRenderer(IRenderer _renderer) external onlyOwner {
+        renderer = _renderer;
         emit BatchMetadataUpdate(1, _nextTokenId() - 1);
     }
 
@@ -490,79 +487,58 @@ contract RetroPunks is IRetroPunksTypes, ERC721SeaDropPausableAndQueryable {
     /**
      * @notice Returns the token URI for a given token ID
      *
-     * @dev Generates a data URI containing the token's metadata and SVG image
-     *
      * @param tokenId The token ID to get the URI for
      *
-     * @return A base64-encoded data URI with JSON metadata
+     * @return A base64-encoded data URI with token's JSON metadata
      *
      * @custom:throws NonExistentToken if token doesn't exist
      */
     function tokenURI(uint256 tokenId) public view override tokenExists(tokenId) returns (string memory) {
         TokenMetadata memory meta = globalTokenMetadata[tokenId];
-        return _generateDataURI(tokenId, meta.tokenIdSeed, meta.backgroundIndex, Utils.toString(meta.name), meta.bio, globalSeed);
+        return _generateDataURI(tokenId, meta.tokenIdSeed, meta.backgroundIndex, meta.name.toString(), meta.bio, globalSeed);
     }
 
     /**
-     * @notice Generates a complete data URI for a token using the MetaGen
-     *         (metadata generator) contract
+     * @notice Generates data URI returned in tokenURI()
      *
-     * @dev Creates JSON metadata with SVG image based on reveal status:
-     *      - Before reveal: Shows "#???" and "Wait for the reveal..."
-     *      - After reveal: Shows actual metadata with name & bio
+     * @param _tokenId The token ID to generate URI for
+     * @param _tokenIdSeed The randomly assigned tokenID seed
+     * @param _backgroundIndex The index of the background used in final image
+     * @param _name The name used in data URI name
+     * @param _bio The bio used in data URI description
+     * @param _globalSeed The global seed used to generate traits
      *
-     *      Special tokens (tokenIDSeeds 0-15) have a name property of
-     *      "1 of 1: [Special Name]" unless customized
-     *
-     * @param _tokenId The token ID
-     * @param _tokenIdSeed The randomly shuffled token seed
-     * @param _backgroundIndex The background index for the token
-     * @param _name The custom or default name
-     * @param _bio The custom or default bio
-     * @param _globalSeed The global randomness seed
-     *
-     * @return A base64-encoded data URI containing JSON metadata with embedded SVG
+     * @return A base64-encoded data URI with token's JSON metadata
      */
-    function _generateDataURI(uint256 _tokenId, uint16 _tokenIdSeed, uint8 _backgroundIndex, string memory _name, string memory _bio, uint256 _globalSeed)
-        internal
-        view
-        returns (string memory)
-    {
+    function _generateDataURI(uint256 _tokenId, uint16 _tokenIdSeed, uint8 _backgroundIndex, string memory _name, string memory _bio, uint256 _globalSeed) internal view returns (string memory) {
+        (string memory svg, string memory attributes) = renderer.generateMetadata(_tokenIdSeed, _backgroundIndex, _globalSeed, metaGenRevealed);
+
+        // Prepare final name and bio
         string memory finalName;
         string memory finalBio;
-        string memory attributes;
-        string memory svg;
+
+        string memory defaultName = string.concat("#", _tokenId.toString());
 
         if (metaGenRevealed == 0) {
-            // Pre-reveal state: generate placeholder metadata
-            (svg, attributes) = metaGen.generateMetadata(_tokenIdSeed, _backgroundIndex, _globalSeed, 0);
             finalName = "#???";
             finalBio = "Wait for the reveal...";
         } else {
-            // Post-reveal state: generate full metadata
-            (svg, attributes) = metaGen.generateMetadata(_tokenIdSeed, _backgroundIndex, _globalSeed, 1);
-
-            // Construct the default name format: "#123"
-            string memory defaultName = string.concat("#", Utils.toString(_tokenId));
-            bool isDefaultName = keccak256(bytes(_name)) == keccak256(bytes(defaultName));
-
-            // Handle special 1-of-1 tokens (indices 0-15)
-            if (_tokenIdSeed < NUM_SPECIAL_1S) {
-                finalName = isDefaultName ? string.concat("1 of 1: ", Utils.toString(SPECIAL_NAMES[_tokenIdSeed])) : _name;
-            } else {
-                // Regular tokens: if custom name, show "#123: Custom Name", else just "#123"
-                finalName = isDefaultName ? _name : string.concat(defaultName, ": ", _name);
-            }
-
+            finalName = (keccak256(bytes(_name)) == keccak256(bytes(defaultName))) ? defaultName : string.concat(defaultName, ": ", _name);
             finalBio = _bio;
         }
 
-        // Construct the JSON metadata with base64-encoded SVG
-        string memory json = string.concat(
-            '{"name":"', finalName, '","description":"', finalBio, '",', attributes, ',"image":"data:image/svg+xml;base64,', Utils.encodeBase64(bytes(svg)), '"}'
-        );
+        // Base64-encode the SVG so it is valid inside the data:image/svg+xml;base64, URI
+        // and so the SVG's embedded double-quotes do not break the JSON structure
+        bytes memory svgBase64 = bytes(bytes(svg).encodeBase64());
 
-        // Return as a base64-encoded data URI
-        return string.concat("data:application/json;base64,", Utils.encodeBase64(bytes(json)));
+        bytes memory buffer = DynamicBuffer.allocate(svgBase64.length + bytes(finalName).length + bytes(finalBio).length + 300);
+
+        buffer.concat('{"name":"', bytes(finalName), '",');
+        buffer.concat('"description":"', bytes(finalBio), '",');
+        buffer.concat(bytes(attributes), ",");
+        buffer.concat('"image":"data:image/svg+xml;base64,', svgBase64, '"}');
+
+        string memory json = string(buffer);
+        return string.concat("data:application/json;base64,", (bytes(json)).encodeBase64());
     }
 }

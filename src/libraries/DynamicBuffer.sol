@@ -3,22 +3,28 @@
 
 pragma solidity ^0.8.32;
 
-/// @title DynamicBuffer
-/// @author David Huber (@cxkoda) and Simon Fremaux (@dievardump). See also
-///         https://raw.githubusercontent.com/dievardump/solidity-dynamic-buffer
-/// @notice This library is used to allocate a big amount of container memory
+/**
+ * @title DynamicBuffer
+ * @author David Huber (@cxkoda) and Simon Fremaux (@dievardump). See also
+ *         https://raw.githubusercontent.com/dievardump/solidity-dynamic-buffer
+ * @notice This library is used to allocate a big amount of container memory
+ */
 //          which will be subsequently filled without needing to reallocate
-///         memory.
-/// @dev First, allocate memory.
-///      Then use `buffer.appendUnchecked(theBytes)` or `appendSafe()` if
-///      bounds checking is required.
+/**
+ *         memory.
+ * @dev First, allocate memory.
+ *      Then use `buffer.appendUnchecked(theBytes)` or `appendSafe()` if
+ *      bounds checking is required.
+ */
 library DynamicBuffer {
-    /// @notice Allocates container space for the DynamicBuffer
-    /// @param capacity_ The intended max amount of bytes in the buffer
-    /// @return buffer The memory location of the buffer
-    /// @dev Allocates `capacity_ + 0x60` bytes of space
-    ///      The buffer array starts at the first container data position,
-    ///      (i.e. `buffer = container + 0x20`)
+    /**
+     * @notice Allocates container space for the DynamicBuffer
+     * @param capacity_ The intended max amount of bytes in the buffer
+     * @return buffer The memory location of the buffer
+     * @dev Allocates `capacity_ + 0x60` bytes of space
+     *      The buffer array starts at the first container data position,
+     *      (i.e. `buffer = container + 0x20`)
+     */
     function allocate(uint256 capacity_) internal pure returns (bytes memory buffer) {
         assembly {
             // Get next-free memory address
@@ -49,10 +55,12 @@ library DynamicBuffer {
         return buffer;
     }
 
-    /// @notice Resets the buffer
-    /// @param buffer the buffer to append the data to
-    /// @dev Resets the buffer and allow the space to be used again without the need to allocating it a lot.
-    ///      Potential gas improvement for certain usecases
+    /**
+     * @notice Resets the buffer
+     * @param buffer the buffer to append the data to
+     * @dev Resets the buffer and allow the space to be used again without the need to allocating it a lot.
+     *      Potential gas improvement for certain usecases
+     */
     function resetBuffer(bytes memory buffer) internal pure {
         assembly {
             // Init content with length 0
@@ -60,11 +68,13 @@ library DynamicBuffer {
         }
     }
 
-    /// @notice Appends data to buffer, and update buffer length
-    /// @param buffer the buffer to append the data to
-    /// @param data the data to append
-    /// @dev Does not perform out-of-bound checks (container capacity)
-    ///      for efficiency.
+    /**
+     * @notice Appends data to buffer, and update buffer length
+     * @param buffer the buffer to append the data to
+     * @param data the data to append
+     * @dev Does not perform out-of-bound checks (container capacity)
+     *      for efficiency.
+     */
     function appendUnchecked(bytes memory buffer, bytes memory data) internal pure {
         assembly {
             let length := mload(data)
@@ -89,13 +99,15 @@ library DynamicBuffer {
         }
     }
 
-    /// @notice Appends data to buffer, and update buffer length
-    /// @param buffer the buffer to append the data to
-    /// @param data the data to append
-    /// @param start the start index of the data to append
-    /// @param end the end index of the data to append
-    /// @dev Does not perform out-of-bound checks (container capacity)
-    ///      for efficiency.
+    /**
+     * @notice Appends data to buffer, and update buffer length
+     * @param buffer the buffer to append the data to
+     * @param data the data to append
+     * @param start the start index of the data to append
+     * @param end the end index of the data to append
+     * @dev Does not perform out-of-bound checks (container capacity)
+     *      for efficiency.
+     */
     function appendUnchecked(bytes memory buffer, bytes memory data, uint256 start, uint256 end) internal pure {
         assembly {
             let length := sub(end, start)
@@ -124,23 +136,27 @@ library DynamicBuffer {
         }
     }
 
-    /// @notice Appends data to buffer, and update buffer length
-    /// @param buffer the buffer to append the data to
-    /// @param data the data to append
-    /// @dev Performs out-of-bound checks and calls `appendUnchecked`.
+    /**
+     * @notice Appends data to buffer, and update buffer length
+     * @param buffer the buffer to append the data to
+     * @param data the data to append
+     * @dev Performs out-of-bound checks and calls `appendUnchecked`.
+     */
     function appendSafe(bytes memory buffer, bytes memory data) internal pure {
         checkOverflow(buffer, data.length);
         appendUnchecked(buffer, data);
     }
 
-    /// @notice Appends data encoded as Base64 to buffer.
-    /// @param fileSafe  Whether to replace '+' with '-' and '/' with '_'.
-    /// @param noPadding Whether to strip away the padding.
-    /// @dev Encodes `data` using the base64 encoding described in RFC 4648.
-    /// See: https://datatracker.ietf.org/doc/html/rfc4648
-    /// Author: Modified from Solady (https://github.com/vectorized/solady/blob/main/src/utils/Base64.sol)
-    /// Author: Modified from Solmate (https://github.com/transmissions11/solmate/blob/main/src/utils/Base64.sol)
-    /// Author: Modified from (https://github.com/Brechtpd/base64/blob/main/base64.sol) by Brecht Devos.
+    /**
+     * @notice Appends data encoded as Base64 to buffer.
+     * @param fileSafe  Whether to replace '+' with '-' and '/' with '_'.
+     * @param noPadding Whether to strip away the padding.
+     * @dev Encodes `data` using the base64 encoding described in RFC 4648.
+     * See: https://datatracker.ietf.org/doc/html/rfc4648
+     * Author: Modified from Solady (https://github.com/vectorized/solady/blob/main/src/utils/Base64.sol)
+     * Author: Modified from Solmate (https://github.com/transmissions11/solmate/blob/main/src/utils/Base64.sol)
+     * Author: Modified from (https://github.com/Brechtpd/base64/blob/main/base64.sol) by Brecht Devos.
+     */
     function appendSafeBase64(bytes memory buffer, bytes memory data, bool fileSafe, bool noPadding) internal pure {
         uint256 dataLength = data.length;
 
@@ -217,7 +233,9 @@ library DynamicBuffer {
         }
     }
 
-    /// @notice Returns the capacity of a given buffer.
+    /**
+     * @notice Returns the capacity of a given buffer.
+     */
     function capacity(bytes memory buffer) internal pure returns (uint256) {
         uint256 cap;
         assembly {
@@ -226,8 +244,10 @@ library DynamicBuffer {
         return cap;
     }
 
-    /// @notice Reverts if the buffer will overflow after appending a given
-    /// number of bytes.
+    /**
+     * @notice Reverts if the buffer will overflow after appending a given
+     * number of bytes.
+     */
     function checkOverflow(bytes memory buffer, uint256 addedLength) internal pure {
         uint256 cap = capacity(buffer);
         uint256 newLength = buffer.length + addedLength;

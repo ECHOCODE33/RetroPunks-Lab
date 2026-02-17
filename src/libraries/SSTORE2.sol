@@ -1,38 +1,50 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-/// @notice Read and write to persistent storage at a fraction of the cost.
-/// @author Solady (https://github.com/vectorized/solmady/blob/main/src/utils/SSTORE2.sol)
-/// @author Saw-mon-and-Natalie (https://github.com/Saw-mon-and-Natalie)
-/// @author Modified from Solmate (https://github.com/transmissions11/solmate/blob/main/src/utils/SSTORE2.sol)
-/// @author Modified from 0xSequence (https://github.com/0xSequence/sstore2/blob/master/contracts/SSTORE2.sol)
+/**
+ * @notice Read and write to persistent storage at a fraction of the cost.
+ * @author Solady (https://github.com/vectorized/solmady/blob/main/src/utils/SSTORE2.sol)
+ * @author Saw-mon-and-Natalie (https://github.com/Saw-mon-and-Natalie)
+ * @author Modified from Solmate (https://github.com/transmissions11/solmate/blob/main/src/utils/SSTORE2.sol)
+ * @author Modified from 0xSequence (https://github.com/0xSequence/sstore2/blob/master/contracts/SSTORE2.sol)
+ */
 library SSTORE2 {
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
     /*                         CONSTANTS                          */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
-    /// @dev We skip the first byte as it's a STOP opcode,
-    /// which ensures the contract can't be called.
+    /**
+     * @dev We skip the first byte as it's a STOP opcode,
+     * which ensures the contract can't be called.
+     */
     uint256 internal constant DATA_OFFSET = 1;
 
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
     /*                        CUSTOM ERRORS                       */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
-    /// @dev Unable to deploy the storage contract.
+    /**
+     * @dev Unable to deploy the storage contract.
+     */
     error DeploymentFailed();
 
-    /// @dev The storage contract address is invalid.
+    /**
+     * @dev The storage contract address is invalid.
+     */
     error InvalidPointer();
 
-    /// @dev Attempt to read outside of the storage contract's bytecode bounds.
+    /**
+     * @dev Attempt to read outside of the storage contract's bytecode bounds.
+     */
     error ReadOutOfBounds();
 
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
     /*                         WRITE LOGIC                        */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
-    /// @dev Writes `data` into the bytecode of a storage contract and returns its address.
+    /**
+     * @dev Writes `data` into the bytecode of a storage contract and returns its address.
+     */
     function write(bytes memory data) internal returns (address pointer) {
         assembly {
             let originalDataLength := mload(data)
@@ -80,8 +92,10 @@ library SSTORE2 {
         }
     }
 
-    /// @dev Writes `data` into the bytecode of a storage contract with `salt`
-    /// and returns its deterministic address.
+    /**
+     * @dev Writes `data` into the bytecode of a storage contract with `salt`
+     * and returns its deterministic address.
+     */
     function writeDeterministic(bytes memory data, bytes32 salt) internal returns (address pointer) {
         assembly {
             let originalDataLength := mload(data)
@@ -111,8 +125,10 @@ library SSTORE2 {
         }
     }
 
-    /// @dev Returns the initialization code hash of the storage contract for `data`.
-    /// Used for mining vanity addresses with create2crunch.
+    /**
+     * @dev Returns the initialization code hash of the storage contract for `data`.
+     * Used for mining vanity addresses with create2crunch.
+     */
     function initCodeHash(bytes memory data) internal pure returns (bytes32 hash) {
         assembly {
             let originalDataLength := mload(data)
@@ -131,9 +147,11 @@ library SSTORE2 {
         }
     }
 
-    /// @dev Returns the address of the storage contract for `data`
-    /// deployed with `salt` by `deployer`.
-    /// Note: The returned result has dirty upper 96 bits. Please clean if used in assembly.
+    /**
+     * @dev Returns the address of the storage contract for `data`
+     * deployed with `salt` by `deployer`.
+     * Note: The returned result has dirty upper 96 bits. Please clean if used in assembly.
+     */
     function predictDeterministicAddress(bytes memory data, bytes32 salt, address deployer) internal pure returns (address predicted) {
         bytes32 hash = initCodeHash(data);
         assembly {
@@ -152,7 +170,9 @@ library SSTORE2 {
     /*                         READ LOGIC                         */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
-    /// @dev Returns all the `data` from the bytecode of the storage contract at `pointer`.
+    /**
+     * @dev Returns all the `data` from the bytecode of the storage contract at `pointer`.
+     */
     function read(address pointer) internal view returns (bytes memory data) {
         assembly {
             let pointerCodesize := extcodesize(pointer)
@@ -177,8 +197,10 @@ library SSTORE2 {
         }
     }
 
-    /// @dev Returns the `data` from the bytecode of the storage contract at `pointer`,
-    /// from the byte at `start`, to the end of the data stored.
+    /**
+     * @dev Returns the `data` from the bytecode of the storage contract at `pointer`,
+     * from the byte at `start`, to the end of the data stored.
+     */
     function read(address pointer, uint256 start) internal view returns (bytes memory data) {
         assembly {
             let pointerCodesize := extcodesize(pointer)
@@ -211,8 +233,10 @@ library SSTORE2 {
         }
     }
 
-    /// @dev Returns the `data` from the bytecode of the storage contract at `pointer`,
-    /// from the byte at `start`, to the byte at `end` (exclusive) of the data stored.
+    /**
+     * @dev Returns the `data` from the bytecode of the storage contract at `pointer`,
+     * from the byte at `start`, to the byte at `end` (exclusive) of the data stored.
+     */
     function read(address pointer, uint256 start, uint256 end) internal view returns (bytes memory data) {
         assembly {
             let pointerCodesize := extcodesize(pointer)

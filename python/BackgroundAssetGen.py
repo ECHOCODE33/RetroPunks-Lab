@@ -3,7 +3,7 @@ import os
 import struct
 
 OUTPUT_DIR = "output"
-COMBINED_FILENAME = "background_ultimate_asset.txt"
+COMBINED_FILENAME = "background_asset.txt"
 GROUP_NAME = "Background"
 
 BG_TYPES = {
@@ -412,24 +412,23 @@ def parse_color(c):
     raise ValueError(f"Invalid color format: {c!r}")
 
 
-def get_gradient_coords(layer_type):
-    """Returns (x1,y1,x2,y2) in range 0-1 (normalized SVG style) like the first script"""
-    mapping = {
-        BG_TYPES["S_Vertical"]:   (0, 0, 0, 1),
-        BG_TYPES["P_Vertical"]:   (0, 0, 0, 1),
-        BG_TYPES["S_Horizontal"]: (0, 0, 1, 0),
-        BG_TYPES["P_Horizontal"]: (0, 0, 1, 0),
-        BG_TYPES["S_Down"]:       (0, 0, 1, 1),
-        BG_TYPES["P_Down"]:       (0, 0, 1, 1),
-        BG_TYPES["S_Up"]:         (0, 1, 1, 0),
-        BG_TYPES["P_Up"]:         (0, 1, 1, 0),
-        # dummy, same as first script fallback
-        BG_TYPES["Radial"]:       (0, 0, 0, 0),
-    }
-    return mapping.get(layer_type, (0, 0, 0, 0))
-
-
 def encode_background_group():
+    """
+    Encode background trait group matching TraitsLoader's expected format:
+
+    Group-level:
+        [nameLen:1][name:nameLen]
+        [paletteSize:2][colors:paletteSize*4]   (RGBA)
+        [pSize:1][traitCount:1]
+
+    Per background trait:
+        [x1:1][y1:1][x2:1][y2:1][layerType:1][nameLen:1]   = 6-byte header
+        [name:nameLen]
+        <data> depends on layerType:
+            Solid            → [paletteIdx:pSize]           (1 index)
+            Gradient/Radial  → [paletteIdx1:pSize][paletteIdx2:pSize]  (2 indices)
+            Image            → 2D RLE data
+    """
     output = bytearray()
 
     # 1. Group name length + name
@@ -437,12 +436,33 @@ def encode_background_group():
     output.append(len(name_bytes))
     output.extend(name_bytes)
 
-    # 2. Collect & deduplicate all colors → unified palette (insertion order, like first script)
+    # 2. Collect & deduplicate all colors → unified palette
+    #    For Smooth gradients (S_*) that only have 2 color stops, we only
+    #    need start + end colors.  For Pixelated gradients (P_*) with many
+    #    stops, the renderer still only uses 2 palette indices (start & end),
+    #    so we only store the FIRST and LAST colours of the palette list.
     unified_palette = []
     seen = set()
+
     for bg in BACKGROUNDS:
-        for c in bg.get('palette', []):
-            col = parse_color(c)
+        layer_type = bg['layerType']
+        raw = bg.get('palette', [])
+        if not raw:
+            continue
+
+        parsed = [parse_color(c) for c in raw]
+
+        if layer_type == BG_TYPES["Solid"]:
+            # Solid: single colour
+            cols_needed = [parsed[0]]
+        elif layer_type == BG_TYPES["Image"]:
+            # Image: all colours (not applicable for current backgrounds)
+            cols_needed = parsed
+        else:
+            # Gradient/Radial: only first and last colour
+            cols_needed = [parsed[0], parsed[-1]]
+
+        for col in cols_needed:
             if col not in seen:
                 unified_palette.append(col)
                 seen.add(col)
@@ -454,50 +474,49 @@ def encode_background_group():
         output.extend(struct.pack('>I', color))             # 4 bytes each
 
     # 3. Index size + background count
-    # Force 2 bytes always — matches first script behavior
-    index_bytes = 2
-    output.append(index_bytes)
+    p_size = 2 if palette_size > 255 else 1
+    output.append(p_size)
     output.append(len(BACKGROUNDS))
 
     # 4. Color → palette index lookup
     color_to_index = {col: i for i, col in enumerate(unified_palette)}
 
-    # 5. Each background
+    # 5. Each background — 6-byte header matching TraitsLoader
     for bg in BACKGROUNDS:
         name = bg['name'].encode('utf-8')
         layer_type = bg['layerType']
         raw_palette = bg.get('palette', [])
         palette_ints = [parse_color(c) for c in raw_palette]
 
-        # Number of color stops (for gradients), 1 for solid, 0 for image
-        stop_count = len(
-            palette_ints) if layer_type != BG_TYPES["Image"] else 0
+        # 6-byte header: [x1:1][y1:1][x2:1][y2:1][layerType:1][nameLen:1]
+        # x1/y1/x2/y2 are unused for backgrounds (PathSVGRenderer derives
+        # gradient direction from layerType), so we set them to 0.
+        output.extend([0, 0, 0, 0])          # x1, y1, x2, y2
+        output.append(layer_type)             # layerType
+        output.append(len(name))              # nameLen
+        output.extend(name)                   # name bytes
 
-        # Coordinates (now 0/1 like first script)
-        x1, y1, x2, y2 = get_gradient_coords(layer_type)
-
-        # Header: stopCount(2) + x1,y1,x2,y2(1 each) + layerType(1) + nameLen(1)
-        header = struct.pack(
-            '>HBBBBBB',
-            stop_count, x1, y1, x2, y2, layer_type, len(name)
-        )
-        output.extend(header)
-        output.extend(name)
-
-        # Payload: color indices (always 2 bytes)
+        # Data payload
         if layer_type == BG_TYPES["Image"]:
-            # No palette data for images
-            continue
-
-        if layer_type == BG_TYPES["Solid"]:
-            if palette_ints:
-                idx = color_to_index[palette_ints[0]]
+            # Image: would need 2D RLE data — not yet used, emit numRows=0
+            output.append(0)
+        elif layer_type == BG_TYPES["Solid"]:
+            # Solid: single palette index
+            idx = color_to_index[palette_ints[0]]
+            if p_size == 2:
                 output.extend(struct.pack('>H', idx))
+            else:
+                output.append(idx)
         else:
-            # Gradient: write sequence of 2-byte indices
-            for col in palette_ints:
-                idx = color_to_index[col]
-                output.extend(struct.pack('>H', idx))
+            # Gradient/Radial: first and last palette indices
+            idx1 = color_to_index[palette_ints[0]]
+            idx2 = color_to_index[palette_ints[-1]]
+            if p_size == 2:
+                output.extend(struct.pack('>H', idx1))
+                output.extend(struct.pack('>H', idx2))
+            else:
+                output.append(idx1)
+                output.append(idx2)
 
     return bytes(output)
 

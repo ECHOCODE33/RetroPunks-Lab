@@ -1,16 +1,20 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-/// @notice Library for byte related operations.
-/// @author Solady (https://github.com/vectorized/solady/blob/main/src/utils/LibBytes.sol)
+/**
+ * @notice Library for byte related operations.
+ * @author Solady (https://github.com/vectorized/solady/blob/main/src/utils/LibBytes.sol)
+ */
 library LibBytes {
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
     /*                          STRUCTS                           */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
-    /// @dev Goated bytes storage struct that totally MOGs, no cap, fr.
-    /// Uses less gas and bytecode than Solidity's native bytes storage. It's meta af.
-    /// Packs length with the first 31 bytes if <255 bytes, so it’s mad tight.
+    /**
+     * @dev Goated bytes storage struct that totally MOGs, no cap, fr.
+     * Uses less gas and bytecode than Solidity's native bytes storage. It's meta af.
+     * Packs length with the first 31 bytes if <255 bytes, so it’s mad tight.
+     */
     struct BytesStorage {
         bytes32 _spacer;
     }
@@ -19,16 +23,22 @@ library LibBytes {
     /*                         CONSTANTS                          */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
-    /// @dev The constant returned when the `search` is not found in the bytes.
+    /**
+     * @dev The constant returned when the `search` is not found in the bytes.
+     */
     uint256 internal constant NOT_FOUND = type(uint256).max;
 
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
     /*                  BYTE STORAGE OPERATIONS                   */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
-    /// @dev Sets the value of the bytes storage `$` to `s`.
+    /**
+     * @dev Sets the value of the bytes storage `$` to `s`.
+     */
     function set(BytesStorage storage $, bytes memory s) internal {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let n := mload(s)
             let packed := or(0xff, shl(8, n))
@@ -51,9 +61,13 @@ library LibBytes {
         }
     }
 
-    /// @dev Sets the value of the bytes storage `$` to `s`.
+    /**
+     * @dev Sets the value of the bytes storage `$` to `s`.
+     */
     function setCalldata(BytesStorage storage $, bytes calldata s) internal {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let packed := or(0xff, shl(8, s.length))
             for { let i := 0 } 1 { } {
@@ -74,29 +88,41 @@ library LibBytes {
         }
     }
 
-    /// @dev Sets the value of the bytes storage `$` to the empty bytes.
+    /**
+     * @dev Sets the value of the bytes storage `$` to the empty bytes.
+     */
     function clear(BytesStorage storage $) internal {
         delete $._spacer;
     }
 
-    /// @dev Returns whether the value stored is `$` is the empty bytes "".
+    /**
+     * @dev Returns whether the value stored is `$` is the empty bytes "".
+     */
     function isEmpty(BytesStorage storage $) internal view returns (bool) {
         return uint256($._spacer) & 0xff == uint256(0);
     }
 
-    /// @dev Returns the length of the value stored in `$`.
+    /**
+     * @dev Returns the length of the value stored in `$`.
+     */
     function length(BytesStorage storage $) internal view returns (uint256 result) {
         result = uint256($._spacer);
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let n := and(0xff, result)
             result := or(mul(shr(8, result), eq(0xff, n)), mul(n, iszero(eq(0xff, n))))
         }
     }
 
-    /// @dev Returns the value stored in `$`.
+    /**
+     * @dev Returns the value stored in `$`.
+     */
     function get(BytesStorage storage $) internal view returns (bytes memory result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             result := mload(0x40)
             let o := add(result, 0x20)
@@ -123,9 +149,13 @@ library LibBytes {
         }
     }
 
-    /// @dev Returns the uint8 at index `i`. If out-of-bounds, returns 0.
+    /**
+     * @dev Returns the uint8 at index `i`. If out-of-bounds, returns 0.
+     */
     function uint8At(BytesStorage storage $, uint256 i) internal view returns (uint8 result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             for { let packed := sload($.slot) } 1 { } {
                 if iszero(eq(or(packed, 0xff), packed)) {
@@ -153,9 +183,13 @@ library LibBytes {
     /*                      BYTES OPERATIONS                      */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
-    /// @dev Returns `subject` all occurrences of `needle` replaced with `replacement`.
+    /**
+     * @dev Returns `subject` all occurrences of `needle` replaced with `replacement`.
+     */
     function replace(bytes memory subject, bytes memory needle, bytes memory replacement) internal pure returns (bytes memory result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             result := mload(0x40)
             let needleLen := mload(needle)
@@ -209,11 +243,15 @@ library LibBytes {
         }
     }
 
-    /// @dev Returns the byte index of the first location of `needle` in `subject`,
-    /// needleing from left to right, starting from `from`.
-    /// Returns `NOT_FOUND` (i.e. `type(uint256).max`) if the `needle` is not found.
+    /**
+     * @dev Returns the byte index of the first location of `needle` in `subject`,
+     * needleing from left to right, starting from `from`.
+     * Returns `NOT_FOUND` (i.e. `type(uint256).max`) if the `needle` is not found.
+     */
     function indexOf(bytes memory subject, bytes memory needle, uint256 from) internal pure returns (uint256 result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             result := not(0) // Initialize to `NOT_FOUND`.
             for { let subjectLen := mload(subject) } 1 { } {
@@ -259,11 +297,15 @@ library LibBytes {
         }
     }
 
-    /// @dev Returns the byte index of the first location of `needle` in `subject`,
-    /// needleing from left to right, starting from `from`. Optimized for byte needles.
-    /// Returns `NOT_FOUND` (i.e. `type(uint256).max`) if the `needle` is not found.
+    /**
+     * @dev Returns the byte index of the first location of `needle` in `subject`,
+     * needleing from left to right, starting from `from`. Optimized for byte needles.
+     * Returns `NOT_FOUND` (i.e. `type(uint256).max`) if the `needle` is not found.
+     */
     function indexOfByte(bytes memory subject, bytes1 needle, uint256 from) internal pure returns (uint256 result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             result := not(0) // Initialize to `NOT_FOUND`.
             if gt(mload(subject), from) {
@@ -294,25 +336,33 @@ library LibBytes {
         }
     }
 
-    /// @dev Returns the byte index of the first location of `needle` in `subject`,
-    /// needleing from left to right. Optimized for byte needles.
-    /// Returns `NOT_FOUND` (i.e. `type(uint256).max`) if the `needle` is not found.
+    /**
+     * @dev Returns the byte index of the first location of `needle` in `subject`,
+     * needleing from left to right. Optimized for byte needles.
+     * Returns `NOT_FOUND` (i.e. `type(uint256).max`) if the `needle` is not found.
+     */
     function indexOfByte(bytes memory subject, bytes1 needle) internal pure returns (uint256 result) {
         return indexOfByte(subject, needle, 0);
     }
 
-    /// @dev Returns the byte index of the first location of `needle` in `subject`,
-    /// needleing from left to right.
-    /// Returns `NOT_FOUND` (i.e. `type(uint256).max`) if the `needle` is not found.
+    /**
+     * @dev Returns the byte index of the first location of `needle` in `subject`,
+     * needleing from left to right.
+     * Returns `NOT_FOUND` (i.e. `type(uint256).max`) if the `needle` is not found.
+     */
     function indexOf(bytes memory subject, bytes memory needle) internal pure returns (uint256) {
         return indexOf(subject, needle, 0);
     }
 
-    /// @dev Returns the byte index of the first location of `needle` in `subject`,
-    /// needleing from right to left, starting from `from`.
-    /// Returns `NOT_FOUND` (i.e. `type(uint256).max`) if the `needle` is not found.
+    /**
+     * @dev Returns the byte index of the first location of `needle` in `subject`,
+     * needleing from right to left, starting from `from`.
+     * Returns `NOT_FOUND` (i.e. `type(uint256).max`) if the `needle` is not found.
+     */
     function lastIndexOf(bytes memory subject, bytes memory needle, uint256 from) internal pure returns (uint256 result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             for { } 1 { } {
                 result := not(0) // Initialize to `NOT_FOUND`.
@@ -341,21 +391,29 @@ library LibBytes {
         }
     }
 
-    /// @dev Returns the byte index of the first location of `needle` in `subject`,
-    /// needleing from right to left.
-    /// Returns `NOT_FOUND` (i.e. `type(uint256).max`) if the `needle` is not found.
+    /**
+     * @dev Returns the byte index of the first location of `needle` in `subject`,
+     * needleing from right to left.
+     * Returns `NOT_FOUND` (i.e. `type(uint256).max`) if the `needle` is not found.
+     */
     function lastIndexOf(bytes memory subject, bytes memory needle) internal pure returns (uint256) {
         return lastIndexOf(subject, needle, type(uint256).max);
     }
 
-    /// @dev Returns true if `needle` is found in `subject`, false otherwise.
+    /**
+     * @dev Returns true if `needle` is found in `subject`, false otherwise.
+     */
     function contains(bytes memory subject, bytes memory needle) internal pure returns (bool) {
         return indexOf(subject, needle) != NOT_FOUND;
     }
 
-    /// @dev Returns whether `subject` starts with `needle`.
+    /**
+     * @dev Returns whether `subject` starts with `needle`.
+     */
     function startsWith(bytes memory subject, bytes memory needle) internal pure returns (bool result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let n := mload(needle)
             // Just using keccak256 directly is actually cheaper.
@@ -364,9 +422,13 @@ library LibBytes {
         }
     }
 
-    /// @dev Returns whether `subject` ends with `needle`.
+    /**
+     * @dev Returns whether `subject` ends with `needle`.
+     */
     function endsWith(bytes memory subject, bytes memory needle) internal pure returns (bool result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let n := mload(needle)
             let notInRange := gt(n, mload(subject))
@@ -377,9 +439,13 @@ library LibBytes {
         }
     }
 
-    /// @dev Returns `subject` repeated `times`.
+    /**
+     * @dev Returns `subject` repeated `times`.
+     */
     function repeat(bytes memory subject, uint256 times) internal pure returns (bytes memory result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let l := mload(subject) // Subject length.
             if iszero(or(iszero(times), iszero(l))) {
@@ -404,10 +470,14 @@ library LibBytes {
         }
     }
 
-    /// @dev Returns a copy of `subject` sliced from `start` to `end` (exclusive).
-    /// `start` and `end` are byte offsets.
+    /**
+     * @dev Returns a copy of `subject` sliced from `start` to `end` (exclusive).
+     * `start` and `end` are byte offsets.
+     */
     function slice(bytes memory subject, uint256 start, uint256 end) internal pure returns (bytes memory result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let l := mload(subject) // Subject length.
             if iszero(gt(l, end)) { end := l }
@@ -431,16 +501,22 @@ library LibBytes {
         }
     }
 
-    /// @dev Returns a copy of `subject` sliced from `start` to the end of the bytes.
-    /// `start` is a byte offset.
+    /**
+     * @dev Returns a copy of `subject` sliced from `start` to the end of the bytes.
+     * `start` is a byte offset.
+     */
     function slice(bytes memory subject, uint256 start) internal pure returns (bytes memory result) {
         result = slice(subject, start, type(uint256).max);
     }
 
-    /// @dev Returns a copy of `subject` sliced from `start` to `end` (exclusive).
-    /// `start` and `end` are byte offsets. Faster than Solidity's native slicing.
+    /**
+     * @dev Returns a copy of `subject` sliced from `start` to `end` (exclusive).
+     * `start` and `end` are byte offsets. Faster than Solidity's native slicing.
+     */
     function sliceCalldata(bytes calldata subject, uint256 start, uint256 end) internal pure returns (bytes calldata result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             end := xor(end, mul(xor(end, subject.length), lt(subject.length, end)))
             start := xor(start, mul(xor(start, subject.length), lt(subject.length, start)))
@@ -449,10 +525,14 @@ library LibBytes {
         }
     }
 
-    /// @dev Returns a copy of `subject` sliced from `start` to the end of the bytes.
-    /// `start` is a byte offset. Faster than Solidity's native slicing.
+    /**
+     * @dev Returns a copy of `subject` sliced from `start` to the end of the bytes.
+     * `start` is a byte offset. Faster than Solidity's native slicing.
+     */
     function sliceCalldata(bytes calldata subject, uint256 start) internal pure returns (bytes calldata result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             start := xor(start, mul(xor(start, subject.length), lt(subject.length, start)))
             result.offset := add(subject.offset, start)
@@ -460,30 +540,42 @@ library LibBytes {
         }
     }
 
-    /// @dev Reduces the size of `subject` to `n`.
-    /// If `n` is greater than the size of `subject`, this will be a no-op.
+    /**
+     * @dev Reduces the size of `subject` to `n`.
+     * If `n` is greater than the size of `subject`, this will be a no-op.
+     */
     function truncate(bytes memory subject, uint256 n) internal pure returns (bytes memory result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             result := subject
             mstore(mul(lt(n, mload(result)), result), n)
         }
     }
 
-    /// @dev Returns a copy of `subject`, with the length reduced to `n`.
-    /// If `n` is greater than the size of `subject`, this will be a no-op.
+    /**
+     * @dev Returns a copy of `subject`, with the length reduced to `n`.
+     * If `n` is greater than the size of `subject`, this will be a no-op.
+     */
     function truncatedCalldata(bytes calldata subject, uint256 n) internal pure returns (bytes calldata result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             result.offset := subject.offset
             result.length := xor(n, mul(xor(n, subject.length), lt(subject.length, n)))
         }
     }
 
-    /// @dev Returns all the indices of `needle` in `subject`.
-    /// The indices are byte offsets.
+    /**
+     * @dev Returns all the indices of `needle` in `subject`.
+     * The indices are byte offsets.
+     */
     function indicesOf(bytes memory subject, bytes memory needle) internal pure returns (uint256[] memory result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let searchLen := mload(needle)
             if iszero(gt(searchLen, mload(subject))) {
@@ -524,10 +616,14 @@ library LibBytes {
         }
     }
 
-    /// @dev Returns an arrays of bytess based on the `delimiter` inside of the `subject` bytes.
+    /**
+     * @dev Returns an arrays of bytess based on the `delimiter` inside of the `subject` bytes.
+     */
     function split(bytes memory subject, bytes memory delimiter) internal pure returns (bytes[] memory result) {
         uint256[] memory indices = indicesOf(subject, delimiter);
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let w := not(0x1f)
             let indexPtr := add(indices, 0x20)
@@ -564,10 +660,14 @@ library LibBytes {
         }
     }
 
-    /// @dev Returns a concatenated bytes of `a` and `b`.
-    /// Cheaper than `bytes.concat()` and does not de-align the free memory pointer.
+    /**
+     * @dev Returns a concatenated bytes of `a` and `b`.
+     * Cheaper than `bytes.concat()` and does not de-align the free memory pointer.
+     */
     function concat(bytes memory a, bytes memory b) internal pure returns (bytes memory result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             result := mload(0x40)
             let w := not(0x1f)
@@ -594,17 +694,25 @@ library LibBytes {
         }
     }
 
-    /// @dev Returns whether `a` equals `b`.
+    /**
+     * @dev Returns whether `a` equals `b`.
+     */
     function eq(bytes memory a, bytes memory b) internal pure returns (bool result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             result := eq(keccak256(add(a, 0x20), mload(a)), keccak256(add(b, 0x20), mload(b)))
         }
     }
 
-    /// @dev Returns whether `a` equals `b`, where `b` is a null-terminated small bytes.
+    /**
+     * @dev Returns whether `a` equals `b`, where `b` is a null-terminated small bytes.
+     */
     function eqs(bytes memory a, bytes32 b) internal pure returns (bool result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             // These should be evaluated on compile time, as far as possible.
             let m := not(shl(7, div(not(iszero(b)), 255))) // `0x7f7f ...`.
@@ -620,10 +728,14 @@ library LibBytes {
         }
     }
 
-    /// @dev Returns 0 if `a == b`, -1 if `a < b`, +1 if `a > b`.
-    /// If `a` == b[:a.length]`, and `a.length < b.length`, returns -1.
+    /**
+     * @dev Returns 0 if `a == b`, -1 if `a < b`, +1 if `a > b`.
+     * If `a` == b[:a.length]`, and `a.length < b.length`, returns -1.
+     */
     function cmp(bytes memory a, bytes memory b) internal pure returns (int256 result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let aLen := mload(a)
             let bLen := mload(b)
@@ -651,9 +763,13 @@ library LibBytes {
         }
     }
 
-    /// @dev Directly returns `a` without copying.
+    /**
+     * @dev Directly returns `a` without copying.
+     */
     function directReturn(bytes memory a) internal pure {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             // Assumes that the bytes does not start from the scratch space.
             let retStart := sub(a, 0x20)
@@ -667,9 +783,13 @@ library LibBytes {
         }
     }
 
-    /// @dev Directly returns `a` with minimal copying.
+    /**
+     * @dev Directly returns `a` with minimal copying.
+     */
     function directReturn(bytes[] memory a) internal pure {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let n := mload(a) // `a.length`.
             let o := add(a, 0x20) // Start of elements in `a`.
@@ -705,25 +825,37 @@ library LibBytes {
         }
     }
 
-    /// @dev Returns the word at `offset`, without any bounds checks.
+    /**
+     * @dev Returns the word at `offset`, without any bounds checks.
+     */
     function load(bytes memory a, uint256 offset) internal pure returns (bytes32 result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             result := mload(add(add(a, 0x20), offset))
         }
     }
 
-    /// @dev Returns the word at `offset`, without any bounds checks.
+    /**
+     * @dev Returns the word at `offset`, without any bounds checks.
+     */
     function loadCalldata(bytes calldata a, uint256 offset) internal pure returns (bytes32 result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             result := calldataload(add(a.offset, offset))
         }
     }
 
-    /// @dev Returns a slice representing a static struct in the calldata. Performs bounds checks.
+    /**
+     * @dev Returns a slice representing a static struct in the calldata. Performs bounds checks.
+     */
     function staticStructInCalldata(bytes calldata a, uint256 offset) internal pure returns (bytes calldata result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let l := sub(a.length, 0x20)
             result.offset := add(a.offset, offset)
@@ -732,9 +864,13 @@ library LibBytes {
         }
     }
 
-    /// @dev Returns a slice representing a dynamic struct in the calldata. Performs bounds checks.
+    /**
+     * @dev Returns a slice representing a dynamic struct in the calldata. Performs bounds checks.
+     */
     function dynamicStructInCalldata(bytes calldata a, uint256 offset) internal pure returns (bytes calldata result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let l := sub(a.length, 0x20)
             let s := calldataload(add(a.offset, offset)) // Relative offset of `result` from `a.offset`.
@@ -744,9 +880,13 @@ library LibBytes {
         }
     }
 
-    /// @dev Returns bytes in calldata. Performs bounds checks.
+    /**
+     * @dev Returns bytes in calldata. Performs bounds checks.
+     */
     function bytesInCalldata(bytes calldata a, uint256 offset) internal pure returns (bytes calldata result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let l := sub(a.length, 0x20)
             let s := calldataload(add(a.offset, offset)) // Relative offset of `result` from `a.offset`.
@@ -758,9 +898,13 @@ library LibBytes {
         }
     }
 
-    /// @dev Checks if `x` is in `a`. Assumes `a` has been checked.
+    /**
+     * @dev Checks if `x` is in `a`. Assumes `a` has been checked.
+     */
     function checkInCalldata(bytes calldata x, bytes calldata a) internal pure {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             if or(or(lt(x.offset, a.offset), gt(add(x.offset, x.length), add(a.length, a.offset))), shr(64, or(x.length, x.offset))) {
                 revert(0x00, 0x00)
@@ -768,9 +912,13 @@ library LibBytes {
         }
     }
 
-    /// @dev Checks if `x` is in `a`. Assumes `a` has been checked.
+    /**
+     * @dev Checks if `x` is in `a`. Assumes `a` has been checked.
+     */
     function checkInCalldata(bytes[] calldata x, bytes calldata a) internal pure {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let e := sub(add(a.length, a.offset), 0x20)
             if or(lt(x.offset, a.offset), shr(64, x.offset)) { revert(0x00, 0x00) }
@@ -783,20 +931,28 @@ library LibBytes {
         }
     }
 
-    /// @dev Returns empty calldata bytes. For silencing the compiler.
+    /**
+     * @dev Returns empty calldata bytes. For silencing the compiler.
+     */
     function emptyCalldata() internal pure returns (bytes calldata result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             result.length := 0
         }
     }
 
-    /// @dev Returns the most significant 20 bytes as an address.
+    /**
+     * @dev Returns the most significant 20 bytes as an address.
+     */
     function msbToAddress(bytes32 x) internal pure returns (address) {
         return address(bytes20(x));
     }
 
-    /// @dev Returns the least significant 20 bytes as an address.
+    /**
+     * @dev Returns the least significant 20 bytes as an address.
+     */
     function lsbToAddress(bytes32 x) internal pure returns (address) {
         return address(uint160(uint256(x)));
     }

@@ -28,10 +28,14 @@ import { IERC165 } from "@openzeppelin/contracts/utils/introspection/IERC165.sol
  *         validation for royalty enforcement.
  */
 contract ERC721SeaDrop is ERC721ContractMetadata, INonFungibleSeaDropToken, ERC721SeaDropStructsErrorsAndEvents, ReentrancyGuard {
-    /// @notice Track the allowed SeaDrop addresses.
+    /**
+     * @notice Track the allowed SeaDrop addresses.
+     */
     mapping(address => bool) internal _allowedSeaDrop;
 
-    /// @notice Track the enumerated allowed SeaDrop addresses.
+    /**
+     * @notice Track the enumerated allowed SeaDrop addresses.
+     */
     address[] internal _enumeratedAllowedSeaDrop;
 
     /**
@@ -327,11 +331,7 @@ contract ERC721SeaDrop is ERC721ContractMetadata, INonFungibleSeaDropToken, ERC7
      * @param signedMintValidationParams Minimum and maximum parameters to
      *                                   enforce for signed mints.
      */
-    function updateSignedMintValidationParams(address seaDropImpl, address signer, SignedMintValidationParams memory signedMintValidationParams)
-        external
-        virtual
-        override
-    {
+    function updateSignedMintValidationParams(address seaDropImpl, address signer, SignedMintValidationParams memory signedMintValidationParams) external virtual override {
         // Ensure the sender is only the owner or contract itself.
         _onlyOwnerOrSelf();
 

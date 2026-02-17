@@ -1,14 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-/// @notice Library for compressing and decompressing bytes.
-/// @author Solady (https://github.com/vectorized/solady/blob/main/src/utils/LibZip.sol)
-/// @author Calldata compression by clabby (https://github.com/clabby/op-kompressor)
-/// @author FastLZ by ariya (https://github.com/ariya/FastLZ)
-///
-/// @dev Note:
-/// The accompanying solady.js library includes implementations of
-/// FastLZ and calldata operations for convenience.
+/**
+ * @notice Library for compressing and decompressing bytes.
+ * @author Solady (https://github.com/vectorized/solady/blob/main/src/utils/LibZip.sol)
+ * @author Calldata compression by clabby (https://github.com/clabby/op-kompressor)
+ * @author FastLZ by ariya (https://github.com/ariya/FastLZ)
+ *
+ * @dev Note:
+ * The accompanying solady.js library includes implementations of
+ * FastLZ and calldata operations for convenience.
+ */
 library LibZip {
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
     /*                     FAST LZ OPERATIONS                     */
@@ -19,7 +21,9 @@ library LibZip {
     // https://github.com/ariya/FastLZ/commit/344eb4025f9ae866ebf7a2ec48850f7113a97a42
     // Decompression is backwards compatible.
 
-    /// @dev Returns the compressed `data`.
+    /**
+     * @dev Returns the compressed `data`.
+     */
     function flzCompress(bytes memory data) internal pure returns (bytes memory result) {
         assembly {
             function ms8(d_, v_) -> _d {
@@ -106,7 +110,9 @@ library LibZip {
         }
     }
 
-    /// @dev Returns the decompressed `data`.
+    /**
+     * @dev Returns the decompressed `data`.
+     */
     function flzDecompress(bytes memory data) internal pure returns (bytes memory result) {
         assembly {
             result := mload(0x40)
@@ -161,7 +167,9 @@ library LibZip {
     // The first 4 bytes are bitwise negated so that the compressed calldata
     // can be dispatched into the `fallback` and `receive` functions.
 
-    /// @dev Returns the compressed `data`.
+    /**
+     * @dev Returns the compressed `data`.
+     */
     function cdCompress(bytes memory data) internal pure returns (bytes memory result) {
         assembly {
             function rle(v_, o_, d_) -> _o, _d {
@@ -202,7 +210,9 @@ library LibZip {
         }
     }
 
-    /// @dev Returns the decompressed `data`.
+    /**
+     * @dev Returns the decompressed `data`.
+     */
     function cdDecompress(bytes memory data) internal pure returns (bytes memory result) {
         assembly {
             if mload(data) {
@@ -235,13 +245,15 @@ library LibZip {
         }
     }
 
-    /// @dev To be called in the `fallback` function.
-    /// ```
-    ///     fallback() external payable { LibZip.cdFallback(); }
-    ///     receive() external payable {} // Silence compiler warning to add a `receive` function.
-    /// ```
-    /// For efficiency, this function will directly return the results, terminating the context.
-    /// If called internally, it must be called at the end of the function.
+    /**
+     * @dev To be called in the `fallback` function.
+     * ```
+     *     fallback() external payable { LibZip.cdFallback(); }
+     *     receive() external payable {} // Silence compiler warning to add a `receive` function.
+     * ```
+     * For efficiency, this function will directly return the results, terminating the context.
+     * If called internally, it must be called at the end of the function.
+     */
     function cdFallback() internal {
         assembly {
             if iszero(calldatasize()) { return(calldatasize(), calldatasize()) }

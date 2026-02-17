@@ -2,10 +2,11 @@
 pragma solidity ^0.8.32;
 
 import { Assets } from "../src/Assets.sol";
-import { MetaGen } from "../src/MetaGen.sol";
+import { Renderer } from "../src/Renderer.sol";
 import { RetroPunks } from "../src/RetroPunks.sol";
 import { Traits } from "../src/Traits.sol";
-import { IMetaGen } from "../src/interfaces/IMetaGen.sol";
+import { IRenderer } from "../src/interfaces/IRenderer.sol";
+import { ITraits } from "../src/interfaces/ITraits.sol";
 import { ISeaDrop } from "../src/seadrop/interfaces/ISeaDrop.sol";
 import { PublicDrop } from "../src/seadrop/lib/SeaDropStructs.sol";
 import { AddAssetsBatch } from "./AddAssetsBatch.s.sol";
@@ -14,11 +15,7 @@ import { Script } from "forge-std/Script.sol";
 import { console } from "forge-std/console.sol";
 
 contract HelperContract is Script {
-    function _toAddressArray(address a1, address a2, address a3, address a4, address a5, address a6, address a7, address a8, address a9, address a10)
-        internal
-        pure
-        returns (address[] memory arr)
-    {
+    function _toAddressArray(address a1, address a2, address a3, address a4, address a5, address a6, address a7, address a8, address a9, address a10) internal pure returns (address[] memory arr) {
         // Count non-zero addresses from the end
         uint256 count = 10;
         if (a10 == address(0)) {
@@ -86,11 +83,7 @@ contract HelperContract is Script {
         return _toAddressArray(a1, address(0), address(0), address(0), address(0), address(0), address(0), address(0), address(0), address(0));
     }
 
-    function _toUintArray(uint256 u1, uint256 u2, uint256 u3, uint256 u4, uint256 u5, uint256 u6, uint256 u7, uint256 u8, uint256 u9, uint256 u10)
-        internal
-        pure
-        returns (uint256[] memory arr)
-    {
+    function _toUintArray(uint256 u1, uint256 u2, uint256 u3, uint256 u4, uint256 u5, uint256 u6, uint256 u7, uint256 u8, uint256 u9, uint256 u10) internal pure returns (uint256[] memory arr) {
         // Count non-zero values from the end (NOTE: 0 is treated as "not set")
         uint256 count = 10;
         if (u10 == 0) {
@@ -215,7 +208,7 @@ contract RetroPunksScript is HelperContract {
     address public SEADROP = address(0x00005EA00Ac477B1030CE78506496e8C2dE24bf5);
 
     RetroPunks public retroPunksContract = RetroPunks(RETROPUNKS);
-    IMetaGen public metaGenContract;
+    IRenderer public rendererContract;
 
     uint256 public MAX_SUPPLY = 10000;
     uint256 public GLOBAL_SEED = 3801428711;
@@ -248,12 +241,12 @@ contract RetroPunksScript is HelperContract {
 
         Assets assets = new Assets();
         Traits traits = new Traits();
-        MetaGen metaGen = new MetaGen(Assets(address(assets)), Traits(address(traits)));
-        RetroPunks retroPunks = new RetroPunks(MetaGen(address(metaGen)), GLOBAL_SEED_HASH, SHUFFLER_SEED_HASH, MAX_SUPPLY, allowedSeaDrop);
+        Renderer renderer = new Renderer(Assets(address(assets)), ITraits(address(traits)));
+        RetroPunks retroPunks = new RetroPunks(IRenderer(address(renderer)), GLOBAL_SEED_HASH, SHUFFLER_SEED_HASH, MAX_SUPPLY, allowedSeaDrop);
 
         console.log("Assets::", address(assets));
         console.log("Traits:", address(traits));
-        console.log("MetaGen:", address(metaGen));
+        console.log("Renderer:", address(renderer));
         console.log("RetroPunks:", address(retroPunks));
 
         vm.stopBroadcast();
@@ -265,7 +258,7 @@ contract RetroPunksScript is HelperContract {
         address[] memory allowedSeaDrop = new address[](1);
         allowedSeaDrop[0] = 0x00005EA00Ac477B1030CE78506496e8C2dE24bf5;
 
-        RetroPunks retroPunks = new RetroPunks(MetaGen(0x36733D835Bcd02d59FF29532D0975aBa3Ae232f1), GLOBAL_SEED_HASH, SHUFFLER_SEED_HASH, MAX_SUPPLY, allowedSeaDrop);
+        RetroPunks retroPunks = new RetroPunks(IRenderer(0x36733D835Bcd02d59FF29532D0975aBa3Ae232f1), GLOBAL_SEED_HASH, SHUFFLER_SEED_HASH, MAX_SUPPLY, allowedSeaDrop);
 
         console.log("RetroPunks:", address(retroPunks));
 
@@ -305,14 +298,7 @@ contract RetroPunksScript is HelperContract {
         uint256 maxPerWallet = vm.envOr("PUBLIC_MAX_PER_WALLET", uint256(10));
 
         // Public drop: start now, end at max uint48 so drop stays open until you change it
-        PublicDrop memory publicDrop = PublicDrop({
-            mintPrice: uint80(mintPriceWei),
-            startTime: uint48(block.timestamp),
-            endTime: type(uint48).max,
-            maxTotalMintableByWallet: uint16(maxPerWallet),
-            feeBps: 0,
-            restrictFeeRecipients: false
-        });
+        PublicDrop memory publicDrop = PublicDrop({ mintPrice: uint80(mintPriceWei), startTime: uint48(block.timestamp), endTime: type(uint48).max, maxTotalMintableByWallet: uint16(maxPerWallet), feeBps: 0, restrictFeeRecipients: false });
 
         console.log("=== SeaDrop setup ===", "\n");
         console.log("RetroPunks:", RETROPUNKS);
@@ -414,7 +400,7 @@ contract RetroPunksScript is HelperContract {
         vm.stopBroadcast();
 
         console.log("\n", "Reveal contract MetaGen set successfully!");
-        console.log("New MetaGen:", address(retroPunksContract.metaGen()));
+        console.log("New Renderer:", address(retroPunksContract.renderer()));
     }
 
     function closeMint() public {
@@ -465,8 +451,8 @@ contract RetroPunksScript is HelperContract {
         console.log("Bio:", storedBio);
     }
 
-    function queryTokenURI(uint256 _tokenId) public {
-        string memory uri = retroPunksContract.tokenURI(_tokenId);
+    function queryTokenURI() public {
+        string memory uri = retroPunksContract.tokenURI(1);
         console.log("\n", uri, "\n");
     }
 
@@ -576,25 +562,7 @@ contract RetroPunksScript is HelperContract {
             string memory escapedBio = _escapeJSON(bio);
 
             // Build JSON object
-            string memory jsonObject = string.concat(
-                "{",
-                '"tokenId":',
-                vm.toString(i),
-                ",",
-                '"tokenIDSeed":',
-                vm.toString(seed),
-                ",",
-                '"background":',
-                vm.toString(bg),
-                ",",
-                '"name":"',
-                name,
-                '",',
-                '"bio":"',
-                escapedBio,
-                '"',
-                "}"
-            );
+            string memory jsonObject = string.concat("{", '"tokenId":', vm.toString(i), ",", '"tokenIDSeed":', vm.toString(seed), ",", '"background":', vm.toString(bg), ",", '"name":"', name, '",', '"bio":"', escapedBio, '"', "}");
 
             // Add comma separator (except for first element)
             if (i > startTokenID) {
@@ -619,7 +587,7 @@ contract RetroPunksScript is HelperContract {
         uint256 totalSupply = retroPunksContract.totalSupply();
         uint256 globalSeed = retroPunksContract.globalSeed();
         uint256 shufflerSeed = retroPunksContract.shufflerSeed();
-        address metaGen = address(retroPunksContract.metaGen());
+        address rendererAddr = address(retroPunksContract.renderer());
         uint256 _mintIsClosed = retroPunksContract.mintIsClosed();
         bool mintIsClosed = _mintIsClosed == 1 ? true : false;
 
@@ -630,7 +598,7 @@ contract RetroPunksScript is HelperContract {
         console.log("Minted Supply:", totalSupply, "/", maxSupply);
         console.log("Global Seed:", globalSeed);
         console.log("Shuffler Seed:", shufflerSeed);
-        console.log("MetaGen:", metaGen);
+        console.log("Renderer:", rendererAddr);
         console.log("Mint Is Closed:", mintIsClosed);
     }
 }

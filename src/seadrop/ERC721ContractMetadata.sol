@@ -28,21 +28,31 @@ import { IERC165 } from "@openzeppelin/contracts/utils/introspection/IERC165.sol
  *         with additional metadata and ownership capabilities.
  */
 contract ERC721ContractMetadata is ERC721AConduitPreapproved, ERC721TransferValidator, TwoStepOwnable, ISeaDropTokenContractMetadata {
-    /// @notice Track the max supply.
+    /**
+     * @notice Track the max supply.
+     */
     uint256 _maxSupply;
 
-    /// @notice Track the base URI for token metadata.
+    /**
+     * @notice Track the base URI for token metadata.
+     */
     string _tokenBaseURI;
 
-    /// @notice Track the contract URI for contract metadata.
+    /**
+     * @notice Track the contract URI for contract metadata.
+     */
     string _contractURI;
 
-    /// @notice Track the provenance hash for guaranteeing metadata order
-    ///         for random reveals.
+    /**
+     * @notice Track the provenance hash for guaranteeing metadata order
+     *         for random reveals.
+     */
     bytes32 _provenanceHash;
 
-    /// @notice Track the royalty info: address to receive royalties, and
-    ///         royalty basis points.
+    /**
+     * @notice Track the royalty info: address to receive royalties, and
+     *         royalty basis points.
+     */
     RoyaltyInfo _royaltyInfo;
 
     /**
@@ -321,8 +331,7 @@ contract ERC721ContractMetadata is ERC721AConduitPreapproved, ERC721TransferVali
      * @param interfaceId The interface id to check against.
      */
     function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC721A) returns (bool) {
-        return interfaceId == type(IERC2981).interfaceId || interfaceId == type(ICreatorToken).interfaceId || interfaceId == type(ILegacyCreatorToken).interfaceId
-            || interfaceId == 0x49064906 // ERC-4906
+        return interfaceId == type(IERC2981).interfaceId || interfaceId == type(ICreatorToken).interfaceId || interfaceId == type(ILegacyCreatorToken).interfaceId || interfaceId == 0x49064906 // ERC-4906
             || super.supportsInterface(interfaceId);
     }
 

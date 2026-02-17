@@ -1,50 +1,70 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-/// @notice Library for generating pseudorandom numbers.
-/// @author Solady (https://github.com/vectorized/solady/blob/main/src/utils/LibPRNG.sol)
-/// @author LazyShuffler based on NextShuffler by aschlosberg (divergencearran)
-/// (https://github.com/divergencetech/ethier/blob/main/contracts/random/NextShuffler.sol)
+/**
+ * @notice Library for generating pseudorandom numbers.
+ * @author Solady (https://github.com/vectorized/solady/blob/main/src/utils/LibPRNG.sol)
+ * @author LazyShuffler based on NextShuffler by aschlosberg (divergencearran)
+ * (https://github.com/divergencetech/ethier/blob/main/contracts/random/NextShuffler.sol)
+ */
 library LibPRNG {
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
     /*                       CUSTOM ERRORS                        */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
-    /// @dev The initial length must be greater than zero and less than `2**32 - 1`.
+    /**
+     * @dev The initial length must be greater than zero and less than `2**32 - 1`.
+     */
     error InvalidInitialLazyShufflerLength();
 
-    /// @dev The new length must not be less than the current length.
+    /**
+     * @dev The new length must not be less than the current length.
+     */
     error InvalidNewLazyShufflerLength();
 
-    /// @dev The lazy shuffler has not been initialized.
+    /**
+     * @dev The lazy shuffler has not been initialized.
+     */
     error LazyShufflerNotInitialized();
 
-    /// @dev Cannot double initialize the lazy shuffler.
+    /**
+     * @dev Cannot double initialize the lazy shuffler.
+     */
     error LazyShufflerAlreadyInitialized();
 
-    /// @dev The lazy shuffle has finished.
+    /**
+     * @dev The lazy shuffle has finished.
+     */
     error LazyShuffleFinished();
 
-    /// @dev The queried index is out of bounds.
+    /**
+     * @dev The queried index is out of bounds.
+     */
     error LazyShufflerGetOutOfBounds();
 
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
     /*                         CONSTANTS                          */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
-    /// @dev The scalar of ETH and most ERC20s.
+    /**
+     * @dev The scalar of ETH and most ERC20s.
+     */
     uint256 internal constant WAD = 1e18;
 
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
     /*                          STRUCTS                           */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
-    /// @dev A pseudorandom number state in memory.
+    /**
+     * @dev A pseudorandom number state in memory.
+     */
     struct PRNG {
         uint256 state;
     }
 
-    /// @dev A lazy Fisher-Yates shuffler for a range `[0..n)` in storage.
+    /**
+     * @dev A lazy Fisher-Yates shuffler for a range `[0..n)` in storage.
+     */
     struct LazyShuffler {
         // Bits Layout:
         // - [0..31]    `numShuffled`
@@ -57,16 +77,22 @@ library LibPRNG {
     /*                         OPERATIONS                         */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
-    /// @dev Seeds the `prng` with `state`.
+    /**
+     * @dev Seeds the `prng` with `state`.
+     */
     function seed(PRNG memory prng, uint256 state) internal pure {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             mstore(prng, state)
         }
     }
 
-    /// @dev Returns the next pseudorandom uint256.
-    /// All bits of the returned uint256 pass the NIST Statistical Test Suite.
+    /**
+     * @dev Returns the next pseudorandom uint256.
+     * All bits of the returned uint256 pass the NIST Statistical Test Suite.
+     */
     function next(PRNG memory prng) internal pure returns (uint256 result) {
         // We simply use `keccak256` for a great balance between
         // runtime gas costs, bytecode size, and statistical properties.
@@ -78,22 +104,28 @@ library LibPRNG {
         //
         // Using this method is about 2x more efficient than
         // `nextRandomness = uint256(keccak256(abi.encode(randomness)))`.
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             result := keccak256(prng, 0x20)
             mstore(prng, result)
         }
     }
 
-    /// @dev Returns a pseudorandom uint256, uniformly distributed
-    /// between 0 (inclusive) and `upper` (exclusive).
-    /// If your modulus is big, this method is recommended
-    /// for uniform sampling to avoid modulo bias.
-    /// For uniform sampling across all uint256 values,
-    /// or for small enough moduli such that the bias is negligible,
-    /// use {next} instead.
+    /**
+     * @dev Returns a pseudorandom uint256, uniformly distributed
+     * between 0 (inclusive) and `upper` (exclusive).
+     * If your modulus is big, this method is recommended
+     * for uniform sampling to avoid modulo bias.
+     * For uniform sampling across all uint256 values,
+     * or for small enough moduli such that the bias is negligible,
+     * use {next} instead.
+     */
     function uniform(PRNG memory prng, uint256 upper) internal pure returns (uint256 result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             for { } 1 { } {
                 result := keccak256(prng, 0x20)
@@ -104,9 +136,13 @@ library LibPRNG {
         }
     }
 
-    /// @dev Returns a sample from the standard normal distribution denominated in `WAD`.
+    /**
+     * @dev Returns a sample from the standard normal distribution denominated in `WAD`.
+     */
     function standardNormalWad(PRNG memory prng) internal pure returns (int256 result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             // Technically, this is the Irwin-Hall distribution with 20 samples.
             // The chance of drawing a sample outside 10 σ from the standard normal distribution
@@ -129,9 +165,13 @@ library LibPRNG {
         }
     }
 
-    /// @dev Returns a sample from the unit exponential distribution denominated in `WAD`.
+    /**
+     * @dev Returns a sample from the unit exponential distribution denominated in `WAD`.
+     */
     function exponentialWad(PRNG memory prng) internal pure returns (uint256 result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             // Passes the Kolmogorov-Smirnov test for 200k samples.
             // Gas usage varies, starting from about 172+ gas.
@@ -164,9 +204,13 @@ library LibPRNG {
     /*             MEMORY ARRAY SHUFFLING OPERATIONS              */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
-    /// @dev Shuffles the array in-place with Fisher-Yates shuffle.
+    /**
+     * @dev Shuffles the array in-place with Fisher-Yates shuffle.
+     */
     function shuffle(PRNG memory prng, uint256[] memory a) internal pure {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let n := mload(a)
             let w := not(0)
@@ -208,20 +252,28 @@ library LibPRNG {
         }
     }
 
-    /// @dev Shuffles the array in-place with Fisher-Yates shuffle.
+    /**
+     * @dev Shuffles the array in-place with Fisher-Yates shuffle.
+     */
     function shuffle(PRNG memory prng, int256[] memory a) internal pure {
         shuffle(prng, _toUints(a));
     }
 
-    /// @dev Shuffles the array in-place with Fisher-Yates shuffle.
+    /**
+     * @dev Shuffles the array in-place with Fisher-Yates shuffle.
+     */
     function shuffle(PRNG memory prng, address[] memory a) internal pure {
         shuffle(prng, _toUints(a));
     }
 
-    /// @dev Partially shuffles the array in-place with Fisher-Yates shuffle.
-    /// The first `k` elements will be uniformly sampled without replacement.
+    /**
+     * @dev Partially shuffles the array in-place with Fisher-Yates shuffle.
+     * The first `k` elements will be uniformly sampled without replacement.
+     */
     function shuffle(PRNG memory prng, uint256[] memory a, uint256 k) internal pure {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let n := mload(a)
             k := xor(k, mul(xor(k, n), lt(n, k))) // `min(n, k)`.
@@ -262,21 +314,29 @@ library LibPRNG {
         }
     }
 
-    /// @dev Partially shuffles the array in-place with Fisher-Yates shuffle.
-    /// The first `k` elements will be uniformly sampled without replacement.
+    /**
+     * @dev Partially shuffles the array in-place with Fisher-Yates shuffle.
+     * The first `k` elements will be uniformly sampled without replacement.
+     */
     function shuffle(PRNG memory prng, int256[] memory a, uint256 k) internal pure {
         shuffle(prng, _toUints(a), k);
     }
 
-    /// @dev Partially shuffles the array in-place with Fisher-Yates shuffle.
-    /// The first `k` elements will be uniformly sampled without replacement.
+    /**
+     * @dev Partially shuffles the array in-place with Fisher-Yates shuffle.
+     * The first `k` elements will be uniformly sampled without replacement.
+     */
     function shuffle(PRNG memory prng, address[] memory a, uint256 k) internal pure {
         shuffle(prng, _toUints(a), k);
     }
 
-    /// @dev Shuffles the bytes in-place with Fisher-Yates shuffle.
+    /**
+     * @dev Shuffles the bytes in-place with Fisher-Yates shuffle.
+     */
     function shuffle(PRNG memory prng, bytes memory a) internal pure {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let n := mload(a)
             let w := not(0)
@@ -321,12 +381,16 @@ library LibPRNG {
     /*       STORAGE-BASED RANGE LAZY SHUFFLING OPERATIONS        */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
-    /// @dev Initializes the state for lazy-shuffling the range `[0..n)`.
-    /// Reverts if `n == 0 || n >= 2**32 - 1`.
-    /// Reverts if `$` has already been initialized.
-    /// If you need to reduce the length after initialization, just use a fresh new `$`.
+    /**
+     * @dev Initializes the state for lazy-shuffling the range `[0..n)`.
+     * Reverts if `n == 0 || n >= 2**32 - 1`.
+     * Reverts if `$` has already been initialized.
+     * If you need to reduce the length after initialization, just use a fresh new `$`.
+     */
     function initialize(LazyShuffler storage $, uint256 n) internal {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             if iszero(lt(sub(n, 1), 0xfffffffe)) {
                 mstore(0x00, 0x83b53941) // `InvalidInitialLazyShufflerLength()`.
@@ -341,10 +405,14 @@ library LibPRNG {
         }
     }
 
-    /// @dev Increases the length of `$`.
-    /// Reverts if `$` has not been initialized.
+    /**
+     * @dev Increases the length of `$`.
+     * Reverts if `$` has not been initialized.
+     */
     function grow(LazyShuffler storage $, uint256 n) internal {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let state := sload($.slot) // The packed value at `$`.
             // If the new length is smaller than the old length, revert.
@@ -360,12 +428,16 @@ library LibPRNG {
         }
     }
 
-    /// @dev Restarts the shuffler by setting `numShuffled` to zero,
-    /// such that all elements can be drawn again.
-    /// Restarting does NOT clear the internal permutation, nor changes the length.
-    /// Even with the same sequence of randomness, reshuffling can yield different results.
+    /**
+     * @dev Restarts the shuffler by setting `numShuffled` to zero,
+     * such that all elements can be drawn again.
+     * Restarting does NOT clear the internal permutation, nor changes the length.
+     * Even with the same sequence of randomness, reshuffling can yield different results.
+     */
     function restart(LazyShuffler storage $) internal {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let state := sload($.slot)
             if iszero(state) {
@@ -376,35 +448,51 @@ library LibPRNG {
         }
     }
 
-    /// @dev Returns the number of elements that have been shuffled.
+    /**
+     * @dev Returns the number of elements that have been shuffled.
+     */
     function numShuffled(LazyShuffler storage $) internal view returns (uint256 result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             result := and(0xffffffff, sload($.slot))
         }
     }
 
-    /// @dev Returns the length of `$`.
-    /// Returns zero if `$` is not initialized, else a non-zero value less than `2**32 - 1`.
+    /**
+     * @dev Returns the length of `$`.
+     * Returns zero if `$` is not initialized, else a non-zero value less than `2**32 - 1`.
+     */
     function length(LazyShuffler storage $) internal view returns (uint256 result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             result := shr(224, sload($.slot))
         }
     }
 
-    /// @dev Returns if `$` has been initialized.
+    /**
+     * @dev Returns if `$` has been initialized.
+     */
     function initialized(LazyShuffler storage $) internal view returns (bool result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             result := iszero(iszero(sload($.slot)))
         }
     }
 
-    /// @dev Returns if there are any more elements left to shuffle.
-    /// Reverts if `$` is not initialized.
+    /**
+     * @dev Returns if there are any more elements left to shuffle.
+     * Reverts if `$` is not initialized.
+     */
     function finished(LazyShuffler storage $) internal view returns (bool result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let state := sload($.slot) // The packed value at `$`.
             if iszero(state) {
@@ -415,10 +503,14 @@ library LibPRNG {
         }
     }
 
-    /// @dev Returns the current value stored at `index`, accounting for all historical shuffling.
-    /// Reverts if `index` is greater than or equal to the `length` of `$`.
+    /**
+     * @dev Returns the current value stored at `index`, accounting for all historical shuffling.
+     * Reverts if `index` is greater than or equal to the `length` of `$`.
+     */
     function get(LazyShuffler storage $, uint256 index) internal view returns (uint256 result) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             let state := sload($.slot) // The packed value at `$`.
             let n := shr(224, state) // Length of `$`.
@@ -435,12 +527,16 @@ library LibPRNG {
         }
     }
 
-    /// @dev Does a single Fisher-Yates shuffle step, increments the `numShuffled` in `$`,
-    /// and returns the next value in the shuffled range.
-    /// `randomness` can be taken from a good-enough source, or a higher quality source like VRF.
-    /// Reverts if there are no more values to shuffle, which includes the case if `$` is not initialized.
+    /**
+     * @dev Does a single Fisher-Yates shuffle step, increments the `numShuffled` in `$`,
+     * and returns the next value in the shuffled range.
+     * `randomness` can be taken from a good-enough source, or a higher quality source like VRF.
+     * Reverts if there are no more values to shuffle, which includes the case if `$` is not initialized.
+     */
     function next(LazyShuffler storage $, uint256 randomness) internal returns (uint256 chosen) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             function _get(u32_, state_, i_) -> _value {
                 let s_ := add(shr(sub(4, u32_), i_), shr(64, shl(32, state_))) // Bucket slot.
@@ -479,17 +575,25 @@ library LibPRNG {
     /*                      PRIVATE HELPERS                       */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
-    /// @dev Reinterpret cast to an uint256 array.
+    /**
+     * @dev Reinterpret cast to an uint256 array.
+     */
     function _toUints(int256[] memory a) private pure returns (uint256[] memory casted) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             casted := a
         }
     }
 
-    /// @dev Reinterpret cast to an uint256 array.
+    /**
+     * @dev Reinterpret cast to an uint256 array.
+     */
     function _toUints(address[] memory a) private pure returns (uint256[] memory casted) {
-        /// @solidity memory-safe-assembly
+        /**
+         * @solidity memory-safe-assembly
+         */
         assembly {
             // As any address written to memory will have the upper 96 bits
             // of the word zeroized (as per Solidity spec), we can directly

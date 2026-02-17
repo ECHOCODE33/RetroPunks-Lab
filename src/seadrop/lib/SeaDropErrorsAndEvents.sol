@@ -213,16 +213,7 @@ interface SeaDropErrorsAndEvents {
      *                       through mintPublic() have
      *                       dropStageIndex of 0.
      */
-    event SeaDropMint(
-        address indexed nftContract,
-        address indexed minter,
-        address indexed feeRecipient,
-        address payer,
-        uint256 quantityMinted,
-        uint256 unitMintPrice,
-        uint256 feeBps,
-        uint256 dropStageIndex
-    );
+    event SeaDropMint(address indexed nftContract, address indexed minter, address indexed feeRecipient, address payer, uint256 quantityMinted, uint256 unitMintPrice, uint256 feeBps, uint256 dropStageIndex);
 
     /**
      * @dev An event with updated public drop data for an nft contract.
@@ -246,9 +237,7 @@ interface SeaDropErrorsAndEvents {
      *                           Empty if unencrypted.
      * @param allowListURI       The URI for the allow list.
      */
-    event AllowListUpdated(
-        address indexed nftContract, bytes32 indexed previousMerkleRoot, bytes32 indexed newMerkleRoot, string[] publicKeyURI, string allowListURI
-    );
+    event AllowListUpdated(address indexed nftContract, bytes32 indexed previousMerkleRoot, bytes32 indexed newMerkleRoot, string[] publicKeyURI, string allowListURI);
 
     /**
      * @dev An event with updated drop URI for an nft contract.

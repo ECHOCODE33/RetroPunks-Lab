@@ -10,13 +10,19 @@ import { ERC721SeaDrop } from "../ERC721SeaDrop.sol";
  *         and the owner of the token contract can pause or unpause.
  */
 contract ERC721SeaDropPausable is ERC721SeaDrop {
-    /// @notice Revert when transfers are paused.
+    /**
+     * @notice Revert when transfers are paused.
+     */
     error TransfersPaused();
 
-    /// @notice Emit an event when transfers are paused or unpaused.
+    /**
+     * @notice Emit an event when transfers are paused or unpaused.
+     */
     event TransfersPausedChanged(bool paused);
 
-    /// @notice Boolean if transfers are paused.
+    /**
+     * @notice Boolean if transfers are paused.
+     */
     bool public transfersPaused = true;
 
     /**
